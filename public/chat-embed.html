@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Embebido</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: transparent;
+    }
+    #chat-root {
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    
+    const EmbeddedChat = () => {
+      const [config, setConfig] = useState({
+        theme: 'dark', // Por defecto oscuro para coincidir con tus estilos globales
+        title: '💬 Chat en Vivo',
+        showUserNames: true,
+        showTimestamps: true
+      });
+      
+      useEffect(() => {
+        const handleMessage = (event) => {
+          if (event.data.type === 'CHAT_CONFIG') {
+            setConfig(prev => ({
+              ...prev,
+              ...event.data.config
+            }));
+          }
+        };
+        
+        window.addEventListener('message', handleMessage);
+        
+        // Notificar que estamos listos
+        setTimeout(() => {
+          window.parent.postMessage({ 
+            type: 'CHAT_IFRAME_READY',
+            config: config
+          }, '*');
+        }, 100);
+        
+        return () => window.removeEventListener('message', handleMessage);
+      }, []);
+      
+      // Inyectar el componente real del chat
+      useEffect(() => {
+        const script = document.createElement('script');
+        script.src = '/path-to-your-compiled-chat.js'; // Ruta al JS compilado
+        script.async = true;
+        document.body.appendChild(script);
+        
+        return () => {
+          document.body.removeChild(script);
+        };
+      }, []);
+      
+      return React.createElement('div', {
+        id: 'embedded-chat-container',
+        style: { 
+          height: '100%',
+          width: '100%',
+          backgroundColor: config.theme === 'dark' ? '#242424' : '#ffffff'
+        }
+      });
+    };
+    
+    ReactDOM.render(React.createElement(EmbeddedChat), document.getElementById('chat-root'));
+  </script>
+</body>
+</html>
