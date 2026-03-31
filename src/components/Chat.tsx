@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../socket/socket";
 import { useChatSocket } from "../socket/useChatSocket";
+import type { ConfirmationPayload } from "../socket/useChatSocket";
 import { emitSendMessage, connectSocket } from "../socket/connectSocket";
 import {
   Send,
@@ -84,7 +85,16 @@ type OptionsMessage = {
   answered: boolean;
 };
 
-type ChatMessage = TextMessage | OptionsMessage;
+type ConfirmationMessage = {
+  type: "confirmation";
+  id: string;
+  nombre: string;
+  correo: string;
+  motivo: string;
+  answered: boolean;
+};
+
+type ChatMessage = TextMessage | OptionsMessage | ConfirmationMessage;
 
 interface QuickAction {
   id: string;
@@ -190,6 +200,8 @@ const Chat = () => {
   const [chatExpired, setChatExpired] = useState(false);
   const [escalated, setEscalated] = useState(false);
   const [showEscalatePrompt, setShowEscalatePrompt] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [confirmationData, setConfirmationData] = useState<ConfirmationPayload | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -241,6 +253,19 @@ const Chat = () => {
     onChatEscalated: () => {
       setEscalated(true);
       setShowEscalatePrompt(false);
+    },
+    onShowConfirmation: (payload) => {
+      setShowConfirmation(true);
+      setConfirmationData(payload);
+      const confirmMsg: ConfirmationMessage = {
+        type: "confirmation",
+        id: `confirmation-${Date.now()}`,
+        nombre: payload.nombre,
+        correo: payload.correo,
+        motivo: payload.motivo,
+        answered: false,
+      };
+      setMessages((prev) => [...prev, confirmMsg]);
     },
     onShowEscalateButton: () => {
       setShowEscalatePrompt(true);
@@ -313,6 +338,23 @@ const Chat = () => {
     // Enviar al gateway — el back reenvía el mensaje via on-message, no se agrega manualmente
     emitSendMessage({
       message: confirmed ? "Sí, quiero los canales de contacto" : "No, gracias",
+      context,
+      meta: { source: "quick_reply", optionId },
+    });
+  };
+
+  const handleConfirmationClick = (msgId: string, optionId: string) => {
+    if (!connected || !context) return;
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.type === "confirmation" && m.id === msgId
+          ? { ...m, answered: true }
+          : m,
+      ),
+    );
+    setShowConfirmation(false);
+    emitSendMessage({
+      message: optionId,
       context,
       meta: { source: "quick_reply", optionId },
     });
@@ -408,6 +450,53 @@ const Chat = () => {
       <div className='flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50'>
         <div className='max-w-2xl mx-auto space-y-6 pb-4'>
           {messages.map((msg, index) => {
+            // ── Burbuja de confirmación de datos ────────────────────────────
+            if (msg.type === "confirmation") {
+              const isDisabled = msg.answered || isInputDisabled || chatExpired || escalated;
+              return (
+                <div key={msg.id} className='flex gap-4 flex-row'>
+                  <div
+                    className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm ${cfg!.avatarBot}`}
+                  >
+                    <Bot size={16} />
+                  </div>
+                  <div className='bg-white border border-slate-100 rounded-2xl rounded-tl-none shadow-sm px-5 py-4 max-w-[85%]'>
+                    <p className='text-[15px] text-slate-700 mb-3'>
+                      Antes de continuar, confirma tus datos:
+                    </p>
+                    <div className='text-sm text-slate-700 mb-4 space-y-1'>
+                      <p>👤 <strong>Nombre:</strong> {msg.nombre}</p>
+                      <p>📧 <strong>Correo:</strong> {msg.correo}</p>
+                      <p>💬 <strong>Motivo:</strong> {msg.motivo}</p>
+                    </div>
+                    <div className='flex flex-col gap-2'>
+                      {[
+                        { id: "confirm",     label: "✅ Confirmar",       green: true  },
+                        { id: "edit_nombre", label: "✏️ Corregir nombre", green: false },
+                        { id: "edit_correo", label: "✏️ Corregir correo", green: false },
+                        { id: "edit_motivo", label: "✏️ Corregir motivo", green: false },
+                      ].map((opt) => (
+                        <button
+                          key={opt.id}
+                          disabled={isDisabled}
+                          onClick={() => handleConfirmationClick(msg.id, opt.id)}
+                          className={`text-left px-4 py-2.5 rounded-xl border text-sm font-medium transition-all
+                            ${isDisabled
+                              ? "opacity-40 cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
+                              : opt.green
+                                ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
+                            }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
             // ── Burbuja de opciones ──────────────────────────────────────────
             if (msg.type === "options") {
               return (

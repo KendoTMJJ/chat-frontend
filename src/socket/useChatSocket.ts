@@ -13,6 +13,12 @@ interface SessionExpiredPayload {
   message: string;
 }
 
+export interface ConfirmationPayload {
+  nombre: string;
+  correo: string;
+  motivo: string;
+}
+
 interface UseChatSocketProps {
   onConnect: () => void;
   onDisconnect: () => void;
@@ -30,6 +36,8 @@ interface UseChatSocketProps {
    * Este evento solo sirve para que el front ajuste su estado si lo necesita.
    */
   onShowEscalateButton?: () => void;
+  /** El back envía los datos recopilados para que el usuario los confirme */
+  onShowConfirmation?: (payload: ConfirmationPayload) => void;
 }
 
 export const useChatSocket = ({
@@ -43,6 +51,7 @@ export const useChatSocket = ({
   onSessionExpired,
   onChatEscalated,
   onShowEscalateButton,
+  onShowConfirmation,
 }: UseChatSocketProps) => {
   useEffect(() => {
     socket.on("connect", onConnect);
@@ -70,6 +79,12 @@ export const useChatSocket = ({
       onShowEscalateButton?.();
     });
 
+    // El back envía los datos recopilados para que el usuario los confirme antes
+    // de finalizar el escalado.
+    socket.on("show-confirmation", (payload: ConfirmationPayload) => {
+      onShowConfirmation?.(payload);
+    });
+
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
@@ -80,6 +95,7 @@ export const useChatSocket = ({
       socket.off("session-error");
       socket.off("chat-escalated");
       socket.off("show-escalate-button");
+      socket.off("show-confirmation");
     };
   }, []);
 };
