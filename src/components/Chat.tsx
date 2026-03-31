@@ -75,6 +75,13 @@ type TextMessage = {
   message: string;
   sender: "user" | "bot";
   conversationId: string | null;
+  id?: string;
+  answered?: boolean;
+  buttons?: Array<{
+    label: string;
+    message?: string;
+    url?: string;
+  }>;
 };
 
 type OptionsMessage = {
@@ -243,12 +250,22 @@ const Chat = () => {
       setChatExpired(true);
     },
     onHistory: (history) =>
-      setMessages(history.map((m: any) => ({ type: "text" as const, ...m }))),
+      setMessages(history.map((m: any, idx: number) => ({
+        type: "text" as const,
+        id: m.id ?? `msg-${Date.now()}-${idx}`,
+        answered: false,
+        ...m
+      }))),
     onMessage: (payload: Omit<TextMessage, "type">) => {
       const sig = `${payload.sender}|${payload.userId}|${payload.message}|${payload.conversationId ?? ""}`;
       if (sig === lastMsgSigRef.current) return;
       lastMsgSigRef.current = sig;
-      setMessages((prev) => [...prev, { type: "text", ...payload }]);
+      setMessages((prev) => [...prev, {
+        type: "text",
+        id: payload.id ?? `msg-${Date.now()}-${prev.length}`,
+        answered: false,
+        ...payload
+      }]);
     },
     onChatEscalated: () => {
       setEscalated(true);
@@ -358,6 +375,34 @@ const Chat = () => {
       context,
       meta: { source: "quick_reply", optionId },
     });
+  };
+
+  const handleButtonClick = (
+    msgId: string,
+    button: NonNullable<TextMessage["buttons"]>[number],
+  ) => {
+    if (!connected || !context) return;
+    // Marcar el mensaje como respondido
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.type === "text" && m.id === msgId
+          ? { ...m, answered: true }
+          : m,
+      ),
+    );
+    // Si tiene URL, abrir en pestaña nueva
+    if (button.url) {
+      window.open(button.url, "_blank");
+      return;
+    }
+    // Si tiene mensaje, emitir como mensaje del usuario
+    if (button.message) {
+      emitSendMessage({
+        message: button.message,
+        context,
+        meta: { source: "quick_reply", button: button.label },
+      });
+    }
   };
 
   const resetChat = () => {
@@ -548,55 +593,73 @@ const Chat = () => {
                 >
                   {isUser ? <User size={16} /> : <Bot size={16} />}
                 </div>
-                <div
-                  className={`relative max-w-[85%] px-5 py-4 rounded-2xl shadow-sm text-[15px] leading-relaxed
-                  ${
-                    isUser
-                      ? `${cfg!.sendBtn.replace("hover:bg-", "bg-").split(" ")[0]} text-white rounded-tr-none`
-                      : "bg-white text-slate-700 border border-slate-100 rounded-tl-none"
-                  }`}
-                >
-                  <ReactMarkdown
-                    components={{
-                      h2: ({ node, ...props }) => (
-                        <h3
-                          className={`text-sm font-bold uppercase tracking-wider mt-4 mb-2 border-b pb-1 ${cfg!.heading}`}
-                          {...props}
-                        />
-                      ),
-                      p: ({ node, ...props }) => (
-                        <p className='mb-2 last:mb-0' {...props} />
-                      ),
-                      ul: ({ node, ...props }) => (
-                        <ul className='space-y-1 my-2 pl-1' {...props} />
-                      ),
-                      li: ({ node, ...props }) => (
-                        <li className='flex items-start gap-2' {...props} />
-                      ),
-                      a: ({ node, ...props }) => (
-                        <a
-                          {...props}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className={`font-semibold underline underline-offset-2 transition-colors ${isUser ? "text-white hover:text-white/80" : cfg!.heading}`}
-                        />
-                      ),
-                      strong: ({ node, ...props }) => (
-                        <span
-                          className={`font-bold ${isUser ? "text-white" : "text-slate-900"}`}
-                          {...props}
-                        />
-                      ),
-                      hr: ({ node, ...props }) => (
-                        <hr
-                          className='my-4 border-slate-200 border-dashed'
-                          {...props}
-                        />
-                      ),
-                    }}
+                <div className='flex flex-col gap-2'>
+                  <div
+                    className={`relative max-w-[85%] px-5 py-4 rounded-2xl shadow-sm text-[15px] leading-relaxed
+                    ${
+                      isUser
+                        ? `${cfg!.sendBtn.replace("hover:bg-", "bg-").split(" ")[0]} text-white rounded-tr-none`
+                        : "bg-white text-slate-700 border border-slate-100 rounded-tl-none"
+                    }`}
                   >
-                    {msg.message}
-                  </ReactMarkdown>
+                    <ReactMarkdown
+                      components={{
+                        h2: ({ node, ...props }) => (
+                          <h3
+                            className={`text-sm font-bold uppercase tracking-wider mt-4 mb-2 border-b pb-1 ${cfg!.heading}`}
+                            {...props}
+                          />
+                        ),
+                        p: ({ node, ...props }) => (
+                          <p className='mb-2 last:mb-0' {...props} />
+                        ),
+                        ul: ({ node, ...props }) => (
+                          <ul className='space-y-1 my-2 pl-1' {...props} />
+                        ),
+                        li: ({ node, ...props }) => (
+                          <li className='flex items-start gap-2' {...props} />
+                        ),
+                        a: ({ node, ...props }) => (
+                          <a
+                            {...props}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className={`font-semibold underline underline-offset-2 transition-colors ${isUser ? "text-white hover:text-white/80" : cfg!.heading}`}
+                          />
+                        ),
+                        strong: ({ node, ...props }) => (
+                          <span
+                            className={`font-bold ${isUser ? "text-white" : "text-slate-900"}`}
+                            {...props}
+                          />
+                        ),
+                        hr: ({ node, ...props }) => (
+                          <hr
+                            className='my-4 border-slate-200 border-dashed'
+                            {...props}
+                          />
+                        ),
+                      }}
+                    >
+                      {msg.message}
+                    </ReactMarkdown>
+                  </div>
+                  {!isUser && msg.buttons && msg.buttons.length > 0 && (
+                    <div className='flex flex-wrap gap-2 max-w-[85%]'>
+                      {msg.buttons.map((button, idx) => (
+                        <button
+                          key={idx}
+                          disabled={msg.answered || isInputDisabled}
+                          onClick={() => handleButtonClick(msg.id!, button)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200
+                            bg-white text-slate-600 text-xs font-medium ${cfg!.chipHover}
+                            disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm`}
+                        >
+                          {button.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             );
