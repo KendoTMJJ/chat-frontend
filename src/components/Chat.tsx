@@ -208,7 +208,8 @@ const Chat = () => {
   const [escalated, setEscalated] = useState(false);
   const [showEscalatePrompt, setShowEscalatePrompt] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [confirmationData, setConfirmationData] = useState<ConfirmationPayload | null>(null);
+  const [confirmationData, setConfirmationData] =
+    useState<ConfirmationPayload | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -250,22 +251,27 @@ const Chat = () => {
       setChatExpired(true);
     },
     onHistory: (history) =>
-      setMessages(history.map((m: any, idx: number) => ({
-        type: "text" as const,
-        id: m.id ?? `msg-${Date.now()}-${idx}`,
-        answered: false,
-        ...m
-      }))),
+      setMessages(
+        history.map((m: any, idx: number) => ({
+          type: "text" as const,
+          id: m.id ?? `msg-${Date.now()}-${idx}`,
+          answered: false,
+          ...m,
+        })),
+      ),
     onMessage: (payload: Omit<TextMessage, "type">) => {
       const sig = `${payload.sender}|${payload.userId}|${payload.message}|${payload.conversationId ?? ""}`;
       if (sig === lastMsgSigRef.current) return;
       lastMsgSigRef.current = sig;
-      setMessages((prev) => [...prev, {
-        type: "text",
-        id: payload.id ?? `msg-${Date.now()}-${prev.length}`,
-        answered: false,
-        ...payload
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "text",
+          id: payload.id ?? `msg-${Date.now()}-${prev.length}`,
+          answered: false,
+          ...payload,
+        },
+      ]);
     },
     onChatEscalated: () => {
       setEscalated(true);
@@ -290,7 +296,8 @@ const Chat = () => {
       const optionsMsg: OptionsMessage = {
         type: "options",
         id: `escalate-${Date.now()}`,
-        question: "¿Quieres que te compartamos los canales de contacto directo?",
+        question:
+          "¿Quieres que te compartamos los canales de contacto directo?",
         options: [
           {
             id: "escalate_yes",
@@ -385,9 +392,7 @@ const Chat = () => {
     // Marcar el mensaje como respondido
     setMessages((prev) =>
       prev.map((m) =>
-        m.type === "text" && m.id === msgId
-          ? { ...m, answered: true }
-          : m,
+        m.type === "text" && m.id === msgId ? { ...m, answered: true } : m,
       ),
     );
     // Si tiene URL, abrir en pestaña nueva
@@ -497,7 +502,8 @@ const Chat = () => {
           {messages.map((msg, index) => {
             // ── Burbuja de confirmación de datos ────────────────────────────
             if (msg.type === "confirmation") {
-              const isDisabled = msg.answered || isInputDisabled || chatExpired || escalated;
+              const isDisabled =
+                msg.answered || isInputDisabled || chatExpired || escalated;
               return (
                 <div key={msg.id} className='flex gap-4 flex-row'>
                   <div
@@ -510,27 +516,48 @@ const Chat = () => {
                       Antes de continuar, confirma tus datos:
                     </p>
                     <div className='text-sm text-slate-700 mb-4 space-y-1'>
-                      <p>👤 <strong>Nombre:</strong> {msg.nombre}</p>
-                      <p>📧 <strong>Correo:</strong> {msg.correo}</p>
-                      <p>💬 <strong>Motivo:</strong> {msg.motivo}</p>
+                      <p>
+                        👤 <strong>Nombre:</strong> {msg.nombre}
+                      </p>
+                      <p>
+                        📧 <strong>Correo:</strong> {msg.correo}
+                      </p>
+                      <p>
+                        💬 <strong>Motivo:</strong> {msg.motivo}
+                      </p>
                     </div>
                     <div className='flex flex-col gap-2'>
                       {[
-                        { id: "confirm",     label: "✅ Confirmar",       green: true  },
-                        { id: "edit_nombre", label: "✏️ Corregir nombre", green: false },
-                        { id: "edit_correo", label: "✏️ Corregir correo", green: false },
-                        { id: "edit_motivo", label: "✏️ Corregir motivo", green: false },
+                        { id: "confirm", label: "✅ Confirmar", green: true },
+                        {
+                          id: "edit_nombre",
+                          label: "✏️ Corregir nombre",
+                          green: false,
+                        },
+                        {
+                          id: "edit_correo",
+                          label: "✏️ Corregir correo",
+                          green: false,
+                        },
+                        {
+                          id: "edit_motivo",
+                          label: "✏️ Corregir motivo",
+                          green: false,
+                        },
                       ].map((opt) => (
                         <button
                           key={opt.id}
                           disabled={isDisabled}
-                          onClick={() => handleConfirmationClick(msg.id, opt.id)}
+                          onClick={() =>
+                            handleConfirmationClick(msg.id, opt.id)
+                          }
                           className={`text-left px-4 py-2.5 rounded-xl border text-sm font-medium transition-all
-                            ${isDisabled
-                              ? "opacity-40 cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
-                              : opt.green
-                                ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                                : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
+                            ${
+                              isDisabled
+                                ? "opacity-40 cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
+                                : opt.green
+                                  ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                  : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
                             }`}
                         >
                           {opt.label}
@@ -593,9 +620,9 @@ const Chat = () => {
                 >
                   {isUser ? <User size={16} /> : <Bot size={16} />}
                 </div>
-                <div className='flex flex-col gap-2'>
+                <div className='flex flex-col gap-2 max-w-[85%]'>
                   <div
-                    className={`relative max-w-[85%] px-5 py-4 rounded-2xl shadow-sm text-[15px] leading-relaxed
+                    className={`relative px-5 py-4 rounded-2xl shadow-sm text-[15px] leading-relaxed
                     ${
                       isUser
                         ? `${cfg!.sendBtn.replace("hover:bg-", "bg-").split(" ")[0]} text-white rounded-tr-none`
@@ -645,7 +672,7 @@ const Chat = () => {
                     </ReactMarkdown>
                   </div>
                   {!isUser && msg.buttons && msg.buttons.length > 0 && (
-                    <div className='flex flex-wrap gap-2 max-w-[85%]'>
+                    <div className='flex flex-wrap gap-2'>
                       {msg.buttons.map((button, idx) => (
                         <button
                           key={idx}
@@ -672,7 +699,10 @@ const Chat = () => {
       {chatExpired && (
         <div className='mx-auto max-w-3xl mt-3 px-4'>
           <div className='bg-red-50 border border-red-200 text-red-900 rounded-xl p-3'>
-            <div className='text-sm'>⏱️ La conversación finalizó por inactividad. Puedes iniciar una nueva sesión.</div>
+            <div className='text-sm'>
+              ⏱️ La conversación finalizó por inactividad. Puedes iniciar una
+              nueva sesión.
+            </div>
           </div>
         </div>
       )}

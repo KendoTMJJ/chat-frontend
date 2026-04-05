@@ -9,6 +9,7 @@ interface SendMessagePayload {
   meta?: {
     source: "text" | "quick_reply";
     optionId?: string;
+    button?: string;
   };
 }
 
