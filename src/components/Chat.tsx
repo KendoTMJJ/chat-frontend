@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../socket/socket";
 import { useChatSocket } from "../socket/useChatSocket";
-import type { ConfirmationPayload } from "../socket/useChatSocket";
 import { emitSendMessage, connectSocket } from "../socket/connectSocket";
 import {
   Send,
@@ -15,6 +14,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import ChatButton from "./ChatButton";
 
 export type ChatContext = "posgrados" | "mesa_ayuda";
 
@@ -23,7 +23,6 @@ const CONTEXT_CONFIG: Record<
   {
     label: string;
     sublabel: string;
-    description: string;
     icon: React.ReactNode;
     accentLight: string;
     ring: string;
@@ -37,8 +36,6 @@ const CONTEXT_CONFIG: Record<
   posgrados: {
     label: "Asistente Posgrados",
     sublabel: "Información académica y programas",
-    description:
-      "Resuelvo dudas sobre programas, admisiones, costos y requisitos de posgrado.",
     icon: <GraduationCap size={22} />,
     accentLight: "bg-blue-600 shadow-blue-200",
     ring: "focus:ring-blue-500/20 focus:border-blue-500",
@@ -51,8 +48,6 @@ const CONTEXT_CONFIG: Record<
   mesa_ayuda: {
     label: "Mesa de Ayuda",
     sublabel: "Soporte y trámites universitarios",
-    description:
-      "Te ayudo con trámites, carnet, plataformas y soporte técnico universitario.",
     icon: <HeadphonesIcon size={22} />,
     accentLight: "bg-violet-600 shadow-violet-200",
     ring: "focus:ring-violet-500/20 focus:border-violet-500",
@@ -207,9 +202,7 @@ const Chat = () => {
   const [chatExpired, setChatExpired] = useState(false);
   const [escalated, setEscalated] = useState(false);
   const [showEscalatePrompt, setShowEscalatePrompt] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [confirmationData, setConfirmationData] =
-    useState<ConfirmationPayload | null>(null);
+  const [isBotTyping, setIsBotTyping] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -263,6 +256,7 @@ const Chat = () => {
       const sig = `${payload.sender}|${payload.userId}|${payload.message}|${payload.conversationId ?? ""}`;
       if (sig === lastMsgSigRef.current) return;
       lastMsgSigRef.current = sig;
+      if (payload.sender === "bot") setIsBotTyping(false);
       setMessages((prev) => [
         ...prev,
         {
@@ -274,12 +268,12 @@ const Chat = () => {
       ]);
     },
     onChatEscalated: () => {
+      setIsBotTyping(false);
       setEscalated(true);
       setShowEscalatePrompt(false);
     },
     onShowConfirmation: (payload) => {
-      setShowConfirmation(true);
-      setConfirmationData(payload);
+      setIsBotTyping(false);
       const confirmMsg: ConfirmationMessage = {
         type: "confirmation",
         id: `confirmation-${Date.now()}`,
@@ -291,6 +285,7 @@ const Chat = () => {
       setMessages((prev) => [...prev, confirmMsg]);
     },
     onShowEscalateButton: () => {
+      setIsBotTyping(false);
       setShowEscalatePrompt(true);
       // Insertar burbuja de opciones en el historial
       const optionsMsg: OptionsMessage = {
@@ -329,12 +324,14 @@ const Chat = () => {
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || !connected || chatExpired || !context) return;
+    setIsBotTyping(true);
     emitSendMessage({ message: input.trim(), context });
     setInput("");
   };
 
   const handleQuickAction = (action: QuickAction) => {
     if (!connected || chatExpired || !context) return;
+    setIsBotTyping(true);
     emitSendMessage({
       message: action.displayMessage,
       context,
@@ -360,6 +357,7 @@ const Chat = () => {
     setShowEscalatePrompt(false);
 
     // Enviar al gateway — el back reenvía el mensaje via on-message, no se agrega manualmente
+    setIsBotTyping(true);
     emitSendMessage({
       message: confirmed ? "Sí, quiero los canales de contacto" : "No, gracias",
       context,
@@ -376,7 +374,7 @@ const Chat = () => {
           : m,
       ),
     );
-    setShowConfirmation(false);
+    setIsBotTyping(true);
     emitSendMessage({
       message: optionId,
       context,
@@ -389,19 +387,20 @@ const Chat = () => {
     button: NonNullable<TextMessage["buttons"]>[number],
   ) => {
     if (!connected || !context) return;
-    // Marcar el mensaje como respondido
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.type === "text" && m.id === msgId ? { ...m, answered: true } : m,
-      ),
-    );
-    // Si tiene URL, abrir en pestaña nueva
+    // Botón URL: solo abrir enlace, sin marcar como respondido
+    // (el usuario puede querer tocar otros botones del mismo mensaje después)
     if (button.url) {
       window.open(button.url, "_blank");
       return;
     }
-    // Si tiene mensaje, emitir como mensaje del usuario
+    // Botón con mensaje: marcar como respondido y enviar
     if (button.message) {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.type === "text" && m.id === msgId ? { ...m, answered: true } : m,
+        ),
+      );
+      setIsBotTyping(true);
       emitSendMessage({
         message: button.message,
         context,
@@ -498,7 +497,7 @@ const Chat = () => {
 
       {/* Mensajes */}
       <div className='flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50'>
-        <div className='max-w-2xl mx-auto space-y-6 pb-4'>
+        <div className='w-full max-w-2xl mx-auto space-y-6 pb-4'>
           {messages.map((msg, index) => {
             // ── Burbuja de confirmación de datos ────────────────────────────
             if (msg.type === "confirmation") {
@@ -528,40 +527,18 @@ const Chat = () => {
                     </div>
                     <div className='flex flex-col gap-2'>
                       {[
-                        { id: "confirm", label: "✅ Confirmar", green: true },
-                        {
-                          id: "edit_nombre",
-                          label: "✏️ Corregir nombre",
-                          green: false,
-                        },
-                        {
-                          id: "edit_correo",
-                          label: "✏️ Corregir correo",
-                          green: false,
-                        },
-                        {
-                          id: "edit_motivo",
-                          label: "✏️ Corregir motivo",
-                          green: false,
-                        },
+                        { id: "confirm",     label: "✅ Confirmar",       variant: "confirm"  as const },
+                        { id: "edit_nombre", label: "✏️ Corregir nombre", variant: "default" as const },
+                        { id: "edit_correo", label: "✏️ Corregir correo", variant: "default" as const },
+                        { id: "edit_motivo", label: "✏️ Corregir motivo", variant: "default" as const },
                       ].map((opt) => (
-                        <button
+                        <ChatButton
                           key={opt.id}
+                          label={opt.label}
+                          variant={opt.variant}
                           disabled={isDisabled}
-                          onClick={() =>
-                            handleConfirmationClick(msg.id, opt.id)
-                          }
-                          className={`text-left px-4 py-2.5 rounded-xl border text-sm font-medium transition-all
-                            ${
-                              isDisabled
-                                ? "opacity-40 cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
-                                : opt.green
-                                  ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                                  : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
-                            }`}
-                        >
-                          {opt.label}
-                        </button>
+                          onClick={() => handleConfirmationClick(msg.id, opt.id)}
+                        />
                       ))}
                     </div>
                   </div>
@@ -674,16 +651,12 @@ const Chat = () => {
                   {!isUser && msg.buttons && msg.buttons.length > 0 && (
                     <div className='flex flex-wrap gap-2'>
                       {msg.buttons.map((button, idx) => (
-                        <button
+                        <ChatButton
                           key={idx}
+                          label={button.label}
                           disabled={msg.answered || isInputDisabled}
                           onClick={() => handleButtonClick(msg.id!, button)}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200
-                            bg-white text-slate-600 text-xs font-medium ${cfg!.chipHover}
-                            disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm`}
-                        >
-                          {button.label}
-                        </button>
+                        />
                       ))}
                     </div>
                   )}
@@ -691,6 +664,21 @@ const Chat = () => {
               </div>
             );
           })}
+          {/* Indicador de escritura del bot */}
+          {isBotTyping && (
+            <div className='flex gap-4 flex-row'>
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm mt-1 ${cfg?.avatarBot ?? "bg-slate-100 text-slate-500"}`}
+              >
+                <Bot size={16} />
+              </div>
+              <div className='flex items-center gap-1 px-4 py-3 bg-white border border-slate-100 rounded-2xl rounded-tl-none shadow-sm'>
+                <span className='w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.3s]' />
+                <span className='w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.15s]' />
+                <span className='w-2 h-2 rounded-full bg-slate-400 animate-bounce' />
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -753,10 +741,13 @@ const Chat = () => {
             </button>
           </form>
         </div>
-        <div className='text-center mt-3'>
+        <div className='text-center mt-2 space-y-0.5'>
           <p className='text-[10px] text-slate-400'>
             Universidad Santo Tomás • Tunja{" · "}
             <span className={cfg!.heading}>{cfg!.sublabel}</span>
+          </p>
+          <p className='text-[10px] text-slate-400'>
+            El asistente puede cometer errores. Verifica la información importante.
           </p>
         </div>
       </div>
