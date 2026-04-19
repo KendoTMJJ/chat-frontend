@@ -30,8 +30,10 @@ import { useAdminConversations } from "../../hooks/useAdminConversations";
 import { useSupportChannels } from "../../hooks/useSupportChannels";
 import type { SupportChannel } from "../../hooks/useSupportChannels";
 import type { ConversationSummary } from "../../hooks/useAdminConversations";
+import HelpdeskPanel from "./HelpdeskPage";
+import PosgradosPanel from "./PosgradosPage";
 
-type AdminTab = "conversations" | "channels";
+type AdminTab = "conversations" | "channels" | "helpdesk" | "posgrados";
 type StatusFilter = "all" | "active" | "escalated" | "closed" | "expired";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -146,6 +148,13 @@ const ConversationsPanel = () => {
     (c: ConversationSummary) => c.conversationId === selectedId,
   );
 
+  const [showDetail, setShowDetail] = useState(false);
+
+  const handleSelectMobile = (id: string) => {
+    handleSelect(id);
+    setShowDetail(true);
+  };
+
   return (
     <>
       {confirmDeleteId && (
@@ -157,7 +166,7 @@ const ConversationsPanel = () => {
 
       <div className='flex flex-1 h-full overflow-hidden'>
         {/* Lista */}
-        <div className='w-80 border-r border-slate-200 flex flex-col bg-white'>
+        <div className={`${showDetail ? 'hidden md:flex' : 'flex'} w-full md:w-80 border-r border-slate-200 flex-col bg-white`}>
           <div className='p-4 space-y-3 border-b border-slate-100'>
             <div className='relative'>
               <Search
@@ -209,7 +218,7 @@ const ConversationsPanel = () => {
               filtered.map((conv: ConversationSummary) => (
                 <button
                   key={conv.conversationId}
-                  onClick={() => handleSelect(conv.conversationId)}
+                  onClick={() => handleSelectMobile(conv.conversationId)}
                   className={`w-full p-4 text-left border-b border-slate-100 transition-all group ${
                     selectedId === conv.conversationId
                       ? "bg-blue-50 border-l-2 border-l-blue-500"
@@ -227,7 +236,7 @@ const ConversationsPanel = () => {
                         {STATUS_LABELS[conv.status]?.label}
                       </span>
                       {/* Acciones — visibles en hover */}
-                      <div className='flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity'>
+                      <div className='flex gap-0.5'>
                         {conv.status !== "closed" && (
                           <button
                             onClick={(e) => handleClose(e, conv.conversationId)}
@@ -299,10 +308,17 @@ const ConversationsPanel = () => {
         </div>
 
         {/* Detalle */}
-        <div className='flex-1 flex flex-col overflow-hidden bg-slate-50'>
+        <div className={`${showDetail ? 'flex' : 'hidden md:flex'} flex-1 flex-col overflow-hidden bg-slate-50`}>
           {selectedId ? (
             <>
-              <div className='bg-white border-b border-slate-200 px-6 py-4 flex items-start justify-between shrink-0'>
+              <div className='bg-white border-b border-slate-200 px-4 md:px-6 py-4 flex items-start justify-between shrink-0'>
+                {/* Botón volver — solo móvil */}
+                <button
+                  onClick={() => setShowDetail(false)}
+                  className='md:hidden flex items-center gap-1.5 text-sm font-semibold text-blue-600 mr-3 shrink-0 self-center'
+                >
+                  ← Volver
+                </button>
                 <div className='space-y-0.5'>
                   <div className='flex items-center gap-2'>
                     <h3 className='font-bold text-slate-800 text-sm'>
@@ -341,22 +357,22 @@ const ConversationsPanel = () => {
                 </div>
 
                 {/* Acciones del detalle */}
-                <div className='flex items-center gap-2 shrink-0 ml-4'>
+                <div className='flex items-center gap-2 shrink-0 ml-2'>
                   {selectedConv?.status !== "closed" && (
                     <button
                       onClick={(e) => handleClose(e, selectedId)}
-                      className='flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition-all'
+                      className='flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition-all'
                     >
                       <CheckCheck size={13} />
-                      Marcar resuelta
+                      <span className='hidden sm:inline'>Marcar resuelta</span>
                     </button>
                   )}
                   <button
                     onClick={() => setConfirmDeleteId(selectedId)}
-                    className='flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition-all'
+                    className='flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition-all'
                   >
                     <Trash2 size={13} />
-                    Eliminar
+                    <span className='hidden sm:inline'>Eliminar</span>
                   </button>
                 </div>
               </div>
@@ -549,7 +565,7 @@ const ChannelsPanel = () => {
     newChannel.whatsapp.trim() && newChannel.email.trim();
 
   return (
-    <div className='flex-1 overflow-y-auto p-8 bg-slate-50'>
+    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50'>
       {confirmDeleteId && (
         <ConfirmModal
           onConfirm={handleDeleteConfirm}
@@ -789,13 +805,16 @@ const ChannelsPanel = () => {
 };
 
 // ─── AdminPage ────────────────────────────────────────────────────────────────
-const TABS: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
+const TABS: { id: AdminTab; label: string; shortLabel?: string; icon: React.ReactNode }[] = [
   {
     id: "conversations",
     label: "Conversaciones",
+    shortLabel: "Chats",
     icon: <MessageSquare size={16} />,
   },
-  { id: "channels", label: "Canales de Soporte", icon: <Settings size={16} /> },
+  { id: "channels", label: "Canales de Soporte", shortLabel: "Canales", icon: <Settings size={16} /> },
+  { id: "helpdesk", label: "Mesa de Ayuda", shortLabel: "Ayuda", icon: <Headphones size={16} /> },
+  { id: "posgrados", label: "Posgrados", icon: <GraduationCap size={16} /> },
 ];
 
 const AdminPage = () => {
@@ -803,7 +822,8 @@ const AdminPage = () => {
 
   return (
     <div className='flex h-screen w-full bg-slate-50 font-sans text-slate-900 overflow-hidden'>
-      <aside className='w-64 bg-white border-r border-slate-200 flex flex-col shadow-sm shrink-0'>
+      {/* Sidebar — solo desktop */}
+      <aside className='hidden md:flex w-64 bg-white border-r border-slate-200 flex-col shadow-sm shrink-0'>
         <div className='p-6 border-b border-slate-100'>
           <div className='flex items-center gap-3'>
             <div className='bg-blue-600 p-2 rounded-lg text-white'>
@@ -822,11 +842,7 @@ const AdminPage = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === tab.id ? "bg-blue-50 text-blue-700 border border-blue-100" : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"}`}
             >
-              <span
-                className={
-                  activeTab === tab.id ? "text-blue-600" : "text-slate-400"
-                }
-              >
+              <span className={activeTab === tab.id ? "text-blue-600" : "text-slate-400"}>
                 {tab.icon}
               </span>
               {tab.label}
@@ -846,32 +862,66 @@ const AdminPage = () => {
         </div>
       </aside>
 
-      <main className='flex-1 flex flex-col overflow-hidden'>
-        <header className='bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0'>
+      {/* Contenido principal */}
+      <main className='flex-1 flex flex-col overflow-hidden pb-16 md:pb-0'>
+        <header className='bg-white border-b border-slate-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0'>
           <div>
-            <h2 className='font-bold text-slate-800'>
+            <h2 className='font-bold text-slate-800 text-sm md:text-base'>
               {TABS.find((t) => t.id === activeTab)?.label}
             </h2>
-            <p className='text-xs text-slate-400 mt-0.5'>
+            <p className='text-xs text-slate-400 mt-0.5 hidden sm:block'>
               {activeTab === "conversations"
                 ? "Historial completo de interacciones del chat"
-                : "Canales de contacto mostrados al escalar una consulta"}
+                : activeTab === "channels"
+                  ? "Canales de contacto mostrados al escalar una consulta"
+                  : activeTab === "helpdesk"
+                    ? "Respuestas del bot para la Mesa de Ayuda"
+                    : "Ingesta de conocimientos para el asistente de posgrados"}
             </p>
           </div>
-          <span className='text-[10px] text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full font-medium'>
-            {new Date().toLocaleDateString("es-CO", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-            })}
-          </span>
+          <div className='flex items-center gap-2'>
+            <span className='hidden sm:block text-[10px] text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full font-medium'>
+              {new Date().toLocaleDateString("es-CO", {
+                day: "numeric",
+                month: "short",
+              })}
+            </span>
+            <Link
+              to='/'
+              className='md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold transition-colors'
+            >
+              <LogOut size={13} /> Salir
+            </Link>
+          </div>
         </header>
 
         <div className='flex-1 flex overflow-hidden'>
           {activeTab === "conversations" && <ConversationsPanel />}
           {activeTab === "channels" && <ChannelsPanel />}
+          {activeTab === "helpdesk" && <HelpdeskPanel />}
+          {activeTab === "posgrados" && <PosgradosPanel />}
         </div>
       </main>
+
+      {/* Bottom nav — solo móvil */}
+      <nav className='md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex z-40 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]'>
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-semibold transition-colors ${
+              activeTab === tab.id
+                ? "text-blue-600 bg-blue-50"
+                : "text-slate-400"
+            }`}
+          >
+            <span className={activeTab === tab.id ? "text-blue-600" : "text-slate-400"}>
+              {tab.icon}
+            </span>
+            <span className='leading-none'>{tab.shortLabel ?? tab.label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 };
