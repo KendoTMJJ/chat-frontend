@@ -175,7 +175,7 @@ const ConversationsPanel = () => {
           <div className='p-4 space-y-3 border-b border-white/10'>
             <div className='relative'>
               <Search
-                className='absolute left-3 top-1/2 -translate-y-1/2 text-white/30'
+                className='absolute left-3 top-1/2 -translate-y-1/2 text-white/50'
                 size={14}
               />
               <input
@@ -210,7 +210,7 @@ const ConversationsPanel = () => {
                 <RefreshCw size={18} className='text-white/30 animate-spin' />
               </div>
             ) : filtered.length === 0 ? (
-              <div className='text-center py-12 text-white/30 text-xs'>
+              <div className='text-center py-12 text-white/50 text-xs'>
                 Sin resultados
               </div>
             ) : (
@@ -225,7 +225,7 @@ const ConversationsPanel = () => {
                   } ${conv.status === "closed" ? "opacity-50" : ""}`}
                 >
                   <div className='flex justify-between items-start mb-1.5'>
-                    <span className='font-mono text-[10px] font-bold text-white/30'>
+                    <span className='font-mono text-[10px] font-bold text-white/50'>
                       #{conv.conversationId.slice(0, 8)}
                     </span>
                     <div className='flex items-center gap-1'>
@@ -268,7 +268,7 @@ const ConversationsPanel = () => {
                   )}
                   {conv.correo && (
                     <div className='flex items-center gap-1 mb-1'>
-                      <AtSign size={11} className='text-white/30 shrink-0' />
+                      <AtSign size={11} className='text-white/50 shrink-0' />
                       <span className='text-[11px] text-white/50 truncate'>
                         {conv.correo}
                       </span>
@@ -284,7 +284,7 @@ const ConversationsPanel = () => {
                   </p>
                   <div className='flex items-center gap-2 mt-2'>
                     <Clock size={10} className='text-white/20' />
-                    <span className='text-[10px] text-white/30'>
+                    <span className='text-[10px] text-white/50'>
                       {conv.updatedAt}
                     </span>
                   </div>
@@ -294,7 +294,7 @@ const ConversationsPanel = () => {
           </div>
 
           <div className='p-3 border-t border-white/10 text-center'>
-            <span className='text-[10px] text-white/25'>
+            <span className='text-[10px] text-white/40'>
               {filtered.length} conversaciones
             </span>
           </div>
@@ -332,7 +332,7 @@ const ConversationsPanel = () => {
                   )}
                   {selectedConv?.correo && (
                     <p className='text-xs text-white/40 flex items-center gap-1'>
-                      <AtSign size={12} className='text-white/30' />
+                      <AtSign size={12} className='text-white/50' />
                       {selectedConv.correo}
                     </p>
                   )}
@@ -341,7 +341,7 @@ const ConversationsPanel = () => {
                       📋 {selectedConv.title}
                     </p>
                   )}
-                  <p className='text-[10px] font-mono text-white/25'>
+                  <p className='text-[10px] font-mono text-white/40'>
                     ID: {selectedId}
                   </p>
                 </div>
@@ -369,7 +369,7 @@ const ConversationsPanel = () => {
               <div className='flex-1 overflow-y-auto p-6 bg-usta-bg'>
                 <div className='max-w-2xl mx-auto space-y-4'>
                   {chatHistory.length === 0 ? (
-                    <div className='text-center py-16 text-white/30 text-sm'>
+                    <div className='text-center py-16 text-white/50 text-sm'>
                       <MessageSquare size={32} className='mx-auto mb-3 text-white/10' />
                       Cargando historial...
                     </div>
@@ -409,7 +409,7 @@ const ConversationsPanel = () => {
                             >
                               {msg.message}
                             </ReactMarkdown>
-                            <p className={`text-[10px] mt-1.5 text-white/30 ${isUser ? "text-right" : ""}`}>
+                            <p className={`text-[10px] mt-1.5 text-white/50 ${isUser ? "text-right" : ""}`}>
                               {new Date(msg.createAt).toLocaleTimeString("es-CO", {
                                 hour: "2-digit",
                                 minute: "2-digit",
@@ -424,14 +424,14 @@ const ConversationsPanel = () => {
               </div>
             </>
           ) : (
-            <div className='flex-1 flex flex-col items-center justify-center text-white/30'>
+            <div className='flex-1 flex flex-col items-center justify-center text-white/50'>
               <div className='bg-usta-card border border-white/10 p-8 rounded-2xl mb-4'>
                 <MessageSquare size={40} className='text-white/10' />
               </div>
               <p className='text-sm font-medium text-white/40'>
                 Selecciona una conversación
               </p>
-              <p className='text-xs text-white/25 mt-1'>
+              <p className='text-xs text-white/40 mt-1'>
                 para ver el historial detallado
               </p>
             </div>
@@ -649,7 +649,7 @@ const ChannelsPanel = () => {
                       className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                         isNewChannelValid && !saving
                           ? "bg-usta-blue hover:bg-usta-blue-dark text-white shadow-sm"
-                          : "bg-white/10 text-white/30 cursor-not-allowed"
+                          : "bg-white/10 text-white/50 cursor-not-allowed"
                       }`}
                     >
                       <Save size={14} />
@@ -705,7 +705,7 @@ const ChannelsPanel = () => {
                       />
                     </div>
                     <div className='flex items-center justify-between pt-2'>
-                      <p className='text-[10px] text-white/25'>
+                      <p className='text-[10px] text-white/40'>
                         Actualizado:{" "}
                         {new Date(ch.updatedAt).toLocaleDateString("es-CO", {
                           day: "2-digit",
@@ -729,7 +729,7 @@ const ChannelsPanel = () => {
                               ? isBlue
                                 ? "bg-usta-blue hover:bg-usta-blue-dark text-white shadow-sm"
                                 : "bg-usta-green hover:bg-usta-green-dark text-usta-bg shadow-sm"
-                              : "bg-white/10 text-white/30 cursor-not-allowed"
+                              : "bg-white/10 text-white/50 cursor-not-allowed"
                           }`}
                         >
                           <Save size={14} />
@@ -849,7 +849,7 @@ const ProfilePanel = () => {
                 Correo electrónico
               </label>
               <div className='relative'>
-                <AtSign size={14} className='absolute left-3 top-1/2 -translate-y-1/2 text-white/30' />
+                <AtSign size={14} className='absolute left-3 top-1/2 -translate-y-1/2 text-white/50' />
                 <input
                   type='email'
                   value={email}
@@ -866,7 +866,7 @@ const ProfilePanel = () => {
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                   profileDirty && !saving
                     ? "bg-usta-blue hover:bg-usta-blue-dark text-white shadow-sm"
-                    : "bg-white/10 text-white/30 cursor-not-allowed"
+                    : "bg-white/10 text-white/50 cursor-not-allowed"
                 }`}
               >
                 <Save size={14} />
@@ -956,7 +956,7 @@ const ProfilePanel = () => {
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                   passwordValid && !saving
                     ? "bg-white/15 hover:bg-white/20 text-white border border-white/15 shadow-sm"
-                    : "bg-white/5 text-white/25 cursor-not-allowed"
+                    : "bg-white/5 text-white/40 cursor-not-allowed"
                 }`}
               >
                 <Lock size={14} />
@@ -992,85 +992,121 @@ const ProfilePanel = () => {
 };
 
 // ─── AdminPage ────────────────────────────────────────────────────────────────
-const TABS: { id: AdminTab; label: string; shortLabel?: string; icon: React.ReactNode }[] = [
-  { id: "conversations", label: "Conversaciones", shortLabel: "Chats", icon: <MessageSquare size={16} /> },
-  { id: "channels", label: "Canales de Soporte", shortLabel: "Canales", icon: <Settings size={16} /> },
-  { id: "helpdesk", label: "Mesa de Ayuda", shortLabel: "Ayuda", icon: <Headphones size={16} /> },
-  { id: "posgrados", label: "Posgrados", icon: <GraduationCap size={16} /> },
-  { id: "profile", label: "Mi Perfil", shortLabel: "Perfil", icon: <UserCircle size={16} /> },
+const NAV_SECTIONS = [
+  {
+    label: "Monitoreo",
+    tabs: [
+      { id: "conversations" as AdminTab, label: "Conversaciones", shortLabel: "Chats", icon: <MessageSquare size={16} /> },
+    ],
+  },
+  {
+    label: "Asistente",
+    tabs: [
+      { id: "helpdesk"       as AdminTab, label: "Mesa de Ayuda",    shortLabel: "Ayuda",    icon: <Headphones size={16} /> },
+      { id: "posgrados"      as AdminTab, label: "Posgrados",        shortLabel: "Posgrados", icon: <GraduationCap size={16} /> },
+    ],
+  },
+  {
+    label: "Configuración",
+    tabs: [
+      { id: "channels" as AdminTab, label: "Canales de Soporte", shortLabel: "Canales", icon: <Settings size={16} /> },
+      { id: "profile"  as AdminTab, label: "Mi Perfil",          shortLabel: "Perfil",  icon: <UserCircle size={16} /> },
+    ],
+  },
 ];
+
+const ALL_TABS = NAV_SECTIONS.flatMap((s) => s.tabs);
+
+const TAB_DESCRIPTIONS: Record<AdminTab, string> = {
+  conversations: "Historial completo de interacciones del chat",
+  channels:      "Canales de contacto mostrados al escalar una consulta",
+  helpdesk:      "Categorías y manuales de la Mesa de Ayuda",
+  posgrados:     "Ingesta de conocimientos del asistente de posgrados",
+  profile:       "Nombre, correo y contraseña del administrador",
+};
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>("conversations");
+  const activeTabDef = ALL_TABS.find((t) => t.id === activeTab)!;
 
   return (
     <div className='flex h-screen w-full bg-usta-bg font-sans text-white overflow-hidden'>
       {/* Sidebar — solo desktop */}
-      <aside className='hidden md:flex w-64 bg-usta-surface border-r border-white/10 flex-col shrink-0'>
-        <div className='p-5 border-b border-white/10 flex items-center justify-center'>
+      <aside className='hidden md:flex w-60 bg-usta-surface border-r border-white/10 flex-col shrink-0'>
+        {/* Logo */}
+        <div className='px-5 py-4 border-b border-white/10 flex items-center justify-center'>
           <img
             src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
             alt="Universidad Santo Tomás Tunja"
             className='h-9 object-contain'
           />
         </div>
-        <nav className='flex-1 p-3 space-y-1'>
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                activeTab === tab.id
-                  ? "bg-usta-blue/20 text-usta-blue-lt border border-usta-blue/30"
-                  : "text-white/40 hover:bg-white/5 hover:text-white/70"
-              }`}
-            >
-              <span className={activeTab === tab.id ? "text-usta-blue-lt" : "text-white/30"}>
-                {tab.icon}
-              </span>
-              {tab.label}
-              {activeTab === tab.id && (
-                <ChevronRight size={14} className='ml-auto text-usta-blue-lt' />
-              )}
-            </button>
+
+        {/* Nav agrupada */}
+        <nav className='flex-1 overflow-y-auto py-3'>
+          {NAV_SECTIONS.map((section) => (
+            <div key={section.label} className='mb-1'>
+              <p className='px-4 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-white/25'>
+                {section.label}
+              </p>
+              {section.tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-0 text-sm font-medium transition-all rounded-none
+                    border-l-2 ${
+                    activeTab === tab.id
+                      ? "border-l-usta-blue-lt bg-usta-blue/15 text-white"
+                      : "border-l-transparent text-white/50 hover:bg-white/5 hover:text-white/80 hover:border-l-white/20"
+                  }`}
+                >
+                  <span className={activeTab === tab.id ? "text-usta-blue-lt" : "text-white/40"}>
+                    {tab.icon}
+                  </span>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
+
+        {/* Salir */}
         <div className='p-4 border-t border-white/10'>
           <Link
             to='/'
-            className='flex items-center justify-center gap-2 w-full py-2.5 bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 rounded-xl text-sm font-semibold transition-colors border border-white/10'
+            className='flex items-center justify-center gap-2 w-full py-2.5 bg-white/5 hover:bg-red-500/15
+              text-white/50 hover:text-red-400 rounded-xl text-sm font-semibold transition-all border border-white/10 hover:border-red-500/30'
           >
-            <LogOut size={15} /> Salir
+            <LogOut size={15} /> Salir del panel
           </Link>
         </div>
       </aside>
 
       {/* Contenido principal */}
       <main className='flex-1 flex flex-col overflow-hidden pb-16 md:pb-0'>
+        {/* Header */}
         <header className='bg-usta-surface border-b border-white/10 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0'>
-          <div>
-            <h2 className='font-bold text-white text-sm md:text-base'>
-              {TABS.find((t) => t.id === activeTab)?.label}
-            </h2>
-            <p className='text-xs text-white/30 mt-0.5 hidden sm:block'>
-              {activeTab === "conversations"
-                ? "Historial completo de interacciones del chat"
-                : activeTab === "channels"
-                  ? "Canales de contacto mostrados al escalar una consulta"
-                  : activeTab === "helpdesk"
-                    ? "Respuestas del bot para la Mesa de Ayuda"
-                    : activeTab === "posgrados"
-                      ? "Ingesta de conocimientos para el asistente de posgrados"
-                      : "Nombre, correo y contraseña del administrador"}
-            </p>
+          <div className='flex items-center gap-3'>
+            <div className={`p-1.5 rounded-lg bg-usta-blue/20 text-usta-blue-lt`}>
+              {activeTabDef.icon}
+            </div>
+            <div>
+              <h2 className='font-bold text-white text-sm md:text-base leading-tight'>
+                {activeTabDef.label}
+              </h2>
+              <p className='text-xs text-white/40 mt-0.5 hidden sm:block'>
+                {TAB_DESCRIPTIONS[activeTab]}
+              </p>
+            </div>
           </div>
           <div className='flex items-center gap-2'>
-            <span className='hidden sm:block text-[10px] text-white/30 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full font-medium'>
-              {new Date().toLocaleDateString("es-CO", { day: "numeric", month: "short" })}
+            <span className='hidden sm:block text-[10px] text-white/40 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full font-medium tabular-nums'>
+              {new Date().toLocaleDateString("es-CO", { day: "numeric", month: "short", year: "numeric" })}
             </span>
             <Link
               to='/'
-              className='md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white/50 rounded-xl text-xs font-semibold transition-colors border border-white/10'
+              className='md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-red-500/15
+                text-white/50 hover:text-red-400 rounded-xl text-xs font-semibold transition-all border border-white/10'
             >
               <LogOut size={13} /> Salir
             </Link>
@@ -1088,17 +1124,17 @@ const AdminPage = () => {
 
       {/* Bottom nav — solo móvil */}
       <nav className='md:hidden fixed bottom-0 left-0 right-0 bg-usta-surface border-t border-white/10 flex z-40'>
-        {TABS.map((tab) => (
+        {ALL_TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-semibold transition-colors ${
               activeTab === tab.id
                 ? "text-usta-blue-lt bg-usta-blue/15"
-                : "text-white/30"
+                : "text-white/50"
             }`}
           >
-            <span className={activeTab === tab.id ? "text-usta-blue-lt" : "text-white/30"}>
+            <span className={activeTab === tab.id ? "text-usta-blue-lt" : "text-white/40"}>
               {tab.icon}
             </span>
             <span className='leading-none'>{tab.shortLabel ?? tab.label}</span>

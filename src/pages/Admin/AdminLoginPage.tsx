@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
               </label>
               <div className="relative">
                 <User
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50"
                   size={18}
                 />
                 <input
@@ -92,7 +92,7 @@ export default function AdminLoginPage() {
               </label>
               <div className="relative">
                 <Lock
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50"
                   size={18}
                 />
                 <input
@@ -127,7 +127,7 @@ export default function AdminLoginPage() {
           </form>
         </div>
 
-        <p className="text-center mt-8 text-white/25 text-xs font-medium">
+        <p className="text-center mt-8 text-white/40 text-xs font-medium">
           © 2026 Universidad Santo Tomás • Tunja
         </p>
       </div>

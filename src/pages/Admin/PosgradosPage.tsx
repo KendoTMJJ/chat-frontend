@@ -116,13 +116,13 @@ const PosgradosPanel = () => {
           {!file ? (
             <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
               <div className={`p-4 rounded-2xl mb-4 transition-colors ${dragging ? "bg-usta-blue/20" : "bg-white/5"}`}>
-                <UploadCloud size={32} className={dragging ? "text-usta-blue-lt" : "text-white/30"} />
+                <UploadCloud size={32} className={dragging ? "text-usta-blue-lt" : "text-white/50"} />
               </div>
               <p className='text-sm font-semibold text-white/80 mb-1'>
                 Arrastra el archivo aquí
               </p>
               <p className='text-xs text-white/40 mb-4'>o haz clic para seleccionarlo</p>
-              <span className='text-[10px] font-medium text-white/30 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full'>
+              <span className='text-[10px] font-medium text-white/50 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full'>
                 XLS · XLSX
               </span>
             </div>
@@ -155,13 +155,13 @@ const PosgradosPanel = () => {
               className='w-full flex flex-col items-center justify-center gap-3 py-10 border-2 border-dashed border-white/15 rounded-2xl bg-usta-card active:bg-usta-blue/10 active:border-usta-blue/50 transition-all'
             >
               <div className='p-4 rounded-2xl bg-white/5'>
-                <UploadCloud size={28} className='text-white/30' />
+                <UploadCloud size={28} className='text-white/50' />
               </div>
               <div className='text-center'>
                 <p className='text-sm font-semibold text-white/80'>
                   Toca para seleccionar el archivo
                 </p>
-                <p className='text-xs text-white/30 mt-1'>XLS · XLSX</p>
+                <p className='text-xs text-white/50 mt-1'>XLS · XLSX</p>
               </div>
             </button>
           ) : (
@@ -176,7 +176,7 @@ const PosgradosPanel = () => {
               {status !== "uploading" && (
                 <button
                   onClick={handleRemoveFile}
-                  className='p-1.5 rounded-lg bg-white/5 text-white/30 shrink-0'
+                  className='p-1.5 rounded-lg bg-white/5 text-white/50 shrink-0'
                 >
                   <X size={16} />
                 </button>
@@ -219,7 +219,7 @@ const PosgradosPanel = () => {
           )}
         </button>
 
-        <p className='text-center text-[10px] text-white/25 mt-4'>
+        <p className='text-center text-[10px] text-white/40 mt-4'>
           El contenido anterior será reemplazado al procesar un nuevo documento.
         </p>
       </div>

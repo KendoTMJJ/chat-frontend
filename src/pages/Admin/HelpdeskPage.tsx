@@ -199,7 +199,7 @@ const EditModal = ({
                 {category.intent}
               </span>
             </div>
-            <p className='text-[10px] text-white/25 mt-1'>
+            <p className='text-[10px] text-white/40 mt-1'>
               El intent no se puede modificar.
             </p>
           </div>
@@ -412,13 +412,13 @@ const HelpdeskPanel = () => {
                         <ExternalLink size={12} /> Ver PDF
                       </a>
                     ) : (
-                      <span className='inline-flex items-center px-2.5 py-1 rounded-lg bg-white/5 text-white/30 text-xs'>
+                      <span className='inline-flex items-center px-2.5 py-1 rounded-lg bg-white/5 text-white/50 text-xs'>
                         Sin enlace
                       </span>
                     )}
                   </div>
                 ))}
-                <p className='text-center text-[10px] text-white/25 pt-1'>
+                <p className='text-center text-[10px] text-white/40 pt-1'>
                   {categories.length} categoría{categories.length !== 1 ? "s" : ""}
                 </p>
               </div>
@@ -456,7 +456,7 @@ const HelpdeskPanel = () => {
                               <ExternalLink size={12} /> Ver PDF
                             </a>
                           ) : (
-                            <span className='inline-flex items-center px-2.5 py-1 rounded-lg bg-white/5 text-white/30 text-xs font-medium'>Sin enlace</span>
+                            <span className='inline-flex items-center px-2.5 py-1 rounded-lg bg-white/5 text-white/50 text-xs font-medium'>Sin enlace</span>
                           )}
                         </td>
                         <td className='px-5 py-3.5'>
@@ -476,7 +476,7 @@ const HelpdeskPanel = () => {
                   </tbody>
                 </table>
                 <div className='px-5 py-3 border-t border-white/10 text-center'>
-                  <span className='text-[10px] text-white/25'>
+                  <span className='text-[10px] text-white/40'>
                     {categories.length} categoría{categories.length !== 1 ? "s" : ""}
                   </span>
                 </div>

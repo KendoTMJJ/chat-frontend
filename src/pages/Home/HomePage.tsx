@@ -83,11 +83,11 @@ const HomePage = () => {
 
         {/* Footer */}
         <div className="mt-12 w-full flex flex-col md:flex-row items-center justify-between pt-6 border-t border-white/10 gap-4">
-          <div className="flex items-center gap-2 text-white/25 text-xs">
+          <div className="flex items-center gap-2 text-white/40 text-xs">
             <ShieldCheck size={14} className="text-usta-blue-lt" />
             <span>Acceso Seguro • Personal Autorizado</span>
           </div>
-          <div className="flex items-center gap-2 text-white/25 text-xs">
+          <div className="flex items-center gap-2 text-white/40 text-xs">
             <Clock size={14} />
             <span>{currentDate}</span>
           </div>

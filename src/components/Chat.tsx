@@ -185,7 +185,7 @@ const WelcomeScreen = ({
           />
         </button>
       </div>
-      <p className='text-center text-[10px] text-white/25'>
+      <p className='text-center text-[10px] text-white/40'>
         Universidad Santo Tomás • Tunja
       </p>
     </div>
@@ -730,7 +730,7 @@ const Chat = () => {
           </form>
         </div>
         <div className='text-center mt-2 space-y-0.5'>
-          <p className='text-[10px] text-white/25'>
+          <p className='text-[10px] text-white/40'>
             Universidad Santo Tomás • Tunja{" · "}
             <span className={cfg!.accentText}>{cfg!.sublabel}</span>
           </p>
