@@ -1,4 +1,4 @@
-// src/components/Chat.tsx
+﻿// src/components/Chat.tsx
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../socket/socket";
 import { useChatSocket } from "../socket/useChatSocket";
@@ -38,27 +38,27 @@ const CONTEXT_CONFIG: Record<
     label: "Asistente Posgrados",
     sublabel: "Información académica y programas",
     icon: <GraduationCap size={22} />,
-    accentBg: "bg-[#4c6ef5]",
-    accentText: "text-[#7b9fff]",
-    accentBorder: "border-[#4c6ef5]/50",
-    sendBtn: "bg-[#4c6ef5] hover:bg-[#3b5de5]",
-    chipHover: "hover:border-[#4c6ef5]/50 hover:text-[#7b9fff] hover:bg-[#4c6ef5]/10",
-    avatarBot: "bg-[#4c6ef5]/20 text-[#7b9fff]",
-    heading: "text-[#7b9fff]",
-    userBubble: "bg-[#4c6ef5] text-white",
+    accentBg: "bg-usta-blue",
+    accentText: "text-usta-blue-lt",
+    accentBorder: "border-usta-blue/50",
+    sendBtn: "bg-usta-blue hover:bg-usta-blue-dark",
+    chipHover: "hover:border-usta-blue/50 hover:text-usta-blue-lt hover:bg-usta-blue/10",
+    avatarBot: "bg-usta-blue/20 text-usta-blue-lt",
+    heading: "text-usta-blue-lt",
+    userBubble: "bg-usta-blue text-white",
   },
   mesa_ayuda: {
     label: "Mesa de Ayuda",
     sublabel: "Soporte y trámites universitarios",
     icon: <HeadphonesIcon size={22} />,
-    accentBg: "bg-[#39d98a]",
-    accentText: "text-[#39d98a]",
-    accentBorder: "border-[#39d98a]/50",
-    sendBtn: "bg-[#39d98a] hover:bg-[#2bc77a]",
-    chipHover: "hover:border-[#39d98a]/50 hover:text-[#39d98a] hover:bg-[#39d98a]/10",
-    avatarBot: "bg-[#39d98a]/20 text-[#39d98a]",
-    heading: "text-[#39d98a]",
-    userBubble: "bg-[#39d98a] text-[#0f0a1e]",
+    accentBg: "bg-usta-green",
+    accentText: "text-usta-green",
+    accentBorder: "border-usta-green/50",
+    sendBtn: "bg-usta-green hover:bg-usta-green-dark",
+    chipHover: "hover:border-usta-green/50 hover:text-usta-green hover:bg-usta-green/10",
+    avatarBot: "bg-usta-green/20 text-usta-green",
+    heading: "text-usta-green",
+    userBubble: "bg-usta-green text-usta-bg",
   },
 };
 
@@ -120,11 +120,11 @@ const WelcomeScreen = ({
 }: {
   onSelect: (ctx: ChatContext) => void;
 }) => (
-  <div className='flex flex-col items-center justify-center h-full px-6 py-10 bg-[#0f0a1e]'>
+  <div className='flex flex-col items-center justify-center h-full px-6 py-10 bg-usta-bg'>
     <div className='w-full max-w-sm space-y-6'>
       <div className='flex justify-center'>
         <div className='w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center'>
-          <Bot size={32} className='text-[#39d98a]' />
+          <Bot size={32} className='text-usta-green' />
         </div>
       </div>
       <div className='text-center space-y-2'>
@@ -140,10 +140,10 @@ const WelcomeScreen = ({
         <button
           onClick={() => onSelect("posgrados")}
           className='w-full flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl
-            hover:border-[#4c6ef5]/50 hover:bg-[#4c6ef5]/10
+            hover:border-usta-blue/50 hover:bg-usta-blue/10
             transition-all group text-left'
         >
-          <div className='w-10 h-10 rounded-xl bg-[#4c6ef5] flex items-center justify-center text-white shrink-0'>
+          <div className='w-10 h-10 rounded-xl bg-usta-blue flex items-center justify-center text-white shrink-0'>
             <GraduationCap size={20} />
           </div>
           <div className='flex-1 min-w-0'>
@@ -156,17 +156,17 @@ const WelcomeScreen = ({
           </div>
           <ArrowRight
             size={16}
-            className='text-white/20 group-hover:text-[#7b9fff] transition-colors shrink-0'
+            className='text-white/20 group-hover:text-usta-blue-lt transition-colors shrink-0'
           />
         </button>
 
         <button
           onClick={() => onSelect("mesa_ayuda")}
           className='w-full flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl
-            hover:border-[#39d98a]/50 hover:bg-[#39d98a]/10
+            hover:border-usta-green/50 hover:bg-usta-green/10
             transition-all group text-left'
         >
-          <div className='w-10 h-10 rounded-xl bg-[#39d98a]/20 flex items-center justify-center text-[#39d98a] shrink-0 border border-[#39d98a]/30'>
+          <div className='w-10 h-10 rounded-xl bg-usta-green/20 flex items-center justify-center text-usta-green shrink-0 border border-usta-green/30'>
             <HeadphonesIcon size={20} />
           </div>
           <div className='flex-1 min-w-0'>
@@ -179,7 +179,7 @@ const WelcomeScreen = ({
           </div>
           <ArrowRight
             size={16}
-            className='text-white/20 group-hover:text-[#39d98a] transition-colors shrink-0'
+            className='text-white/20 group-hover:text-usta-green transition-colors shrink-0'
           />
         </button>
       </div>
@@ -411,11 +411,11 @@ const Chat = () => {
   // ── Pantalla de bienvenida ─────────────────────────────────────────────────
   if (!context) {
     return (
-      <div className='flex flex-col h-screen w-full bg-[#0f0a1e] font-sans text-white'>
-        <header className='p-4 bg-[#1a0a2e] border-b border-white/10 flex justify-between items-center'>
+      <div className='flex flex-col h-screen w-full bg-usta-bg font-sans text-white'>
+        <header className='p-4 bg-usta-surface border-b border-white/10 flex justify-between items-center'>
           <div className='flex items-center gap-3'>
             <div className='bg-white/5 border border-white/10 p-2 rounded-lg'>
-              <Bot size={22} className='text-[#39d98a]' />
+              <Bot size={22} className='text-usta-green' />
             </div>
             <div>
               <h2 className='text-sm font-bold text-white'>
@@ -424,7 +424,7 @@ const Chat = () => {
               <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-white/40'>
                 <Circle
                   size={8}
-                  className={`fill-current ${connected ? "text-[#39d98a]" : "text-red-400"}`}
+                  className={`fill-current ${connected ? "text-usta-green" : "text-red-400"}`}
                 />
                 {connected ? "En línea" : "Desconectado"}
               </p>
@@ -444,9 +444,9 @@ const Chat = () => {
 
   // ── Chat activo ────────────────────────────────────────────────────────────
   return (
-    <div className='flex flex-col h-screen w-full bg-[#0f0a1e] font-sans text-white'>
+    <div className='flex flex-col h-screen w-full bg-usta-bg font-sans text-white'>
       {/* Header */}
-      <header className='p-4 bg-[#1a0a2e] border-b border-white/10 flex justify-between items-center z-10 sticky top-0'>
+      <header className='p-4 bg-usta-surface border-b border-white/10 flex justify-between items-center z-10 sticky top-0'>
         <div className='flex items-center gap-3'>
           <div className={`${cfg!.accentBg} p-2 rounded-lg text-white`}>
             {cfg!.icon}
@@ -456,7 +456,7 @@ const Chat = () => {
             <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-white/40'>
               <Circle
                 size={8}
-                className={`fill-current ${connected ? "text-[#39d98a]" : "text-red-400"}`}
+                className={`fill-current ${connected ? "text-usta-green" : "text-red-400"}`}
               />
               {connected ? "En línea" : "Desconectado"}
               {conversationId && (
@@ -484,7 +484,7 @@ const Chat = () => {
       </header>
 
       {/* Mensajes */}
-      <div className='flex-1 overflow-y-auto p-4 md:p-6 bg-[#0f0a1e]'>
+      <div className='flex-1 overflow-y-auto p-4 md:p-6 bg-usta-bg'>
         <div className='w-full max-w-2xl mx-auto space-y-6 pb-4'>
           {messages.map((msg, index) => {
             // ── Burbuja de confirmación de datos ────────────────────────────
@@ -498,7 +498,7 @@ const Chat = () => {
                   >
                     <Bot size={16} />
                   </div>
-                  <div className='bg-[#1e1040] border border-white/10 rounded-2xl rounded-tl-none px-5 py-4 max-w-[85%]'>
+                  <div className='bg-usta-card border border-white/10 rounded-2xl rounded-tl-none px-5 py-4 max-w-[85%]'>
                     <p className='text-[15px] text-white/80 mb-3'>
                       Antes de continuar, confirma tus datos:
                     </p>
@@ -543,7 +543,7 @@ const Chat = () => {
                   >
                     <Bot size={16} />
                   </div>
-                  <div className='bg-[#1e1040] border border-white/10 rounded-2xl rounded-tl-none px-5 py-4 max-w-[85%]'>
+                  <div className='bg-usta-card border border-white/10 rounded-2xl rounded-tl-none px-5 py-4 max-w-[85%]'>
                     <p className='text-[15px] text-white/80 mb-3'>
                       {msg.question}
                     </p>
@@ -560,7 +560,7 @@ const Chat = () => {
                               msg.answered
                                 ? "opacity-30 cursor-not-allowed border-white/10 bg-white/5 text-white/40"
                                 : opt.confirmed
-                                  ? "border-[#39d98a]/60 bg-[#39d98a]/10 text-[#39d98a] hover:bg-[#39d98a]/20"
+                                  ? "border-usta-green/60 bg-usta-green/10 text-usta-green hover:bg-usta-green/20"
                                   : "border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:border-white/25"
                             }`}
                         >
@@ -591,7 +591,7 @@ const Chat = () => {
                     ${
                       isUser
                         ? `${cfg!.userBubble} rounded-tr-none`
-                        : "bg-[#1e1040] text-white/85 border border-white/10 rounded-tl-none"
+                        : "bg-usta-card text-white/85 border border-white/10 rounded-tl-none"
                     }`}
                   >
                     <ReactMarkdown
@@ -660,7 +660,7 @@ const Chat = () => {
               >
                 <Bot size={16} />
               </div>
-              <div className='flex items-center gap-1.5 px-4 py-3 bg-[#1e1040] border border-white/10 rounded-2xl rounded-tl-none'>
+              <div className='flex items-center gap-1.5 px-4 py-3 bg-usta-card border border-white/10 rounded-2xl rounded-tl-none'>
                 <span className='w-2 h-2 rounded-full bg-white/30 animate-bounce [animation-delay:-0.3s]' />
                 <span className='w-2 h-2 rounded-full bg-white/30 animate-bounce [animation-delay:-0.15s]' />
                 <span className='w-2 h-2 rounded-full bg-white/30 animate-bounce' />
@@ -684,7 +684,7 @@ const Chat = () => {
       )}
 
       {/* Input */}
-      <div className='p-4 bg-[#1a0a2e] border-t border-white/10'>
+      <div className='p-4 bg-usta-surface border-t border-white/10'>
         <div className='max-w-2xl mx-auto space-y-2'>
           {!chatExpired && !escalated && !showEscalatePrompt && (
             <div className='flex flex-wrap gap-2'>
@@ -724,7 +724,7 @@ const Chat = () => {
               className={`absolute right-2 top-2 bottom-2 aspect-square ${cfg!.sendBtn}
                 rounded-lg disabled:bg-white/10 disabled:text-white/20
                 flex items-center justify-center transition-all
-                ${context === "mesa_ayuda" ? "text-[#0f0a1e]" : "text-white"}`}
+                ${context === "mesa_ayuda" ? "text-usta-bg" : "text-white"}`}
             >
               <Send size={18} />
             </button>

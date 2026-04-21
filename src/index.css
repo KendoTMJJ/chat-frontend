@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+@theme {
+  --color-usta-bg:          #0f0a1e;
+  --color-usta-surface:     #1a0a2e;
+  --color-usta-card:        #1e1040;
+  --color-usta-blue:        #4c6ef5;
+  --color-usta-blue-dark:   #3b5de5;
+  --color-usta-blue-lt:     #7b9fff;
+  --color-usta-green:       #39d98a;
+  --color-usta-green-dark:  #2bc77a;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -7,7 +18,7 @@
 
   color-scheme: dark;
   color: #ffffff;
-  background-color: #0f0a1e;
+  background-color: var(--color-usta-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,5 +30,4 @@ body {
   margin: 0;
   width: 100%;
   min-height: 100vh;
-  
 }

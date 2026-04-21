@@ -1,4 +1,4 @@
-// src/components/ChatButton.tsx
+﻿// src/components/ChatButton.tsx
 
 interface ChatButtonProps {
   label: string;
@@ -21,7 +21,7 @@ const ChatButton = ({
         disabled
           ? "opacity-30 cursor-not-allowed border-white/10 bg-white/5 text-white/40"
           : variant === "confirm"
-            ? "border-[#39d98a]/60 bg-[#39d98a]/10 text-[#39d98a] hover:bg-[#39d98a]/20"
+            ? "border-usta-green/60 bg-usta-green/10 text-usta-green hover:bg-usta-green/20"
             : "border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:border-white/25"
       }`}
   >

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router";
 import {
   GraduationCap,
@@ -41,12 +41,12 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f0a1e] p-6 font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-usta-bg p-6 font-sans">
       <div className="w-full max-w-md">
         {/* Brand */}
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-[#4c6ef5]/20 border border-[#4c6ef5]/30 p-4 rounded-2xl mb-4">
-            <GraduationCap size={40} className="text-[#7b9fff]" />
+          <div className="bg-usta-blue/20 border border-usta-blue/30 p-4 rounded-2xl mb-4">
+            <GraduationCap size={40} className="text-usta-blue-lt" />
           </div>
           <h2 className="text-2xl font-bold text-white">Acceso Admin</h2>
           <p className="text-white/40 text-sm mt-1">
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        <div className="bg-[#1a0a2e] border border-white/10 p-8 rounded-3xl">
+        <div className="bg-usta-surface border border-white/10 p-8 rounded-3xl">
           {error && (
             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3 text-red-300 text-sm">
               <AlertCircle size={18} className="shrink-0" />
@@ -78,7 +78,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white
-                    focus:ring-2 focus:ring-[#4c6ef5]/30 focus:border-[#4c6ef5]/50 outline-none transition-all
+                    focus:ring-2 focus:ring-usta-blue/30 focus:border-usta-blue/50 outline-none transition-all
                     placeholder:text-white/20"
                   placeholder="admin@usantoto.edu.co"
                 />
@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-12 text-white
-                    focus:ring-2 focus:ring-[#4c6ef5]/30 focus:border-[#4c6ef5]/50 outline-none transition-all
+                    focus:ring-2 focus:ring-usta-blue/30 focus:border-usta-blue/50 outline-none transition-all
                     placeholder:text-white/20"
                   placeholder="••••••••"
                 />
@@ -117,8 +117,8 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#4c6ef5] hover:bg-[#3b5de5] text-white font-bold py-4 rounded-xl
-                shadow-lg shadow-[#4c6ef5]/20 transition-all active:scale-[0.98]
+              className="w-full bg-usta-blue hover:bg-usta-blue-dark text-white font-bold py-4 rounded-xl
+                shadow-lg shadow-usta-blue/20 transition-all active:scale-[0.98]
                 disabled:opacity-50 disabled:pointer-events-none mt-2"
             >
               {isLoading ? "Verificando identidad..." : "Entrar al Panel"}

@@ -1,4 +1,4 @@
-// src/pages/Admin/PosgradosPage.tsx
+﻿// src/pages/Admin/PosgradosPage.tsx
 import { useState, useRef } from "react";
 import {
   UploadCloud,
@@ -79,7 +79,7 @@ const PosgradosPanel = () => {
   };
 
   return (
-    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-[#0f0a1e]'>
+    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-usta-bg'>
       <div className='max-w-2xl mx-auto'>
         <div className='mb-8'>
           <h2 className='text-xl font-bold text-white'>
@@ -107,16 +107,16 @@ const PosgradosPanel = () => {
           onClick={() => !file && inputRef.current?.click()}
           className={`hidden md:block relative border-2 border-dashed rounded-2xl transition-all
             ${file
-              ? "border-white/10 bg-[#1e1040] cursor-default"
+              ? "border-white/10 bg-usta-card cursor-default"
               : dragging
-                ? "border-[#4c6ef5]/70 bg-[#4c6ef5]/10 cursor-copy"
-                : "border-white/15 bg-[#1e1040] hover:border-[#4c6ef5]/50 hover:bg-[#4c6ef5]/5 cursor-pointer"
+                ? "border-usta-blue/70 bg-usta-blue/10 cursor-copy"
+                : "border-white/15 bg-usta-card hover:border-usta-blue/50 hover:bg-usta-blue/5 cursor-pointer"
             }`}
         >
           {!file ? (
             <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
-              <div className={`p-4 rounded-2xl mb-4 transition-colors ${dragging ? "bg-[#4c6ef5]/20" : "bg-white/5"}`}>
-                <UploadCloud size={32} className={dragging ? "text-[#7b9fff]" : "text-white/30"} />
+              <div className={`p-4 rounded-2xl mb-4 transition-colors ${dragging ? "bg-usta-blue/20" : "bg-white/5"}`}>
+                <UploadCloud size={32} className={dragging ? "text-usta-blue-lt" : "text-white/30"} />
               </div>
               <p className='text-sm font-semibold text-white/80 mb-1'>
                 Arrastra el archivo aquí
@@ -128,8 +128,8 @@ const PosgradosPanel = () => {
             </div>
           ) : (
             <div className='flex items-center gap-4 p-5'>
-              <div className='p-3 bg-[#4c6ef5]/20 rounded-xl shrink-0'>
-                <FileText size={24} className='text-[#7b9fff]' />
+              <div className='p-3 bg-usta-blue/20 rounded-xl shrink-0'>
+                <FileText size={24} className='text-usta-blue-lt' />
               </div>
               <div className='flex-1 min-w-0'>
                 <p className='text-sm font-semibold text-white truncate'>{file.name}</p>
@@ -152,7 +152,7 @@ const PosgradosPanel = () => {
           {!file ? (
             <button
               onClick={() => inputRef.current?.click()}
-              className='w-full flex flex-col items-center justify-center gap-3 py-10 border-2 border-dashed border-white/15 rounded-2xl bg-[#1e1040] active:bg-[#4c6ef5]/10 active:border-[#4c6ef5]/50 transition-all'
+              className='w-full flex flex-col items-center justify-center gap-3 py-10 border-2 border-dashed border-white/15 rounded-2xl bg-usta-card active:bg-usta-blue/10 active:border-usta-blue/50 transition-all'
             >
               <div className='p-4 rounded-2xl bg-white/5'>
                 <UploadCloud size={28} className='text-white/30' />
@@ -165,9 +165,9 @@ const PosgradosPanel = () => {
               </div>
             </button>
           ) : (
-            <div className='flex items-center gap-4 p-4 bg-[#1e1040] border border-white/10 rounded-2xl'>
-              <div className='p-3 bg-[#4c6ef5]/20 rounded-xl shrink-0'>
-                <FileText size={22} className='text-[#7b9fff]' />
+            <div className='flex items-center gap-4 p-4 bg-usta-card border border-white/10 rounded-2xl'>
+              <div className='p-3 bg-usta-blue/20 rounded-xl shrink-0'>
+                <FileText size={22} className='text-usta-blue-lt' />
               </div>
               <div className='flex-1 min-w-0'>
                 <p className='text-sm font-semibold text-white truncate'>{file.name}</p>
@@ -186,7 +186,7 @@ const PosgradosPanel = () => {
         </div>
 
         {status === "success" && (
-          <div className='mt-4 p-4 bg-[#39d98a]/10 border border-[#39d98a]/30 rounded-xl flex items-center gap-3 text-[#39d98a] text-sm'>
+          <div className='mt-4 p-4 bg-usta-green/10 border border-usta-green/30 rounded-xl flex items-center gap-3 text-usta-green text-sm'>
             <CheckCircle2 size={16} className='shrink-0' />
             Documento procesado correctamente. El asistente ya tiene la información actualizada.
           </div>
@@ -202,8 +202,8 @@ const PosgradosPanel = () => {
           onClick={handleUpload}
           disabled={!file || status === "uploading" || status === "success"}
           className='mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-xl
-            bg-[#4c6ef5] hover:bg-[#3b5de5] text-white text-sm font-bold
-            shadow-lg shadow-[#4c6ef5]/20 transition-all
+            bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-bold
+            shadow-lg shadow-usta-blue/20 transition-all
             disabled:opacity-40 disabled:cursor-not-allowed'
         >
           {status === "uploading" ? (

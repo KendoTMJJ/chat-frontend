@@ -1,4 +1,4 @@
-// src/pages/Admin/HelpdeskPage.tsx
+﻿// src/pages/Admin/HelpdeskPage.tsx
 import { useState } from "react";
 import {
   Pencil,
@@ -26,7 +26,7 @@ const ConfirmModal = ({
   onCancel: () => void;
 }) => (
   <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center'>
-    <div className='bg-[#1e1040] rounded-2xl border border-white/10 p-6 max-w-sm w-full mx-4'>
+    <div className='bg-usta-card rounded-2xl border border-white/10 p-6 max-w-sm w-full mx-4'>
       <div className='flex items-center gap-3 mb-4'>
         <div className='bg-red-500/20 p-2 rounded-xl'>
           <Trash2 size={18} className='text-red-400' />
@@ -73,7 +73,7 @@ const CreateModal = ({
 
   return (
     <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
-      <div className='bg-[#1e1040] rounded-2xl border border-white/10 w-full max-w-md'>
+      <div className='bg-usta-card rounded-2xl border border-white/10 w-full max-w-md'>
         <div className='flex items-center justify-between px-6 py-4 border-b border-white/10'>
           <h3 className='font-bold text-white'>Nueva categoría</h3>
           <button
@@ -97,7 +97,7 @@ const CreateModal = ({
                 onChange={(e) => setter(e.target.value)}
                 placeholder={placeholder}
                 className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                  outline-none focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20 transition-all
+                  outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
                   placeholder:text-white/20'
               />
             </div>
@@ -112,7 +112,7 @@ const CreateModal = ({
               placeholder='Breve descripción de la categoría...'
               rows={3}
               className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                outline-none focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20 transition-all resize-none
+                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all resize-none
                 placeholder:text-white/20'
             />
           </div>
@@ -125,7 +125,7 @@ const CreateModal = ({
               onChange={(e) => setPdfUrl(e.target.value)}
               placeholder='https://...'
               className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                outline-none focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20 transition-all
+                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
                 placeholder:text-white/20'
             />
           </div>
@@ -147,7 +147,7 @@ const CreateModal = ({
               })
             }
             disabled={!isValid || saving}
-            className='flex-1 py-2.5 rounded-xl bg-[#4c6ef5] hover:bg-[#3b5de5] text-white text-sm font-semibold
+            className='flex-1 py-2.5 rounded-xl bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-semibold
               transition-all disabled:opacity-40 disabled:cursor-not-allowed'
           >
             {saving ? "Guardando..." : "Guardar"}
@@ -178,7 +178,7 @@ const EditModal = ({
 
   return (
     <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
-      <div className='bg-[#1e1040] rounded-2xl border border-white/10 w-full max-w-md'>
+      <div className='bg-usta-card rounded-2xl border border-white/10 w-full max-w-md'>
         <div className='flex items-center justify-between px-6 py-4 border-b border-white/10'>
           <h3 className='font-bold text-white'>Editar categoría</h3>
           <button
@@ -213,7 +213,7 @@ const EditModal = ({
               onChange={(e) => setLabel(e.target.value)}
               placeholder='ej: 💳 Pagos'
               className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                outline-none focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20 transition-all
+                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
                 placeholder:text-white/20'
             />
           </div>
@@ -228,7 +228,7 @@ const EditModal = ({
               placeholder='Breve descripción de la categoría...'
               rows={3}
               className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                outline-none focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20 transition-all resize-none
+                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all resize-none
                 placeholder:text-white/20'
             />
           </div>
@@ -242,7 +242,7 @@ const EditModal = ({
               onChange={(e) => setPdfUrl(e.target.value)}
               placeholder='https://...'
               className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                outline-none focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20 transition-all
+                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
                 placeholder:text-white/20'
             />
           </div>
@@ -264,7 +264,7 @@ const EditModal = ({
               })
             }
             disabled={!isValid || saving}
-            className='flex-1 py-2.5 rounded-xl bg-[#4c6ef5] hover:bg-[#3b5de5] text-white text-sm font-semibold
+            className='flex-1 py-2.5 rounded-xl bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-semibold
               transition-all disabled:opacity-40 disabled:cursor-not-allowed'
           >
             {saving ? "Guardando..." : "Guardar"}
@@ -321,7 +321,7 @@ const HelpdeskPanel = () => {
         />
       )}
 
-      <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-[#0f0a1e]'>
+      <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-usta-bg'>
         <div className='max-w-4xl mx-auto'>
           <div className='mb-6 flex items-start justify-between'>
             <div>
@@ -341,7 +341,7 @@ const HelpdeskPanel = () => {
               </button>
               <button
                 onClick={() => setCreating(true)}
-                className='flex items-center gap-2 px-4 py-2 rounded-xl bg-[#4c6ef5] hover:bg-[#3b5de5] text-white text-sm font-bold shadow-sm transition-all'
+                className='flex items-center gap-2 px-4 py-2 rounded-xl bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-bold shadow-sm transition-all'
               >
                 <Plus size={15} /> Nueva categoría
               </button>
@@ -359,7 +359,7 @@ const HelpdeskPanel = () => {
             </div>
           )}
           {successMsg && (
-            <div className='mb-4 p-4 bg-[#39d98a]/10 border border-[#39d98a]/30 rounded-xl flex items-center gap-3 text-[#39d98a] text-sm'>
+            <div className='mb-4 p-4 bg-usta-green/10 border border-usta-green/30 rounded-xl flex items-center gap-3 text-usta-green text-sm'>
               <CheckCircle2 size={16} className='shrink-0' /> {successMsg}
             </div>
           )}
@@ -369,7 +369,7 @@ const HelpdeskPanel = () => {
               <RefreshCw size={20} className='text-white/30 animate-spin' />
             </div>
           ) : categories.length === 0 && !error ? (
-            <div className='flex flex-col items-center justify-center h-48 text-white/40 bg-[#1e1040] rounded-2xl border border-white/10'>
+            <div className='flex flex-col items-center justify-center h-48 text-white/40 bg-usta-card rounded-2xl border border-white/10'>
               <p className='text-sm font-medium text-white/50'>Sin categorías</p>
               <p className='text-xs mt-1'>El backend no devolvió datos.</p>
             </div>
@@ -378,13 +378,13 @@ const HelpdeskPanel = () => {
               {/* ── Cards — móvil ──────────────────────────────────────── */}
               <div className='md:hidden space-y-3'>
                 {categories.map((cat) => (
-                  <div key={cat.id} className='bg-[#1e1040] rounded-2xl border border-white/10 p-4 space-y-3'>
+                  <div key={cat.id} className='bg-usta-card rounded-2xl border border-white/10 p-4 space-y-3'>
                     <div className='flex items-start justify-between gap-2'>
                       <p className='font-semibold text-white text-sm leading-snug'>{cat.label}</p>
                       <div className='flex items-center gap-1 shrink-0'>
                         <button
                           onClick={() => setEditing(cat)}
-                          className='p-1.5 rounded-lg bg-white/5 text-white/40 hover:text-[#7b9fff] transition-colors'
+                          className='p-1.5 rounded-lg bg-white/5 text-white/40 hover:text-usta-blue-lt transition-colors'
                         >
                           <Pencil size={14} />
                         </button>
@@ -407,7 +407,7 @@ const HelpdeskPanel = () => {
                         href={cat.pdf_url}
                         target='_blank'
                         rel='noopener noreferrer'
-                        className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#4c6ef5]/20 text-[#7b9fff] text-xs font-semibold'
+                        className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-usta-blue/20 text-usta-blue-lt text-xs font-semibold'
                       >
                         <ExternalLink size={12} /> Ver PDF
                       </a>
@@ -424,7 +424,7 @@ const HelpdeskPanel = () => {
               </div>
 
               {/* ── Tabla — desktop ────────────────────────────────────── */}
-              <div className='hidden md:block bg-[#1e1040] rounded-2xl border border-white/10 overflow-hidden'>
+              <div className='hidden md:block bg-usta-card rounded-2xl border border-white/10 overflow-hidden'>
                 <table className='w-full text-sm'>
                   <thead>
                     <tr className='border-b border-white/10 bg-white/5'>
@@ -452,7 +452,7 @@ const HelpdeskPanel = () => {
                         <td className='px-5 py-3.5'>
                           {cat.pdf_url ? (
                             <a href={cat.pdf_url} target='_blank' rel='noopener noreferrer'
-                              className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#4c6ef5]/20 text-[#7b9fff] text-xs font-semibold hover:bg-[#4c6ef5]/30 transition-colors'>
+                              className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-usta-blue/20 text-usta-blue-lt text-xs font-semibold hover:bg-usta-blue/30 transition-colors'>
                               <ExternalLink size={12} /> Ver PDF
                             </a>
                           ) : (
@@ -462,7 +462,7 @@ const HelpdeskPanel = () => {
                         <td className='px-5 py-3.5'>
                           <div className='flex items-center gap-1 justify-end'>
                             <button onClick={() => setEditing(cat)}
-                              className='p-1.5 rounded-lg hover:bg-[#4c6ef5]/20 text-white/40 hover:text-[#7b9fff] transition-colors' title='Editar'>
+                              className='p-1.5 rounded-lg hover:bg-usta-blue/20 text-white/40 hover:text-usta-blue-lt transition-colors' title='Editar'>
                               <Pencil size={14} />
                             </button>
                             <button onClick={() => setConfirmDeleteId(cat.id)}

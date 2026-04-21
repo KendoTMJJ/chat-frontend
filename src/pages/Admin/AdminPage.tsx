@@ -1,4 +1,4 @@
-// src/pages/Admin/AdminPage.tsx
+﻿// src/pages/Admin/AdminPage.tsx
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import {
@@ -44,7 +44,7 @@ type StatusFilter = "all" | "active" | "escalated" | "closed" | "expired";
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   active: {
     label: "Activa",
-    color: "bg-[#39d98a]/15 text-[#39d98a] border-[#39d98a]/30",
+    color: "bg-usta-green/15 text-usta-green border-usta-green/30",
   },
   escalated: {
     label: "Escalada",
@@ -69,7 +69,7 @@ const ConfirmModal = ({
   onCancel: () => void;
 }) => (
   <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center'>
-    <div className='bg-[#1e1040] rounded-2xl border border-white/10 p-6 max-w-sm w-full mx-4'>
+    <div className='bg-usta-card rounded-2xl border border-white/10 p-6 max-w-sm w-full mx-4'>
       <div className='flex items-center gap-3 mb-4'>
         <div className='bg-red-500/20 p-2 rounded-xl'>
           <Trash2 size={18} className='text-red-400' />
@@ -171,7 +171,7 @@ const ConversationsPanel = () => {
 
       <div className='flex flex-1 h-full overflow-hidden'>
         {/* Lista */}
-        <div className={`${showDetail ? 'hidden md:flex' : 'flex'} w-full md:w-80 border-r border-white/10 flex-col bg-[#0f0a1e]`}>
+        <div className={`${showDetail ? 'hidden md:flex' : 'flex'} w-full md:w-80 border-r border-white/10 flex-col bg-usta-bg`}>
           <div className='p-4 space-y-3 border-b border-white/10'>
             <div className='relative'>
               <Search
@@ -183,7 +183,7 @@ const ConversationsPanel = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder='Buscar por ID, nombre, correo...'
                 className='w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-3 text-xs text-white
-                  focus:ring-2 focus:ring-[#4c6ef5]/20 focus:border-[#4c6ef5]/40 outline-none transition-all
+                  focus:ring-2 focus:ring-usta-blue/20 focus:border-usta-blue/40 outline-none transition-all
                   placeholder:text-white/25'
               />
             </div>
@@ -220,7 +220,7 @@ const ConversationsPanel = () => {
                   onClick={() => handleSelectMobile(conv.conversationId)}
                   className={`w-full p-4 text-left border-b border-white/5 transition-all group ${
                     selectedId === conv.conversationId
-                      ? "bg-[#4c6ef5]/15 border-l-2 border-l-[#4c6ef5]"
+                      ? "bg-usta-blue/15 border-l-2 border-l-usta-blue"
                       : "hover:bg-white/5 border-l-2 border-l-transparent"
                   } ${conv.status === "closed" ? "opacity-50" : ""}`}
                 >
@@ -239,7 +239,7 @@ const ConversationsPanel = () => {
                           <button
                             onClick={(e) => handleClose(e, conv.conversationId)}
                             title='Marcar como resuelta'
-                            className='p-1 rounded hover:bg-[#39d98a]/20 text-white/30 hover:text-[#39d98a] transition-colors'
+                            className='p-1 rounded hover:bg-usta-green/20 text-white/30 hover:text-usta-green transition-colors'
                           >
                             <CheckCheck size={13} />
                           </button>
@@ -301,13 +301,13 @@ const ConversationsPanel = () => {
         </div>
 
         {/* Detalle */}
-        <div className={`${showDetail ? 'flex' : 'hidden md:flex'} flex-1 flex-col overflow-hidden bg-[#0f0a1e]`}>
+        <div className={`${showDetail ? 'flex' : 'hidden md:flex'} flex-1 flex-col overflow-hidden bg-usta-bg`}>
           {selectedId ? (
             <>
-              <div className='bg-[#1a0a2e] border-b border-white/10 px-4 md:px-6 py-4 flex items-start justify-between shrink-0'>
+              <div className='bg-usta-surface border-b border-white/10 px-4 md:px-6 py-4 flex items-start justify-between shrink-0'>
                 <button
                   onClick={() => setShowDetail(false)}
-                  className='md:hidden flex items-center gap-1.5 text-sm font-semibold text-[#7b9fff] mr-3 shrink-0 self-center'
+                  className='md:hidden flex items-center gap-1.5 text-sm font-semibold text-usta-blue-lt mr-3 shrink-0 self-center'
                 >
                   ← Volver
                 </button>
@@ -350,7 +350,7 @@ const ConversationsPanel = () => {
                   {selectedConv?.status !== "closed" && (
                     <button
                       onClick={(e) => handleClose(e, selectedId)}
-                      className='flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border border-[#39d98a]/30 bg-[#39d98a]/10 text-[#39d98a] text-xs font-semibold hover:bg-[#39d98a]/20 transition-all'
+                      className='flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border border-usta-green/30 bg-usta-green/10 text-usta-green text-xs font-semibold hover:bg-usta-green/20 transition-all'
                     >
                       <CheckCheck size={13} />
                       <span className='hidden sm:inline'>Marcar resuelta</span>
@@ -366,7 +366,7 @@ const ConversationsPanel = () => {
                 </div>
               </div>
 
-              <div className='flex-1 overflow-y-auto p-6 bg-[#0f0a1e]'>
+              <div className='flex-1 overflow-y-auto p-6 bg-usta-bg'>
                 <div className='max-w-2xl mx-auto space-y-4'>
                   {chatHistory.length === 0 ? (
                     <div className='text-center py-16 text-white/30 text-sm'>
@@ -382,12 +382,12 @@ const ConversationsPanel = () => {
                           className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}
                         >
                           <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isUser ? "bg-white/10 text-white/60" : "bg-[#4c6ef5]/20 text-[#7b9fff]"}`}
+                            className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isUser ? "bg-white/10 text-white/60" : "bg-usta-blue/20 text-usta-blue-lt"}`}
                           >
                             {isUser ? <User size={14} /> : <Bot size={14} />}
                           </div>
                           <div
-                            className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm ${isUser ? "bg-[#4c6ef5] text-white rounded-tr-none" : "bg-[#1e1040] text-white/85 border border-white/10 rounded-tl-none"}`}
+                            className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm ${isUser ? "bg-usta-blue text-white rounded-tr-none" : "bg-usta-card text-white/85 border border-white/10 rounded-tl-none"}`}
                           >
                             <ReactMarkdown
                               components={{
@@ -401,7 +401,7 @@ const ConversationsPanel = () => {
                                   <a
                                     target='_blank'
                                     rel='noopener noreferrer'
-                                    className='underline text-[#7b9fff]'
+                                    className='underline text-usta-blue-lt'
                                     {...props}
                                   />
                                 ),
@@ -425,7 +425,7 @@ const ConversationsPanel = () => {
             </>
           ) : (
             <div className='flex-1 flex flex-col items-center justify-center text-white/30'>
-              <div className='bg-[#1e1040] border border-white/10 p-8 rounded-2xl mb-4'>
+              <div className='bg-usta-card border border-white/10 p-8 rounded-2xl mb-4'>
                 <MessageSquare size={40} className='text-white/10' />
               </div>
               <p className='text-sm font-medium text-white/40'>
@@ -533,11 +533,11 @@ const ChannelsPanel = () => {
   const isNewChannelValid = newChannel.whatsapp.trim() && newChannel.email.trim();
 
   const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20";
-  const focusBlue = "focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20";
-  const focusGreen = "focus:border-[#39d98a]/50 focus:ring-2 focus:ring-[#39d98a]/20";
+  const focusBlue = "focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20";
+  const focusGreen = "focus:border-usta-green/50 focus:ring-2 focus:ring-usta-green/20";
 
   return (
-    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-[#0f0a1e]'>
+    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-usta-bg'>
       {confirmDeleteId && (
         <ConfirmModal
           onConfirm={handleDeleteConfirm}
@@ -555,7 +555,7 @@ const ChannelsPanel = () => {
           {!loading && missingContexts.length > 0 && !showCreateForm && (
             <button
               onClick={handleOpenCreateForm}
-              className='flex items-center gap-2 px-4 py-2 rounded-xl bg-[#4c6ef5] hover:bg-[#3b5de5] text-white text-sm font-bold shadow-sm transition-all'
+              className='flex items-center gap-2 px-4 py-2 rounded-xl bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-bold shadow-sm transition-all'
             >
               <Plus size={15} /> Nuevo canal
             </button>
@@ -568,7 +568,7 @@ const ChannelsPanel = () => {
           </div>
         )}
         {successMsg && (
-          <div className='mb-6 p-4 bg-[#39d98a]/10 border border-[#39d98a]/30 rounded-xl flex items-center gap-3 text-[#39d98a] text-sm'>
+          <div className='mb-6 p-4 bg-usta-green/10 border border-usta-green/30 rounded-xl flex items-center gap-3 text-usta-green text-sm'>
             <CheckCircle2 size={16} className='shrink-0' /> {successMsg}
           </div>
         )}
@@ -580,10 +580,10 @@ const ChannelsPanel = () => {
         ) : (
           <div className='space-y-6'>
             {showCreateForm && (
-              <div className='bg-[#1e1040] rounded-2xl border-2 border-dashed border-[#4c6ef5]/40 overflow-hidden'>
-                <div className='px-6 py-4 border-b border-white/10 flex items-center justify-between bg-[#4c6ef5]/10'>
+              <div className='bg-usta-card rounded-2xl border-2 border-dashed border-usta-blue/40 overflow-hidden'>
+                <div className='px-6 py-4 border-b border-white/10 flex items-center justify-between bg-usta-blue/10'>
                   <div className='flex items-center gap-3'>
-                    <div className='p-2 rounded-xl bg-[#4c6ef5] text-white'>
+                    <div className='p-2 rounded-xl bg-usta-blue text-white'>
                       <Plus size={18} />
                     </div>
                     <div>
@@ -610,7 +610,7 @@ const ChannelsPanel = () => {
                           onClick={() => setNewChannel((prev) => ({ ...prev, context: ctx }))}
                           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${
                             newChannel.context === ctx
-                              ? "bg-[#4c6ef5] text-white border-[#4c6ef5]"
+                              ? "bg-usta-blue text-white border-usta-blue"
                               : "bg-white/5 text-white/60 border-white/10 hover:border-white/25"
                           }`}
                         >
@@ -648,7 +648,7 @@ const ChannelsPanel = () => {
                       disabled={!isNewChannelValid || saving}
                       className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                         isNewChannelValid && !saving
-                          ? "bg-[#4c6ef5] hover:bg-[#3b5de5] text-white shadow-sm"
+                          ? "bg-usta-blue hover:bg-usta-blue-dark text-white shadow-sm"
                           : "bg-white/10 text-white/30 cursor-not-allowed"
                       }`}
                     >
@@ -667,13 +667,13 @@ const ChannelsPanel = () => {
               const { isBlue } = info;
               const focusClass = isBlue ? focusBlue : focusGreen;
               const dirtyBorder = isBlue
-                ? "border-[#4c6ef5]/50 ring-2 ring-[#4c6ef5]/20"
-                : "border-[#39d98a]/50 ring-2 ring-[#39d98a]/20";
+                ? "border-usta-blue/50 ring-2 ring-usta-blue/20"
+                : "border-usta-green/50 ring-2 ring-usta-green/20";
 
               return (
-                <div key={ch.id} className='bg-[#1e1040] rounded-2xl border border-white/10 overflow-hidden'>
-                  <div className={`px-6 py-4 border-b border-white/10 flex items-center gap-3 ${isBlue ? "bg-[#4c6ef5]/10" : "bg-[#39d98a]/10"}`}>
-                    <div className={`p-2 rounded-xl text-white ${isBlue ? "bg-[#4c6ef5]" : "bg-[#39d98a]/20 border border-[#39d98a]/30 !text-[#39d98a]"}`}>
+                <div key={ch.id} className='bg-usta-card rounded-2xl border border-white/10 overflow-hidden'>
+                  <div className={`px-6 py-4 border-b border-white/10 flex items-center gap-3 ${isBlue ? "bg-usta-blue/10" : "bg-usta-green/10"}`}>
+                    <div className={`p-2 rounded-xl text-white ${isBlue ? "bg-usta-blue" : "bg-usta-green/20 border border-usta-green/30 !text-usta-green"}`}>
                       {info.icon}
                     </div>
                     <div>
@@ -727,8 +727,8 @@ const ChannelsPanel = () => {
                           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                             dirty
                               ? isBlue
-                                ? "bg-[#4c6ef5] hover:bg-[#3b5de5] text-white shadow-sm"
-                                : "bg-[#39d98a] hover:bg-[#2bc77a] text-[#0f0a1e] shadow-sm"
+                                ? "bg-usta-blue hover:bg-usta-blue-dark text-white shadow-sm"
+                                : "bg-usta-green hover:bg-usta-green-dark text-usta-bg shadow-sm"
                               : "bg-white/10 text-white/30 cursor-not-allowed"
                           }`}
                         >
@@ -798,16 +798,16 @@ const ProfilePanel = () => {
 
   if (loading) {
     return (
-      <div className='flex-1 flex items-center justify-center bg-[#0f0a1e]'>
+      <div className='flex-1 flex items-center justify-center bg-usta-bg'>
         <RefreshCw size={20} className='text-white/30 animate-spin' />
       </div>
     );
   }
 
-  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20 focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20";
+  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20 focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20";
 
   return (
-    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-[#0f0a1e]'>
+    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-usta-bg'>
       <div className='max-w-lg mx-auto space-y-6'>
 
         {error && (
@@ -816,15 +816,15 @@ const ProfilePanel = () => {
           </div>
         )}
         {successMsg && (
-          <div className='p-4 bg-[#39d98a]/10 border border-[#39d98a]/30 rounded-xl flex items-center gap-3 text-[#39d98a] text-sm'>
+          <div className='p-4 bg-usta-green/10 border border-usta-green/30 rounded-xl flex items-center gap-3 text-usta-green text-sm'>
             <CheckCircle2 size={16} className='shrink-0' /> {successMsg}
           </div>
         )}
 
         {/* Datos del perfil */}
-        <div className='bg-[#1e1040] rounded-2xl border border-white/10 overflow-hidden'>
-          <div className='px-6 py-4 border-b border-white/10 bg-[#4c6ef5]/10 flex items-center gap-3'>
-            <div className='p-2 rounded-xl bg-[#4c6ef5] text-white'>
+        <div className='bg-usta-card rounded-2xl border border-white/10 overflow-hidden'>
+          <div className='px-6 py-4 border-b border-white/10 bg-usta-blue/10 flex items-center gap-3'>
+            <div className='p-2 rounded-xl bg-usta-blue text-white'>
               <UserCircle size={18} />
             </div>
             <div>
@@ -865,7 +865,7 @@ const ProfilePanel = () => {
                 disabled={!profileDirty || saving}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                   profileDirty && !saving
-                    ? "bg-[#4c6ef5] hover:bg-[#3b5de5] text-white shadow-sm"
+                    ? "bg-usta-blue hover:bg-usta-blue-dark text-white shadow-sm"
                     : "bg-white/10 text-white/30 cursor-not-allowed"
                 }`}
               >
@@ -877,7 +877,7 @@ const ProfilePanel = () => {
         </div>
 
         {/* Cambiar contraseña */}
-        <div className='bg-[#1e1040] rounded-2xl border border-white/10 overflow-hidden'>
+        <div className='bg-usta-card rounded-2xl border border-white/10 overflow-hidden'>
           <div className='px-6 py-4 border-b border-white/10 bg-white/5 flex items-center gap-3'>
             <div className='p-2 rounded-xl bg-white/10 text-white/70'>
               <Lock size={18} />
@@ -1004,12 +1004,12 @@ const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>("conversations");
 
   return (
-    <div className='flex h-screen w-full bg-[#0f0a1e] font-sans text-white overflow-hidden'>
+    <div className='flex h-screen w-full bg-usta-bg font-sans text-white overflow-hidden'>
       {/* Sidebar — solo desktop */}
-      <aside className='hidden md:flex w-64 bg-[#1a0a2e] border-r border-white/10 flex-col shrink-0'>
+      <aside className='hidden md:flex w-64 bg-usta-surface border-r border-white/10 flex-col shrink-0'>
         <div className='p-6 border-b border-white/10'>
           <div className='flex items-center gap-3'>
-            <div className='bg-[#4c6ef5] p-2 rounded-lg text-white'>
+            <div className='bg-usta-blue p-2 rounded-lg text-white'>
               <GraduationCap size={18} />
             </div>
             <div>
@@ -1025,16 +1025,16 @@ const AdminPage = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? "bg-[#4c6ef5]/20 text-[#7b9fff] border border-[#4c6ef5]/30"
+                  ? "bg-usta-blue/20 text-usta-blue-lt border border-usta-blue/30"
                   : "text-white/40 hover:bg-white/5 hover:text-white/70"
               }`}
             >
-              <span className={activeTab === tab.id ? "text-[#7b9fff]" : "text-white/30"}>
+              <span className={activeTab === tab.id ? "text-usta-blue-lt" : "text-white/30"}>
                 {tab.icon}
               </span>
               {tab.label}
               {activeTab === tab.id && (
-                <ChevronRight size={14} className='ml-auto text-[#7b9fff]' />
+                <ChevronRight size={14} className='ml-auto text-usta-blue-lt' />
               )}
             </button>
           ))}
@@ -1051,7 +1051,7 @@ const AdminPage = () => {
 
       {/* Contenido principal */}
       <main className='flex-1 flex flex-col overflow-hidden pb-16 md:pb-0'>
-        <header className='bg-[#1a0a2e] border-b border-white/10 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0'>
+        <header className='bg-usta-surface border-b border-white/10 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0'>
           <div>
             <h2 className='font-bold text-white text-sm md:text-base'>
               {TABS.find((t) => t.id === activeTab)?.label}
@@ -1091,18 +1091,18 @@ const AdminPage = () => {
       </main>
 
       {/* Bottom nav — solo móvil */}
-      <nav className='md:hidden fixed bottom-0 left-0 right-0 bg-[#1a0a2e] border-t border-white/10 flex z-40'>
+      <nav className='md:hidden fixed bottom-0 left-0 right-0 bg-usta-surface border-t border-white/10 flex z-40'>
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-semibold transition-colors ${
               activeTab === tab.id
-                ? "text-[#7b9fff] bg-[#4c6ef5]/15"
+                ? "text-usta-blue-lt bg-usta-blue/15"
                 : "text-white/30"
             }`}
           >
-            <span className={activeTab === tab.id ? "text-[#7b9fff]" : "text-white/30"}>
+            <span className={activeTab === tab.id ? "text-usta-blue-lt" : "text-white/30"}>
               {tab.icon}
             </span>
             <span className='leading-none'>{tab.shortLabel ?? tab.label}</span>
