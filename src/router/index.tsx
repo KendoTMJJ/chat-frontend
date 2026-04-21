@@ -3,6 +3,7 @@ import RootLayout from "../layouts/RootLayout";
 import { AdminPage, Chat, HomePage } from "../pages";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminLoginPage from "../pages/Admin/AdminLoginPage";
+import ResetPasswordPage from "../pages/Admin/ResetPasswordPage";
 import ChatPage from "../pages/Chat/ChatPage";
 
 export const router = createBrowserRouter([
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
         ),
       },
       { path: "login", element: <AdminLoginPage /> },
+      { path: "admin/reset-password", element: <ResetPasswordPage /> },
     ],
   },
 
