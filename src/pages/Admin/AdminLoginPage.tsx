@@ -168,6 +168,10 @@ function ForgotForm({ onBack, onSent }: { onBack: () => void; onSent: () => void
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+      if (res.status === 404) {
+        setError("Este correo no está registrado en el sistema.");
+        return;
+      }
       if (!res.ok) throw new Error();
       onSent();
     } catch {
