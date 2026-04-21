@@ -37,6 +37,7 @@ import type { ConversationSummary } from "../../hooks/useAdminConversations";
 import HelpdeskPanel from "./HelpdeskPage";
 import PosgradosPanel from "./PosgradosPage";
 import { useProfile } from "../../hooks/useProfile";
+import { useAuth } from "../../hooks/useAuth";
 
 type AdminTab = "conversations" | "channels" | "helpdesk" | "posgrados" | "profile";
 type StatusFilter = "all" | "active" | "escalated" | "closed" | "expired";
@@ -966,21 +967,16 @@ const ProfilePanel = () => {
           </div>
         </div>
 
-        {/* Recuperación de emergencia */}
-        <div className='bg-amber-500/10 rounded-2xl border border-amber-500/30 p-5'>
+        {/* Recuperación de acceso */}
+        <div className='bg-white/5 rounded-2xl border border-white/10 p-5'>
           <div className='flex items-start gap-3'>
-            <KeyRound size={18} className='text-amber-400 mt-0.5 shrink-0' />
+            <KeyRound size={18} className='text-white/40 mt-0.5 shrink-0' />
             <div>
-              <h4 className='font-bold text-amber-300 text-sm mb-1'>¿Olvidaste tu contraseña?</h4>
-              <p className='text-xs text-amber-400/80 leading-relaxed'>
-                Si no puedes iniciar sesión, usa el endpoint de recuperación con el token configurado en el servidor:
-              </p>
-              <code className='block mt-2 bg-black/30 border border-amber-500/20 rounded-lg px-3 py-2 text-xs text-amber-200 font-mono leading-relaxed'>
-                POST /admin-auth/reset-password<br />
-                {'{ "resetToken": "ADMIN_RESET_TOKEN", "newPassword": "..." }'}
-              </code>
-              <p className='text-xs text-amber-400/60 mt-2'>
-                El valor de <strong className='text-amber-300'>ADMIN_RESET_TOKEN</strong> está definido en el archivo <code>.env</code> del servidor.
+              <h4 className='font-bold text-white/70 text-sm mb-1'>¿Olvidaste tu contraseña?</h4>
+              <p className='text-xs text-white/40 leading-relaxed'>
+                Si no recuerdas tu contraseña actual, cierra sesión y usa el enlace{" "}
+                <strong className='text-white/60'>"¿Olvidaste tu contraseña?"</strong>{" "}
+                en la pantalla de inicio de sesión. Recibirás un correo con instrucciones.
               </p>
             </div>
           </div>
@@ -1028,6 +1024,7 @@ const TAB_DESCRIPTIONS: Record<AdminTab, string> = {
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>("conversations");
   const activeTabDef = ALL_TABS.find((t) => t.id === activeTab)!;
+  const { logout } = useAuth();;
 
   return (
     <div className='flex h-screen w-full bg-usta-bg font-sans text-white overflow-hidden'>
@@ -1070,15 +1067,22 @@ const AdminPage = () => {
           ))}
         </nav>
 
-        {/* Salir */}
-        <div className='p-4 border-t border-white/10'>
+        {/* Acciones de salida */}
+        <div className='p-4 border-t border-white/10 space-y-2'>
           <Link
             to='/'
+            className='flex items-center justify-center gap-2 w-full py-2.5 bg-white/5 hover:bg-white/10
+              text-white/50 hover:text-white/80 rounded-xl text-sm font-semibold transition-all border border-white/10'
+          >
+            <ChevronRight size={15} /> Ir al inicio
+          </Link>
+          <button
+            onClick={logout}
             className='flex items-center justify-center gap-2 w-full py-2.5 bg-white/5 hover:bg-red-500/15
               text-white/50 hover:text-red-400 rounded-xl text-sm font-semibold transition-all border border-white/10 hover:border-red-500/30'
           >
-            <LogOut size={15} /> Salir del panel
-          </Link>
+            <LogOut size={15} /> Cerrar sesión
+          </button>
         </div>
       </aside>
 
@@ -1103,13 +1107,22 @@ const AdminPage = () => {
             <span className='hidden sm:block text-[10px] text-white/40 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full font-medium tabular-nums'>
               {new Date().toLocaleDateString("es-CO", { day: "numeric", month: "short", year: "numeric" })}
             </span>
-            <Link
-              to='/'
-              className='md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-red-500/15
-                text-white/50 hover:text-red-400 rounded-xl text-xs font-semibold transition-all border border-white/10'
-            >
-              <LogOut size={13} /> Salir
-            </Link>
+            <div className='md:hidden flex items-center gap-1.5'>
+              <Link
+                to='/'
+                className='flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10
+                  text-white/50 hover:text-white/80 rounded-xl text-xs font-semibold transition-all border border-white/10'
+              >
+                <ChevronRight size={13} /> Inicio
+              </Link>
+              <button
+                onClick={logout}
+                className='flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-red-500/15
+                  text-white/50 hover:text-red-400 rounded-xl text-xs font-semibold transition-all border border-white/10 hover:border-red-500/30'
+              >
+                <LogOut size={13} /> Sesión
+              </button>
+            </div>
           </div>
         </header>
 
