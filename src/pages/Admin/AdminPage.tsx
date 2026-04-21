@@ -44,19 +44,19 @@ type StatusFilter = "all" | "active" | "escalated" | "closed" | "expired";
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   active: {
     label: "Activa",
-    color: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    color: "bg-[#39d98a]/15 text-[#39d98a] border-[#39d98a]/30",
   },
   escalated: {
     label: "Escalada",
-    color: "bg-amber-100 text-amber-700 border-amber-200",
+    color: "bg-amber-500/15 text-amber-400 border-amber-500/30",
   },
   closed: {
     label: "Cerrada",
-    color: "bg-slate-100 text-slate-500 border-slate-200",
+    color: "bg-white/10 text-white/40 border-white/15",
   },
   expired: {
     label: "Expirada",
-    color: "bg-red-50 text-red-500 border-red-200",
+    color: "bg-red-500/15 text-red-400 border-red-500/30",
   },
 };
 
@@ -68,22 +68,22 @@ const ConfirmModal = ({
   onConfirm: () => void;
   onCancel: () => void;
 }) => (
-  <div className='fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center'>
-    <div className='bg-white rounded-2xl shadow-xl border border-slate-200 p-6 max-w-sm w-full mx-4'>
+  <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center'>
+    <div className='bg-[#1e1040] rounded-2xl border border-white/10 p-6 max-w-sm w-full mx-4'>
       <div className='flex items-center gap-3 mb-4'>
-        <div className='bg-red-100 p-2 rounded-xl'>
-          <Trash2 size={18} className='text-red-600' />
+        <div className='bg-red-500/20 p-2 rounded-xl'>
+          <Trash2 size={18} className='text-red-400' />
         </div>
-        <h3 className='font-bold text-slate-800'>Eliminar conversación</h3>
+        <h3 className='font-bold text-white'>Eliminar conversación</h3>
       </div>
-      <p className='text-sm text-slate-500 mb-6'>
+      <p className='text-sm text-white/50 mb-6'>
         Esta acción eliminará permanentemente la conversación y todos sus
         mensajes. No se puede deshacer.
       </p>
       <div className='flex gap-3'>
         <button
           onClick={onCancel}
-          className='flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all'
+          className='flex-1 py-2.5 rounded-xl border border-white/10 text-sm font-semibold text-white/70 hover:bg-white/5 transition-all'
         >
           Cancelar
         </button>
@@ -171,37 +171,31 @@ const ConversationsPanel = () => {
 
       <div className='flex flex-1 h-full overflow-hidden'>
         {/* Lista */}
-        <div className={`${showDetail ? 'hidden md:flex' : 'flex'} w-full md:w-80 border-r border-slate-200 flex-col bg-white`}>
-          <div className='p-4 space-y-3 border-b border-slate-100'>
+        <div className={`${showDetail ? 'hidden md:flex' : 'flex'} w-full md:w-80 border-r border-white/10 flex-col bg-[#0f0a1e]`}>
+          <div className='p-4 space-y-3 border-b border-white/10'>
             <div className='relative'>
               <Search
-                className='absolute left-3 top-1/2 -translate-y-1/2 text-slate-400'
+                className='absolute left-3 top-1/2 -translate-y-1/2 text-white/30'
                 size={14}
               />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder='Buscar por ID, nombre, correo...'
-                className='w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-xs focus:ring-2 focus:ring-blue-500 outline-none transition-all'
+                className='w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-3 text-xs text-white
+                  focus:ring-2 focus:ring-[#4c6ef5]/20 focus:border-[#4c6ef5]/40 outline-none transition-all
+                  placeholder:text-white/25'
               />
             </div>
             <div className='flex gap-1 flex-wrap'>
-              {(
-                [
-                  "all",
-                  "active",
-                  "escalated",
-                  "closed",
-                  "expired",
-                ] as StatusFilter[]
-              ).map((s) => (
+              {(["all", "active", "escalated", "closed", "expired"] as StatusFilter[]).map((s) => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
                   className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-all ${
                     statusFilter === s
-                      ? "bg-slate-900 text-white border-slate-900"
-                      : "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
+                      ? "bg-white/15 text-white border-white/25"
+                      : "bg-white/5 text-white/40 border-white/10 hover:border-white/20"
                   }`}
                 >
                   {s === "all" ? "Todas" : STATUS_LABELS[s]?.label}
@@ -213,10 +207,10 @@ const ConversationsPanel = () => {
           <div className='flex-1 overflow-y-auto'>
             {loading ? (
               <div className='flex items-center justify-center h-32'>
-                <RefreshCw size={18} className='text-slate-400 animate-spin' />
+                <RefreshCw size={18} className='text-white/30 animate-spin' />
               </div>
             ) : filtered.length === 0 ? (
-              <div className='text-center py-12 text-slate-400 text-xs'>
+              <div className='text-center py-12 text-white/30 text-xs'>
                 Sin resultados
               </div>
             ) : (
@@ -224,14 +218,14 @@ const ConversationsPanel = () => {
                 <button
                   key={conv.conversationId}
                   onClick={() => handleSelectMobile(conv.conversationId)}
-                  className={`w-full p-4 text-left border-b border-slate-100 transition-all group ${
+                  className={`w-full p-4 text-left border-b border-white/5 transition-all group ${
                     selectedId === conv.conversationId
-                      ? "bg-blue-50 border-l-2 border-l-blue-500"
-                      : "hover:bg-slate-50 border-l-2 border-l-transparent"
-                  } ${conv.status === "closed" ? "opacity-60" : ""}`}
+                      ? "bg-[#4c6ef5]/15 border-l-2 border-l-[#4c6ef5]"
+                      : "hover:bg-white/5 border-l-2 border-l-transparent"
+                  } ${conv.status === "closed" ? "opacity-50" : ""}`}
                 >
                   <div className='flex justify-between items-start mb-1.5'>
-                    <span className='font-mono text-[10px] font-bold text-slate-400'>
+                    <span className='font-mono text-[10px] font-bold text-white/30'>
                       #{conv.conversationId.slice(0, 8)}
                     </span>
                     <div className='flex items-center gap-1'>
@@ -240,13 +234,12 @@ const ConversationsPanel = () => {
                       >
                         {STATUS_LABELS[conv.status]?.label}
                       </span>
-                      {/* Acciones — visibles en hover */}
                       <div className='flex gap-0.5'>
                         {conv.status !== "closed" && (
                           <button
                             onClick={(e) => handleClose(e, conv.conversationId)}
                             title='Marcar como resuelta'
-                            className='p-1 rounded hover:bg-emerald-100 text-slate-400 hover:text-emerald-600 transition-colors'
+                            className='p-1 rounded hover:bg-[#39d98a]/20 text-white/30 hover:text-[#39d98a] transition-colors'
                           >
                             <CheckCheck size={13} />
                           </button>
@@ -257,7 +250,7 @@ const ConversationsPanel = () => {
                             setConfirmDeleteId(conv.conversationId);
                           }}
                           title='Eliminar'
-                          className='p-1 rounded hover:bg-red-100 text-slate-400 hover:text-red-600 transition-colors'
+                          className='p-1 rounded hover:bg-red-500/20 text-white/30 hover:text-red-400 transition-colors'
                         >
                           <Trash2 size={13} />
                         </button>
@@ -265,38 +258,33 @@ const ConversationsPanel = () => {
                     </div>
                   </div>
 
-                  {/* Nombre y correo si es escalada */}
                   {conv.nombre && (
                     <div className='flex items-center gap-1 mb-1'>
-                      <UserCircle
-                        size={11}
-                        className='text-amber-500 shrink-0'
-                      />
-                      <span className='text-xs font-semibold text-slate-700 truncate'>
+                      <UserCircle size={11} className='text-amber-400 shrink-0' />
+                      <span className='text-xs font-semibold text-white truncate'>
                         {conv.nombre}
                       </span>
                     </div>
                   )}
                   {conv.correo && (
                     <div className='flex items-center gap-1 mb-1'>
-                      <AtSign size={11} className='text-slate-400 shrink-0' />
-                      <span className='text-[11px] text-slate-500 truncate'>
+                      <AtSign size={11} className='text-white/30 shrink-0' />
+                      <span className='text-[11px] text-white/50 truncate'>
                         {conv.correo}
                       </span>
                     </div>
                   )}
-
                   {conv.title && (
-                    <p className='text-xs font-semibold text-slate-700 mb-1 truncate'>
+                    <p className='text-xs font-semibold text-white/80 mb-1 truncate'>
                       📋 {conv.title}
                     </p>
                   )}
-                  <p className='text-xs text-slate-500 truncate leading-relaxed'>
+                  <p className='text-xs text-white/40 truncate leading-relaxed'>
                     {conv.lastMessage || "Sin mensajes"}
                   </p>
                   <div className='flex items-center gap-2 mt-2'>
-                    <Clock size={10} className='text-slate-300' />
-                    <span className='text-[10px] text-slate-400'>
+                    <Clock size={10} className='text-white/20' />
+                    <span className='text-[10px] text-white/30'>
                       {conv.updatedAt}
                     </span>
                   </div>
@@ -305,28 +293,27 @@ const ConversationsPanel = () => {
             )}
           </div>
 
-          <div className='p-3 border-t border-slate-100 text-center'>
-            <span className='text-[10px] text-slate-400'>
+          <div className='p-3 border-t border-white/10 text-center'>
+            <span className='text-[10px] text-white/25'>
               {filtered.length} conversaciones
             </span>
           </div>
         </div>
 
         {/* Detalle */}
-        <div className={`${showDetail ? 'flex' : 'hidden md:flex'} flex-1 flex-col overflow-hidden bg-slate-50`}>
+        <div className={`${showDetail ? 'flex' : 'hidden md:flex'} flex-1 flex-col overflow-hidden bg-[#0f0a1e]`}>
           {selectedId ? (
             <>
-              <div className='bg-white border-b border-slate-200 px-4 md:px-6 py-4 flex items-start justify-between shrink-0'>
-                {/* Botón volver — solo móvil */}
+              <div className='bg-[#1a0a2e] border-b border-white/10 px-4 md:px-6 py-4 flex items-start justify-between shrink-0'>
                 <button
                   onClick={() => setShowDetail(false)}
-                  className='md:hidden flex items-center gap-1.5 text-sm font-semibold text-blue-600 mr-3 shrink-0 self-center'
+                  className='md:hidden flex items-center gap-1.5 text-sm font-semibold text-[#7b9fff] mr-3 shrink-0 self-center'
                 >
                   ← Volver
                 </button>
                 <div className='space-y-0.5'>
                   <div className='flex items-center gap-2'>
-                    <h3 className='font-bold text-slate-800 text-sm'>
+                    <h3 className='font-bold text-white text-sm'>
                       Detalle de conversación
                     </h3>
                     {selectedConv?.status && (
@@ -338,35 +325,32 @@ const ConversationsPanel = () => {
                     )}
                   </div>
                   {selectedConv?.nombre && (
-                    <p className='text-xs text-slate-600 flex items-center gap-1'>
-                      <UserCircle size={12} className='text-amber-500' />
-                      <span className='font-semibold'>
-                        {selectedConv.nombre}
-                      </span>
+                    <p className='text-xs text-white/60 flex items-center gap-1'>
+                      <UserCircle size={12} className='text-amber-400' />
+                      <span className='font-semibold'>{selectedConv.nombre}</span>
                     </p>
                   )}
                   {selectedConv?.correo && (
-                    <p className='text-xs text-slate-500 flex items-center gap-1'>
-                      <AtSign size={12} className='text-slate-400' />
+                    <p className='text-xs text-white/40 flex items-center gap-1'>
+                      <AtSign size={12} className='text-white/30' />
                       {selectedConv.correo}
                     </p>
                   )}
                   {selectedConv?.title && (
-                    <p className='text-xs text-amber-600 font-semibold'>
+                    <p className='text-xs text-amber-400 font-semibold'>
                       📋 {selectedConv.title}
                     </p>
                   )}
-                  <p className='text-[10px] font-mono text-slate-400'>
+                  <p className='text-[10px] font-mono text-white/25'>
                     ID: {selectedId}
                   </p>
                 </div>
 
-                {/* Acciones del detalle */}
                 <div className='flex items-center gap-2 shrink-0 ml-2'>
                   {selectedConv?.status !== "closed" && (
                     <button
                       onClick={(e) => handleClose(e, selectedId)}
-                      className='flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition-all'
+                      className='flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border border-[#39d98a]/30 bg-[#39d98a]/10 text-[#39d98a] text-xs font-semibold hover:bg-[#39d98a]/20 transition-all'
                     >
                       <CheckCheck size={13} />
                       <span className='hidden sm:inline'>Marcar resuelta</span>
@@ -374,7 +358,7 @@ const ConversationsPanel = () => {
                   )}
                   <button
                     onClick={() => setConfirmDeleteId(selectedId)}
-                    className='flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition-all'
+                    className='flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-all'
                   >
                     <Trash2 size={13} />
                     <span className='hidden sm:inline'>Eliminar</span>
@@ -382,14 +366,11 @@ const ConversationsPanel = () => {
                 </div>
               </div>
 
-              <div className='flex-1 overflow-y-auto p-6'>
+              <div className='flex-1 overflow-y-auto p-6 bg-[#0f0a1e]'>
                 <div className='max-w-2xl mx-auto space-y-4'>
                   {chatHistory.length === 0 ? (
-                    <div className='text-center py-16 text-slate-400 text-sm'>
-                      <MessageSquare
-                        size={32}
-                        className='mx-auto mb-3 text-slate-200'
-                      />
+                    <div className='text-center py-16 text-white/30 text-sm'>
+                      <MessageSquare size={32} className='mx-auto mb-3 text-white/10' />
                       Cargando historial...
                     </div>
                   ) : (
@@ -401,32 +382,26 @@ const ConversationsPanel = () => {
                           className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}
                         >
                           <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isUser ? "bg-slate-800 text-white" : "bg-blue-600 text-white"}`}
+                            className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isUser ? "bg-white/10 text-white/60" : "bg-[#4c6ef5]/20 text-[#7b9fff]"}`}
                           >
                             {isUser ? <User size={14} /> : <Bot size={14} />}
                           </div>
                           <div
-                            className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm shadow-sm ${isUser ? "bg-slate-800 text-white rounded-tr-none" : "bg-white text-slate-700 border border-slate-100 rounded-tl-none"}`}
+                            className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm ${isUser ? "bg-[#4c6ef5] text-white rounded-tr-none" : "bg-[#1e1040] text-white/85 border border-white/10 rounded-tl-none"}`}
                           >
                             <ReactMarkdown
                               components={{
                                 p: ({ ...props }) => (
-                                  <p
-                                    className='mb-1 last:mb-0 leading-relaxed'
-                                    {...props}
-                                  />
+                                  <p className='mb-1 last:mb-0 leading-relaxed' {...props} />
                                 ),
                                 strong: ({ ...props }) => (
-                                  <span
-                                    className={`font-bold ${isUser ? "text-white" : "text-slate-900"}`}
-                                    {...props}
-                                  />
+                                  <span className='font-bold' {...props} />
                                 ),
                                 a: ({ ...props }) => (
                                   <a
                                     target='_blank'
                                     rel='noopener noreferrer'
-                                    className={`underline ${isUser ? "text-blue-300" : "text-blue-600"}`}
+                                    className='underline text-[#7b9fff]'
                                     {...props}
                                   />
                                 ),
@@ -434,13 +409,11 @@ const ConversationsPanel = () => {
                             >
                               {msg.message}
                             </ReactMarkdown>
-                            <p
-                              className={`text-[10px] mt-1.5 ${isUser ? "text-slate-400 text-right" : "text-slate-400"}`}
-                            >
-                              {new Date(msg.createAt).toLocaleTimeString(
-                                "es-CO",
-                                { hour: "2-digit", minute: "2-digit" },
-                              )}
+                            <p className={`text-[10px] mt-1.5 text-white/30 ${isUser ? "text-right" : ""}`}>
+                              {new Date(msg.createAt).toLocaleTimeString("es-CO", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </p>
                           </div>
                         </div>
@@ -451,14 +424,14 @@ const ConversationsPanel = () => {
               </div>
             </>
           ) : (
-            <div className='flex-1 flex flex-col items-center justify-center text-slate-400'>
-              <div className='bg-white p-8 rounded-2xl shadow-sm border border-slate-200 mb-4'>
-                <MessageSquare size={40} className='text-slate-200' />
+            <div className='flex-1 flex flex-col items-center justify-center text-white/30'>
+              <div className='bg-[#1e1040] border border-white/10 p-8 rounded-2xl mb-4'>
+                <MessageSquare size={40} className='text-white/10' />
               </div>
-              <p className='text-sm font-medium text-slate-500'>
+              <p className='text-sm font-medium text-white/40'>
                 Selecciona una conversación
               </p>
-              <p className='text-xs text-slate-400 mt-1'>
+              <p className='text-xs text-white/25 mt-1'>
                 para ver el historial detallado
               </p>
             </div>
@@ -470,10 +443,7 @@ const ConversationsPanel = () => {
 };
 
 // ─── Channels Panel ───────────────────────────────────────────────────────────
-const ALL_CONTEXTS: Array<"posgrados" | "mesa_ayuda"> = [
-  "posgrados",
-  "mesa_ayuda",
-];
+const ALL_CONTEXTS: Array<"posgrados" | "mesa_ayuda"> = ["posgrados", "mesa_ayuda"];
 
 const CONTEXT_INFO: Record<
   string,
@@ -516,17 +486,11 @@ const ChannelsPanel = () => {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const existingContexts = channels.map((ch) => ch.context);
-  const missingContexts = ALL_CONTEXTS.filter(
-    (ctx) => !existingContexts.includes(ctx),
-  );
+  const missingContexts = ALL_CONTEXTS.filter((ctx) => !existingContexts.includes(ctx));
 
   const getEdited = (ch: SupportChannel) => editing[ch.id] ?? ch;
 
-  const handleChange = (
-    ch: SupportChannel,
-    field: "whatsapp" | "email",
-    value: string,
-  ) => {
+  const handleChange = (ch: SupportChannel, field: "whatsapp" | "email", value: string) => {
     setEditing((prev) => ({
       ...prev,
       [ch.id]: { ...(prev[ch.id] ?? ch), [field]: value },
@@ -566,11 +530,14 @@ const ChannelsPanel = () => {
     setShowCreateForm(true);
   };
 
-  const isNewChannelValid =
-    newChannel.whatsapp.trim() && newChannel.email.trim();
+  const isNewChannelValid = newChannel.whatsapp.trim() && newChannel.email.trim();
+
+  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20";
+  const focusBlue = "focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20";
+  const focusGreen = "focus:border-[#39d98a]/50 focus:ring-2 focus:ring-[#39d98a]/20";
 
   return (
-    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50'>
+    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-[#0f0a1e]'>
       {confirmDeleteId && (
         <ConfirmModal
           onConfirm={handleDeleteConfirm}
@@ -580,17 +547,15 @@ const ChannelsPanel = () => {
       <div className='max-w-2xl mx-auto'>
         <div className='mb-8 flex items-start justify-between'>
           <div>
-            <h2 className='text-xl font-bold text-slate-800'>
-              Canales de Contacto
-            </h2>
-            <p className='text-sm text-slate-500 mt-1'>
+            <h2 className='text-xl font-bold text-white'>Canales de Contacto</h2>
+            <p className='text-sm text-white/40 mt-1'>
               Estos canales se muestran al usuario al finalizar un escalado.
             </p>
           </div>
           {!loading && missingContexts.length > 0 && !showCreateForm && (
             <button
               onClick={handleOpenCreateForm}
-              className='flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-sm transition-all'
+              className='flex items-center gap-2 px-4 py-2 rounded-xl bg-[#4c6ef5] hover:bg-[#3b5de5] text-white text-sm font-bold shadow-sm transition-all'
             >
               <Plus size={15} /> Nuevo canal
             </button>
@@ -598,103 +563,82 @@ const ChannelsPanel = () => {
         </div>
 
         {error && (
-          <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 text-sm'>
+          <div className='mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3 text-red-300 text-sm'>
             <AlertCircle size={16} className='shrink-0' /> {error}
           </div>
         )}
         {successMsg && (
-          <div className='mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-3 text-emerald-700 text-sm'>
+          <div className='mb-6 p-4 bg-[#39d98a]/10 border border-[#39d98a]/30 rounded-xl flex items-center gap-3 text-[#39d98a] text-sm'>
             <CheckCircle2 size={16} className='shrink-0' /> {successMsg}
           </div>
         )}
 
         {loading ? (
           <div className='flex items-center justify-center h-48'>
-            <RefreshCw size={20} className='text-slate-400 animate-spin' />
+            <RefreshCw size={20} className='text-white/30 animate-spin' />
           </div>
         ) : (
           <div className='space-y-6'>
-            {/* Formulario de creación */}
             {showCreateForm && (
-              <div className='bg-white rounded-2xl border-2 border-dashed border-blue-300 shadow-sm overflow-hidden'>
-                <div className='px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-blue-50'>
+              <div className='bg-[#1e1040] rounded-2xl border-2 border-dashed border-[#4c6ef5]/40 overflow-hidden'>
+                <div className='px-6 py-4 border-b border-white/10 flex items-center justify-between bg-[#4c6ef5]/10'>
                   <div className='flex items-center gap-3'>
-                    <div className='p-2 rounded-xl bg-blue-600 text-white'>
+                    <div className='p-2 rounded-xl bg-[#4c6ef5] text-white'>
                       <Plus size={18} />
                     </div>
                     <div>
-                      <h3 className='font-bold text-slate-800 text-sm'>
-                        Nuevo canal de contacto
-                      </h3>
-                      <p className='text-xs text-slate-500'>
-                        Solo se puede crear un canal por contexto.
-                      </p>
+                      <h3 className='font-bold text-white text-sm'>Nuevo canal de contacto</h3>
+                      <p className='text-xs text-white/40'>Solo se puede crear un canal por contexto.</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setShowCreateForm(false)}
-                    className='p-1.5 rounded-lg hover:bg-blue-100 text-slate-400 hover:text-slate-600 transition-colors'
+                    className='p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white/70 transition-colors'
                   >
                     <X size={16} />
                   </button>
                 </div>
                 <div className='p-6 space-y-4'>
                   <div>
-                    <label className='flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                    <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                       Contexto
                     </label>
                     <div className='flex gap-2'>
                       {missingContexts.map((ctx) => (
                         <button
                           key={ctx}
-                          onClick={() =>
-                            setNewChannel((prev) => ({ ...prev, context: ctx }))
-                          }
+                          onClick={() => setNewChannel((prev) => ({ ...prev, context: ctx }))}
                           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${
                             newChannel.context === ctx
-                              ? "bg-blue-600 text-white border-blue-600"
-                              : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
+                              ? "bg-[#4c6ef5] text-white border-[#4c6ef5]"
+                              : "bg-white/5 text-white/60 border-white/10 hover:border-white/25"
                           }`}
                         >
-                          {ctx === "posgrados" ? (
-                            <GraduationCap size={14} />
-                          ) : (
-                            <Headphones size={14} />
-                          )}
+                          {ctx === "posgrados" ? <GraduationCap size={14} /> : <Headphones size={14} />}
                           {CONTEXT_INFO[ctx].label}
                         </button>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <label className='flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                    <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                       <Phone size={12} /> WhatsApp
                     </label>
                     <input
                       value={newChannel.whatsapp}
-                      onChange={(e) =>
-                        setNewChannel((prev) => ({
-                          ...prev,
-                          whatsapp: e.target.value,
-                        }))
-                      }
-                      className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all'
+                      onChange={(e) => setNewChannel((prev) => ({ ...prev, whatsapp: e.target.value }))}
+                      className={`${inputClass} ${focusBlue}`}
                       placeholder='+57 300 000 0000'
                     />
                   </div>
                   <div>
-                    <label className='flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                    <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                       <Mail size={12} /> Correo electrónico
                     </label>
                     <input
                       value={newChannel.email}
-                      onChange={(e) =>
-                        setNewChannel((prev) => ({
-                          ...prev,
-                          email: e.target.value,
-                        }))
-                      }
-                      className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all'
+                      onChange={(e) => setNewChannel((prev) => ({ ...prev, email: e.target.value }))}
+                      className={`${inputClass} ${focusBlue}`}
                       placeholder='contacto@santoto.edu.co'
                     />
                   </div>
@@ -704,8 +648,8 @@ const ChannelsPanel = () => {
                       disabled={!isNewChannelValid || saving}
                       className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                         isNewChannelValid && !saving
-                          ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
-                          : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                          ? "bg-[#4c6ef5] hover:bg-[#3b5de5] text-white shadow-sm"
+                          : "bg-white/10 text-white/30 cursor-not-allowed"
                       }`}
                     >
                       <Save size={14} />
@@ -716,62 +660,52 @@ const ChannelsPanel = () => {
               </div>
             )}
 
-            {/* Canales existentes */}
             {channels.map((ch: SupportChannel) => {
               const info = CONTEXT_INFO[ch.context] ?? CONTEXT_INFO.posgrados;
               const edited = getEdited(ch);
               const dirty = isDirty(ch);
               const { isBlue } = info;
+              const focusClass = isBlue ? focusBlue : focusGreen;
+              const dirtyBorder = isBlue
+                ? "border-[#4c6ef5]/50 ring-2 ring-[#4c6ef5]/20"
+                : "border-[#39d98a]/50 ring-2 ring-[#39d98a]/20";
 
               return (
-                <div
-                  key={ch.id}
-                  className='bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden'
-                >
-                  <div
-                    className={`px-6 py-4 border-b border-slate-100 flex items-center gap-3 ${isBlue ? "bg-blue-50" : "bg-violet-50"}`}
-                  >
-                    <div
-                      className={`p-2 rounded-xl ${isBlue ? "bg-blue-600" : "bg-violet-600"} text-white`}
-                    >
+                <div key={ch.id} className='bg-[#1e1040] rounded-2xl border border-white/10 overflow-hidden'>
+                  <div className={`px-6 py-4 border-b border-white/10 flex items-center gap-3 ${isBlue ? "bg-[#4c6ef5]/10" : "bg-[#39d98a]/10"}`}>
+                    <div className={`p-2 rounded-xl text-white ${isBlue ? "bg-[#4c6ef5]" : "bg-[#39d98a]/20 border border-[#39d98a]/30 !text-[#39d98a]"}`}>
                       {info.icon}
                     </div>
                     <div>
-                      <h3 className='font-bold text-slate-800 text-sm'>
-                        {info.label}
-                      </h3>
-                      <p className='text-xs text-slate-500'>{info.desc}</p>
+                      <h3 className='font-bold text-white text-sm'>{info.label}</h3>
+                      <p className='text-xs text-white/40'>{info.desc}</p>
                     </div>
                   </div>
                   <div className='p-6 space-y-4'>
                     <div>
-                      <label className='flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                      <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                         <Phone size={12} /> WhatsApp
                       </label>
                       <input
                         value={edited.whatsapp}
-                        onChange={(e) =>
-                          handleChange(ch, "whatsapp", e.target.value)
-                        }
-                        className={`w-full bg-slate-50 border rounded-xl py-2.5 px-4 text-sm outline-none transition-all ${dirty ? (isBlue ? "border-blue-400 ring-2 ring-blue-100" : "border-violet-400 ring-2 ring-violet-100") : "border-slate-200 focus:border-slate-400"}`}
+                        onChange={(e) => handleChange(ch, "whatsapp", e.target.value)}
+                        className={`${inputClass} ${dirty ? dirtyBorder : focusClass}`}
                         placeholder='+57 300 000 0000'
                       />
                     </div>
                     <div>
-                      <label className='flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                      <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                         <Mail size={12} /> Correo electrónico
                       </label>
                       <input
                         value={edited.email}
-                        onChange={(e) =>
-                          handleChange(ch, "email", e.target.value)
-                        }
-                        className={`w-full bg-slate-50 border rounded-xl py-2.5 px-4 text-sm outline-none transition-all ${dirty ? (isBlue ? "border-blue-400 ring-2 ring-blue-100" : "border-violet-400 ring-2 ring-violet-100") : "border-slate-200 focus:border-slate-400"}`}
+                        onChange={(e) => handleChange(ch, "email", e.target.value)}
+                        className={`${inputClass} ${dirty ? dirtyBorder : focusClass}`}
                         placeholder='contacto@santoto.edu.co'
                       />
                     </div>
                     <div className='flex items-center justify-between pt-2'>
-                      <p className='text-[10px] text-slate-400'>
+                      <p className='text-[10px] text-white/25'>
                         Actualizado:{" "}
                         {new Date(ch.updatedAt).toLocaleDateString("es-CO", {
                           day: "2-digit",
@@ -783,15 +717,20 @@ const ChannelsPanel = () => {
                         <button
                           onClick={() => setConfirmDeleteId(ch.id)}
                           disabled={saving}
-                          className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed'
+                          className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed'
                         >
-                          <Trash2 size={14} />
-                          Eliminar
+                          <Trash2 size={14} /> Eliminar
                         </button>
                         <button
                           onClick={() => handleSave(ch)}
                           disabled={!dirty || saving}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${dirty ? (isBlue ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm" : "bg-violet-600 hover:bg-violet-700 text-white shadow-sm") : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                            dirty
+                              ? isBlue
+                                ? "bg-[#4c6ef5] hover:bg-[#3b5de5] text-white shadow-sm"
+                                : "bg-[#39d98a] hover:bg-[#2bc77a] text-[#0f0a1e] shadow-sm"
+                              : "bg-white/10 text-white/30 cursor-not-allowed"
+                          }`}
                         >
                           <Save size={14} />
                           {saving ? "Guardando..." : "Guardar cambios"}
@@ -816,7 +755,6 @@ const ProfilePanel = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profileDirty, setProfileDirty] = useState(false);
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -860,61 +798,63 @@ const ProfilePanel = () => {
 
   if (loading) {
     return (
-      <div className='flex-1 flex items-center justify-center'>
-        <RefreshCw size={20} className='text-slate-400 animate-spin' />
+      <div className='flex-1 flex items-center justify-center bg-[#0f0a1e]'>
+        <RefreshCw size={20} className='text-white/30 animate-spin' />
       </div>
     );
   }
 
+  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20 focus:border-[#4c6ef5]/50 focus:ring-2 focus:ring-[#4c6ef5]/20";
+
   return (
-    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50'>
+    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-[#0f0a1e]'>
       <div className='max-w-lg mx-auto space-y-6'>
 
         {error && (
-          <div className='p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 text-sm'>
+          <div className='p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3 text-red-300 text-sm'>
             <AlertCircle size={16} className='shrink-0' /> {error}
           </div>
         )}
         {successMsg && (
-          <div className='p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-3 text-emerald-700 text-sm'>
+          <div className='p-4 bg-[#39d98a]/10 border border-[#39d98a]/30 rounded-xl flex items-center gap-3 text-[#39d98a] text-sm'>
             <CheckCircle2 size={16} className='shrink-0' /> {successMsg}
           </div>
         )}
 
         {/* Datos del perfil */}
-        <div className='bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden'>
-          <div className='px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3'>
-            <div className='p-2 rounded-xl bg-blue-600 text-white'>
+        <div className='bg-[#1e1040] rounded-2xl border border-white/10 overflow-hidden'>
+          <div className='px-6 py-4 border-b border-white/10 bg-[#4c6ef5]/10 flex items-center gap-3'>
+            <div className='p-2 rounded-xl bg-[#4c6ef5] text-white'>
               <UserCircle size={18} />
             </div>
             <div>
-              <h3 className='font-bold text-slate-800 text-sm'>Datos del perfil</h3>
-              <p className='text-xs text-slate-500'>Nombre y correo de acceso al panel</p>
+              <h3 className='font-bold text-white text-sm'>Datos del perfil</h3>
+              <p className='text-xs text-white/40'>Nombre y correo de acceso al panel</p>
             </div>
           </div>
           <div className='p-6 space-y-4'>
             <div>
-              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+              <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                 Nombre
               </label>
               <input
                 value={name}
                 onChange={(e) => handleProfileChange("name", e.target.value)}
-                className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all'
+                className={inputClass}
                 placeholder='Nombre del administrador'
               />
             </div>
             <div>
-              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+              <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                 Correo electrónico
               </label>
               <div className='relative'>
-                <AtSign size={14} className='absolute left-3 top-1/2 -translate-y-1/2 text-slate-400' />
+                <AtSign size={14} className='absolute left-3 top-1/2 -translate-y-1/2 text-white/30' />
                 <input
                   type='email'
                   value={email}
                   onChange={(e) => handleProfileChange("email", e.target.value)}
-                  className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-9 pr-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all'
+                  className={`${inputClass} pl-9`}
                   placeholder='admin@santoto.edu.co'
                 />
               </div>
@@ -923,7 +863,11 @@ const ProfilePanel = () => {
               <button
                 onClick={handleSaveProfile}
                 disabled={!profileDirty || saving}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${profileDirty && !saving ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  profileDirty && !saving
+                    ? "bg-[#4c6ef5] hover:bg-[#3b5de5] text-white shadow-sm"
+                    : "bg-white/10 text-white/30 cursor-not-allowed"
+                }`}
               >
                 <Save size={14} />
                 {saving ? "Guardando..." : "Guardar cambios"}
@@ -933,19 +877,19 @@ const ProfilePanel = () => {
         </div>
 
         {/* Cambiar contraseña */}
-        <div className='bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden'>
-          <div className='px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3'>
-            <div className='p-2 rounded-xl bg-slate-700 text-white'>
+        <div className='bg-[#1e1040] rounded-2xl border border-white/10 overflow-hidden'>
+          <div className='px-6 py-4 border-b border-white/10 bg-white/5 flex items-center gap-3'>
+            <div className='p-2 rounded-xl bg-white/10 text-white/70'>
               <Lock size={18} />
             </div>
             <div>
-              <h3 className='font-bold text-slate-800 text-sm'>Cambiar contraseña</h3>
-              <p className='text-xs text-slate-500'>Mínimo 8 caracteres</p>
+              <h3 className='font-bold text-white text-sm'>Cambiar contraseña</h3>
+              <p className='text-xs text-white/40'>Mínimo 8 caracteres</p>
             </div>
           </div>
           <div className='p-6 space-y-4'>
             <div>
-              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+              <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                 Contraseña actual
               </label>
               <div className='relative'>
@@ -953,20 +897,20 @@ const ProfilePanel = () => {
                   type={showCurrent ? "text" : "password"}
                   value={currentPassword}
                   onChange={(e) => { setCurrentPassword(e.target.value); clearFeedback(); }}
-                  className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 pr-10 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all'
+                  className={`${inputClass} pr-10`}
                   placeholder='Tu contraseña actual'
                 />
                 <button
                   type='button'
                   onClick={() => setShowCurrent((v) => !v)}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600'
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60'
                 >
                   {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
             <div>
-              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+              <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                 Nueva contraseña
               </label>
               <div className='relative'>
@@ -974,42 +918,46 @@ const ProfilePanel = () => {
                   type={showNew ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => { setNewPassword(e.target.value); clearFeedback(); }}
-                  className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 pr-10 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all'
+                  className={`${inputClass} pr-10`}
                   placeholder='Mínimo 8 caracteres'
                 />
                 <button
                   type='button'
                   onClick={() => setShowNew((v) => !v)}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600'
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60'
                 >
                   {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
             <div>
-              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+              <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
                 Confirmar contraseña
               </label>
               <input
                 type='password'
                 value={confirmPassword}
                 onChange={(e) => { setConfirmPassword(e.target.value); clearFeedback(); }}
-                className={`w-full bg-slate-50 border rounded-xl py-2.5 px-4 text-sm outline-none transition-all ${
+                className={`${inputClass} ${
                   confirmPassword && newPassword !== confirmPassword
-                    ? "border-red-300 focus:ring-2 focus:ring-red-100"
-                    : "border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                    ? "border-red-500/50 focus:ring-red-500/20"
+                    : ""
                 }`}
                 placeholder='Repite la nueva contraseña'
               />
               {confirmPassword && newPassword !== confirmPassword && (
-                <p className='text-xs text-red-500 mt-1'>Las contraseñas no coinciden</p>
+                <p className='text-xs text-red-400 mt-1'>Las contraseñas no coinciden</p>
               )}
             </div>
             <div className='flex justify-end pt-2'>
               <button
                 onClick={handleChangePassword}
                 disabled={!passwordValid || saving}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${passwordValid && !saving ? "bg-slate-800 hover:bg-slate-900 text-white shadow-sm" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  passwordValid && !saving
+                    ? "bg-white/15 hover:bg-white/20 text-white border border-white/15 shadow-sm"
+                    : "bg-white/5 text-white/25 cursor-not-allowed"
+                }`}
               >
                 <Lock size={14} />
                 {saving ? "Guardando..." : "Cambiar contraseña"}
@@ -1019,20 +967,20 @@ const ProfilePanel = () => {
         </div>
 
         {/* Recuperación de emergencia */}
-        <div className='bg-amber-50 rounded-2xl border border-amber-200 p-5'>
+        <div className='bg-amber-500/10 rounded-2xl border border-amber-500/30 p-5'>
           <div className='flex items-start gap-3'>
-            <KeyRound size={18} className='text-amber-600 mt-0.5 shrink-0' />
+            <KeyRound size={18} className='text-amber-400 mt-0.5 shrink-0' />
             <div>
-              <h4 className='font-bold text-amber-800 text-sm mb-1'>¿Olvidaste tu contraseña?</h4>
-              <p className='text-xs text-amber-700 leading-relaxed'>
+              <h4 className='font-bold text-amber-300 text-sm mb-1'>¿Olvidaste tu contraseña?</h4>
+              <p className='text-xs text-amber-400/80 leading-relaxed'>
                 Si no puedes iniciar sesión, usa el endpoint de recuperación con el token configurado en el servidor:
               </p>
-              <code className='block mt-2 bg-amber-100 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-900 font-mono leading-relaxed'>
+              <code className='block mt-2 bg-black/30 border border-amber-500/20 rounded-lg px-3 py-2 text-xs text-amber-200 font-mono leading-relaxed'>
                 POST /admin-auth/reset-password<br />
                 {'{ "resetToken": "ADMIN_RESET_TOKEN", "newPassword": "..." }'}
               </code>
-              <p className='text-xs text-amber-600 mt-2'>
-                El valor de <strong>ADMIN_RESET_TOKEN</strong> está definido en el archivo <code>.env</code> del servidor.
+              <p className='text-xs text-amber-400/60 mt-2'>
+                El valor de <strong className='text-amber-300'>ADMIN_RESET_TOKEN</strong> está definido en el archivo <code>.env</code> del servidor.
               </p>
             </div>
           </div>
@@ -1056,17 +1004,17 @@ const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>("conversations");
 
   return (
-    <div className='flex h-screen w-full bg-slate-50 font-sans text-slate-900 overflow-hidden'>
+    <div className='flex h-screen w-full bg-[#0f0a1e] font-sans text-white overflow-hidden'>
       {/* Sidebar — solo desktop */}
-      <aside className='hidden md:flex w-64 bg-white border-r border-slate-200 flex-col shadow-sm shrink-0'>
-        <div className='p-6 border-b border-slate-100'>
+      <aside className='hidden md:flex w-64 bg-[#1a0a2e] border-r border-white/10 flex-col shrink-0'>
+        <div className='p-6 border-b border-white/10'>
           <div className='flex items-center gap-3'>
-            <div className='bg-blue-600 p-2 rounded-lg text-white'>
+            <div className='bg-[#4c6ef5] p-2 rounded-lg text-white'>
               <GraduationCap size={18} />
             </div>
             <div>
-              <h1 className='font-bold text-sm text-slate-800'>Panel Admin</h1>
-              <p className='text-[10px] text-slate-400'>Santo Tomás Tunja</p>
+              <h1 className='font-bold text-sm text-white'>Panel Admin</h1>
+              <p className='text-[10px] text-white/30'>Santo Tomás Tunja</p>
             </div>
           </div>
         </div>
@@ -1075,22 +1023,26 @@ const AdminPage = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === tab.id ? "bg-blue-50 text-blue-700 border border-blue-100" : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                activeTab === tab.id
+                  ? "bg-[#4c6ef5]/20 text-[#7b9fff] border border-[#4c6ef5]/30"
+                  : "text-white/40 hover:bg-white/5 hover:text-white/70"
+              }`}
             >
-              <span className={activeTab === tab.id ? "text-blue-600" : "text-slate-400"}>
+              <span className={activeTab === tab.id ? "text-[#7b9fff]" : "text-white/30"}>
                 {tab.icon}
               </span>
               {tab.label}
               {activeTab === tab.id && (
-                <ChevronRight size={14} className='ml-auto text-blue-400' />
+                <ChevronRight size={14} className='ml-auto text-[#7b9fff]' />
               )}
             </button>
           ))}
         </nav>
-        <div className='p-4 border-t border-slate-100'>
+        <div className='p-4 border-t border-white/10'>
           <Link
             to='/'
-            className='flex items-center justify-center gap-2 w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-semibold transition-colors'
+            className='flex items-center justify-center gap-2 w-full py-2.5 bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 rounded-xl text-sm font-semibold transition-colors border border-white/10'
           >
             <LogOut size={15} /> Salir
           </Link>
@@ -1099,12 +1051,12 @@ const AdminPage = () => {
 
       {/* Contenido principal */}
       <main className='flex-1 flex flex-col overflow-hidden pb-16 md:pb-0'>
-        <header className='bg-white border-b border-slate-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0'>
+        <header className='bg-[#1a0a2e] border-b border-white/10 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0'>
           <div>
-            <h2 className='font-bold text-slate-800 text-sm md:text-base'>
+            <h2 className='font-bold text-white text-sm md:text-base'>
               {TABS.find((t) => t.id === activeTab)?.label}
             </h2>
-            <p className='text-xs text-slate-400 mt-0.5 hidden sm:block'>
+            <p className='text-xs text-white/30 mt-0.5 hidden sm:block'>
               {activeTab === "conversations"
                 ? "Historial completo de interacciones del chat"
                 : activeTab === "channels"
@@ -1112,20 +1064,17 @@ const AdminPage = () => {
                   : activeTab === "helpdesk"
                     ? "Respuestas del bot para la Mesa de Ayuda"
                     : activeTab === "posgrados"
-                    ? "Ingesta de conocimientos para el asistente de posgrados"
-                    : "Nombre, correo y contraseña del administrador"}
+                      ? "Ingesta de conocimientos para el asistente de posgrados"
+                      : "Nombre, correo y contraseña del administrador"}
             </p>
           </div>
           <div className='flex items-center gap-2'>
-            <span className='hidden sm:block text-[10px] text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full font-medium'>
-              {new Date().toLocaleDateString("es-CO", {
-                day: "numeric",
-                month: "short",
-              })}
+            <span className='hidden sm:block text-[10px] text-white/30 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full font-medium'>
+              {new Date().toLocaleDateString("es-CO", { day: "numeric", month: "short" })}
             </span>
             <Link
               to='/'
-              className='md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold transition-colors'
+              className='md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white/50 rounded-xl text-xs font-semibold transition-colors border border-white/10'
             >
               <LogOut size={13} /> Salir
             </Link>
@@ -1142,18 +1091,18 @@ const AdminPage = () => {
       </main>
 
       {/* Bottom nav — solo móvil */}
-      <nav className='md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex z-40 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]'>
+      <nav className='md:hidden fixed bottom-0 left-0 right-0 bg-[#1a0a2e] border-t border-white/10 flex z-40'>
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-semibold transition-colors ${
               activeTab === tab.id
-                ? "text-blue-600 bg-blue-50"
-                : "text-slate-400"
+                ? "text-[#7b9fff] bg-[#4c6ef5]/15"
+                : "text-white/30"
             }`}
           >
-            <span className={activeTab === tab.id ? "text-blue-600" : "text-slate-400"}>
+            <span className={activeTab === tab.id ? "text-[#7b9fff]" : "text-white/30"}>
               {tab.icon}
             </span>
             <span className='leading-none'>{tab.shortLabel ?? tab.label}</span>

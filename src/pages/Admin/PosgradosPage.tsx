@@ -15,8 +15,8 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 const ACCEPTED_TYPES = [
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-  "application/vnd.ms-excel", // .xls
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-excel",
 ];
 
 const ACCEPTED_EXTENSIONS = ".xlsx,.xls";
@@ -79,20 +79,18 @@ const PosgradosPanel = () => {
   };
 
   return (
-    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50'>
+    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-[#0f0a1e]'>
       <div className='max-w-2xl mx-auto'>
-        {/* Header */}
         <div className='mb-8'>
-          <h2 className='text-xl font-bold text-slate-800'>
+          <h2 className='text-xl font-bold text-white'>
             Ingesta de conocimientos — Posgrados
           </h2>
-          <p className='text-sm text-slate-500 mt-1'>
+          <p className='text-sm text-white/40 mt-1'>
             Sube el documento con la información de los programas de posgrado.
             El sistema extraerá automáticamente el contenido para el asistente virtual.
           </p>
         </div>
 
-        {/* Input oculto compartido */}
         <input
           ref={inputRef}
           type='file'
@@ -109,37 +107,39 @@ const PosgradosPanel = () => {
           onClick={() => !file && inputRef.current?.click()}
           className={`hidden md:block relative border-2 border-dashed rounded-2xl transition-all
             ${file
-              ? "border-slate-200 bg-white cursor-default"
+              ? "border-white/10 bg-[#1e1040] cursor-default"
               : dragging
-                ? "border-blue-400 bg-blue-50 cursor-copy"
-                : "border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer"
+                ? "border-[#4c6ef5]/70 bg-[#4c6ef5]/10 cursor-copy"
+                : "border-white/15 bg-[#1e1040] hover:border-[#4c6ef5]/50 hover:bg-[#4c6ef5]/5 cursor-pointer"
             }`}
         >
           {!file ? (
             <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
-              <div className={`p-4 rounded-2xl mb-4 transition-colors ${dragging ? "bg-blue-100" : "bg-slate-100"}`}>
-                <UploadCloud size={32} className={dragging ? "text-blue-500" : "text-slate-400"} />
+              <div className={`p-4 rounded-2xl mb-4 transition-colors ${dragging ? "bg-[#4c6ef5]/20" : "bg-white/5"}`}>
+                <UploadCloud size={32} className={dragging ? "text-[#7b9fff]" : "text-white/30"} />
               </div>
-              <p className='text-sm font-semibold text-slate-700 mb-1'>
+              <p className='text-sm font-semibold text-white/80 mb-1'>
                 Arrastra el archivo aquí
               </p>
-              <p className='text-xs text-slate-400 mb-4'>o haz clic para seleccionarlo</p>
-              <span className='text-[10px] font-medium text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full'>
+              <p className='text-xs text-white/40 mb-4'>o haz clic para seleccionarlo</p>
+              <span className='text-[10px] font-medium text-white/30 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full'>
                 XLS · XLSX
               </span>
             </div>
           ) : (
             <div className='flex items-center gap-4 p-5'>
-              <div className='p-3 bg-blue-50 rounded-xl shrink-0'>
-                <FileText size={24} className='text-blue-600' />
+              <div className='p-3 bg-[#4c6ef5]/20 rounded-xl shrink-0'>
+                <FileText size={24} className='text-[#7b9fff]' />
               </div>
               <div className='flex-1 min-w-0'>
-                <p className='text-sm font-semibold text-slate-800 truncate'>{file.name}</p>
-                <p className='text-xs text-slate-400 mt-0.5'>{formatSize(file.size)}</p>
+                <p className='text-sm font-semibold text-white truncate'>{file.name}</p>
+                <p className='text-xs text-white/40 mt-0.5'>{formatSize(file.size)}</p>
               </div>
               {status !== "uploading" && (
-                <button onClick={handleRemoveFile}
-                  className='p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors shrink-0'>
+                <button
+                  onClick={handleRemoveFile}
+                  className='p-1.5 rounded-lg hover:bg-white/10 text-white/30 hover:text-white/60 transition-colors shrink-0'
+                >
                   <X size={16} />
                 </button>
               )}
@@ -147,35 +147,37 @@ const PosgradosPanel = () => {
           )}
         </div>
 
-        {/* ── Selector de archivo — móvil ──────────────────────────── */}
+        {/* ── Selector — móvil ─────────────────────────────────────── */}
         <div className='md:hidden'>
           {!file ? (
             <button
               onClick={() => inputRef.current?.click()}
-              className='w-full flex flex-col items-center justify-center gap-3 py-10 border-2 border-dashed border-slate-300 rounded-2xl bg-white active:bg-blue-50 active:border-blue-400 transition-all'
+              className='w-full flex flex-col items-center justify-center gap-3 py-10 border-2 border-dashed border-white/15 rounded-2xl bg-[#1e1040] active:bg-[#4c6ef5]/10 active:border-[#4c6ef5]/50 transition-all'
             >
-              <div className='p-4 rounded-2xl bg-slate-100'>
-                <UploadCloud size={28} className='text-slate-400' />
+              <div className='p-4 rounded-2xl bg-white/5'>
+                <UploadCloud size={28} className='text-white/30' />
               </div>
               <div className='text-center'>
-                <p className='text-sm font-semibold text-slate-700'>
+                <p className='text-sm font-semibold text-white/80'>
                   Toca para seleccionar el archivo
                 </p>
-                <p className='text-xs text-slate-400 mt-1'>XLS · XLSX</p>
+                <p className='text-xs text-white/30 mt-1'>XLS · XLSX</p>
               </div>
             </button>
           ) : (
-            <div className='flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-2xl'>
-              <div className='p-3 bg-blue-50 rounded-xl shrink-0'>
-                <FileText size={22} className='text-blue-600' />
+            <div className='flex items-center gap-4 p-4 bg-[#1e1040] border border-white/10 rounded-2xl'>
+              <div className='p-3 bg-[#4c6ef5]/20 rounded-xl shrink-0'>
+                <FileText size={22} className='text-[#7b9fff]' />
               </div>
               <div className='flex-1 min-w-0'>
-                <p className='text-sm font-semibold text-slate-800 truncate'>{file.name}</p>
-                <p className='text-xs text-slate-400 mt-0.5'>{formatSize(file.size)}</p>
+                <p className='text-sm font-semibold text-white truncate'>{file.name}</p>
+                <p className='text-xs text-white/40 mt-0.5'>{formatSize(file.size)}</p>
               </div>
               {status !== "uploading" && (
-                <button onClick={handleRemoveFile}
-                  className='p-1.5 rounded-lg bg-slate-100 text-slate-400 shrink-0'>
+                <button
+                  onClick={handleRemoveFile}
+                  className='p-1.5 rounded-lg bg-white/5 text-white/30 shrink-0'
+                >
                   <X size={16} />
                 </button>
               )}
@@ -183,27 +185,26 @@ const PosgradosPanel = () => {
           )}
         </div>
 
-        {/* Feedback */}
         {status === "success" && (
-          <div className='mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-3 text-emerald-700 text-sm'>
+          <div className='mt-4 p-4 bg-[#39d98a]/10 border border-[#39d98a]/30 rounded-xl flex items-center gap-3 text-[#39d98a] text-sm'>
             <CheckCircle2 size={16} className='shrink-0' />
             Documento procesado correctamente. El asistente ya tiene la información actualizada.
           </div>
         )}
         {status === "error" && (
-          <div className='mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 text-sm'>
+          <div className='mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3 text-red-300 text-sm'>
             <AlertCircle size={16} className='shrink-0' />
             Error al procesar el documento. Verifica el archivo e inténtalo de nuevo.
           </div>
         )}
 
-        {/* Submit */}
         <button
           onClick={handleUpload}
           disabled={!file || status === "uploading" || status === "success"}
-          className='mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-700
-            text-white text-sm font-bold shadow-sm transition-all
-            disabled:opacity-50 disabled:cursor-not-allowed'
+          className='mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-xl
+            bg-[#4c6ef5] hover:bg-[#3b5de5] text-white text-sm font-bold
+            shadow-lg shadow-[#4c6ef5]/20 transition-all
+            disabled:opacity-40 disabled:cursor-not-allowed'
         >
           {status === "uploading" ? (
             <>
@@ -218,7 +219,7 @@ const PosgradosPanel = () => {
           )}
         </button>
 
-        <p className='text-center text-[10px] text-slate-400 mt-4'>
+        <p className='text-center text-[10px] text-white/25 mt-4'>
           El contenido anterior será reemplazado al procesar un nuevo documento.
         </p>
       </div>

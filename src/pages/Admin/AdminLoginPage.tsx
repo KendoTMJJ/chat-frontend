@@ -17,27 +17,23 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
-
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
     try {
       const response = await fetch(`${SERVER_URL}/admin-auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
-      if (!response.ok) throw new Error("Credenciales incorrectas");
-
+      if (!response.ok) throw new Error();
       const data = await response.json();
       localStorage.setItem("access_token", data.access_token);
       navigate("/admin", { replace: true });
-    } catch (err) {
+    } catch {
       setError("Los datos ingresados no son válidos.");
     } finally {
       setIsLoading(false);
@@ -45,22 +41,22 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6 font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-[#0f0a1e] p-6 font-sans">
       <div className="w-full max-w-md">
-        {/* Logo / Brand */}
+        {/* Brand */}
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-4">
-            <GraduationCap size={40} className="text-blue-600" />
+          <div className="bg-[#4c6ef5]/20 border border-[#4c6ef5]/30 p-4 rounded-2xl mb-4">
+            <GraduationCap size={40} className="text-[#7b9fff]" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900">Acceso Admin</h2>
-          <p className="text-slate-500 text-sm">
-            Gestiona la plataforma de postgrados
+          <h2 className="text-2xl font-bold text-white">Acceso Admin</h2>
+          <p className="text-white/40 text-sm mt-1">
+            Gestiona la plataforma de posgrados
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+        <div className="bg-[#1a0a2e] border border-white/10 p-8 rounded-3xl">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-700 text-sm">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3 text-red-300 text-sm">
               <AlertCircle size={18} className="shrink-0" />
               {error}
             </div>
@@ -68,12 +64,12 @@ export default function AdminLoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+              <label className="block text-xs font-bold text-white/40 uppercase tracking-wider mb-2 ml-1">
                 Usuario / Email
               </label>
               <div className="relative">
                 <User
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
                   size={18}
                 />
                 <input
@@ -81,19 +77,21 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white
+                    focus:ring-2 focus:ring-[#4c6ef5]/30 focus:border-[#4c6ef5]/50 outline-none transition-all
+                    placeholder:text-white/20"
                   placeholder="admin@usantoto.edu.co"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+              <label className="block text-xs font-bold text-white/40 uppercase tracking-wider mb-2 ml-1">
                 Contraseña
               </label>
               <div className="relative">
                 <Lock
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
                   size={18}
                 />
                 <input
@@ -101,13 +99,15 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-12 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-12 text-white
+                    focus:ring-2 focus:ring-[#4c6ef5]/30 focus:border-[#4c6ef5]/50 outline-none transition-all
+                    placeholder:text-white/20"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -117,14 +117,16 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-xl shadow-lg shadow-slate-200 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none mt-2"
+              className="w-full bg-[#4c6ef5] hover:bg-[#3b5de5] text-white font-bold py-4 rounded-xl
+                shadow-lg shadow-[#4c6ef5]/20 transition-all active:scale-[0.98]
+                disabled:opacity-50 disabled:pointer-events-none mt-2"
             >
               {isLoading ? "Verificando identidad..." : "Entrar al Panel"}
             </button>
           </form>
         </div>
 
-        <p className="text-center mt-8 text-slate-400 text-xs font-medium">
+        <p className="text-center mt-8 text-white/25 text-xs font-medium">
           © 2026 Universidad Santo Tomás • Tunja
         </p>
       </div>
