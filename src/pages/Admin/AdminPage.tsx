@@ -1,5 +1,5 @@
 // src/pages/Admin/AdminPage.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import {
   GraduationCap,
