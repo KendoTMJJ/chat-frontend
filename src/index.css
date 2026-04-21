@@ -5,10 +5,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* IMPORTANTE: Forzamos el modo claro para igualar la imagen */
-  color-scheme: light;
-  color: #1f2937; /* Gris oscuro para texto */
-  background-color: #f8fafc; /* Slate-50: El fondo gris muy suave de la imagen */
+  color-scheme: dark;
+  color: #ffffff;
+  background-color: #0f0a1e;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

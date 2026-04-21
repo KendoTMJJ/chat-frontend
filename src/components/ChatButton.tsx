@@ -19,10 +19,10 @@ const ChatButton = ({
     className={`text-left px-4 py-2.5 rounded-xl border text-sm font-medium transition-all
       ${
         disabled
-          ? "opacity-40 cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
+          ? "opacity-30 cursor-not-allowed border-white/10 bg-white/5 text-white/40"
           : variant === "confirm"
-            ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-            : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
+            ? "border-[#39d98a]/60 bg-[#39d98a]/10 text-[#39d98a] hover:bg-[#39d98a]/20"
+            : "border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:border-white/25"
       }`}
   >
     {label}

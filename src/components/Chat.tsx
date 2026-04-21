@@ -24,44 +24,44 @@ const CONTEXT_CONFIG: Record<
     label: string;
     sublabel: string;
     icon: React.ReactNode;
-    accentLight: string;
-    ring: string;
+    accentBg: string;
+    accentText: string;
+    accentBorder: string;
     sendBtn: string;
     chipHover: string;
-    badge: string;
     avatarBot: string;
     heading: string;
+    userBubble: string;
   }
 > = {
   posgrados: {
     label: "Asistente Posgrados",
     sublabel: "Información académica y programas",
     icon: <GraduationCap size={22} />,
-    accentLight: "bg-blue-600 shadow-blue-200",
-    ring: "focus:ring-blue-500/20 focus:border-blue-500",
-    sendBtn: "bg-blue-600 hover:bg-blue-700",
-    chipHover: "hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50",
-    badge: "bg-blue-50 text-blue-600 border-blue-200",
-    avatarBot: "bg-blue-100 text-blue-600",
-    heading: "text-blue-600",
+    accentBg: "bg-[#4c6ef5]",
+    accentText: "text-[#7b9fff]",
+    accentBorder: "border-[#4c6ef5]/50",
+    sendBtn: "bg-[#4c6ef5] hover:bg-[#3b5de5]",
+    chipHover: "hover:border-[#4c6ef5]/50 hover:text-[#7b9fff] hover:bg-[#4c6ef5]/10",
+    avatarBot: "bg-[#4c6ef5]/20 text-[#7b9fff]",
+    heading: "text-[#7b9fff]",
+    userBubble: "bg-[#4c6ef5] text-white",
   },
   mesa_ayuda: {
     label: "Mesa de Ayuda",
     sublabel: "Soporte y trámites universitarios",
     icon: <HeadphonesIcon size={22} />,
-    accentLight: "bg-violet-600 shadow-violet-200",
-    ring: "focus:ring-violet-500/20 focus:border-violet-500",
-    sendBtn: "bg-violet-600 hover:bg-violet-700",
-    chipHover:
-      "hover:border-violet-400 hover:text-violet-600 hover:bg-violet-50",
-    badge: "bg-violet-50 text-violet-600 border-violet-200",
-    avatarBot: "bg-violet-100 text-violet-600",
-    heading: "text-violet-600",
+    accentBg: "bg-[#39d98a]",
+    accentText: "text-[#39d98a]",
+    accentBorder: "border-[#39d98a]/50",
+    sendBtn: "bg-[#39d98a] hover:bg-[#2bc77a]",
+    chipHover: "hover:border-[#39d98a]/50 hover:text-[#39d98a] hover:bg-[#39d98a]/10",
+    avatarBot: "bg-[#39d98a]/20 text-[#39d98a]",
+    heading: "text-[#39d98a]",
+    userBubble: "bg-[#39d98a] text-[#0f0a1e]",
   },
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Tipos de mensaje — texto normal o burbuja de opciones
 // ─────────────────────────────────────────────────────────────────────────────
 type TextMessage = {
   type: "text";
@@ -81,7 +81,7 @@ type TextMessage = {
 
 type OptionsMessage = {
   type: "options";
-  id: string; // para poder marcarlo como "respondido"
+  id: string;
   question: string;
   options: { id: string; label: string; confirmed: boolean }[];
   answered: boolean;
@@ -120,18 +120,18 @@ const WelcomeScreen = ({
 }: {
   onSelect: (ctx: ChatContext) => void;
 }) => (
-  <div className='flex flex-col items-center justify-center h-full px-6 py-10 bg-slate-50'>
+  <div className='flex flex-col items-center justify-center h-full px-6 py-10 bg-[#0f0a1e]'>
     <div className='w-full max-w-sm space-y-6'>
       <div className='flex justify-center'>
-        <div className='w-16 h-16 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center'>
-          <Bot size={32} className='text-slate-400' />
+        <div className='w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center'>
+          <Bot size={32} className='text-[#39d98a]' />
         </div>
       </div>
       <div className='text-center space-y-2'>
-        <h1 className='text-lg font-bold text-slate-800'>
+        <h1 className='text-lg font-bold text-white'>
           ¡Hola! Soy tu asistente virtual
         </h1>
-        <p className='text-sm text-slate-500 leading-relaxed'>
+        <p className='text-sm text-white/50 leading-relaxed'>
           Puedo ayudarte con información de posgrados o con soporte
           universitario. ¿Sobre qué te gustaría hablar?
         </p>
@@ -139,51 +139,51 @@ const WelcomeScreen = ({
       <div className='space-y-3'>
         <button
           onClick={() => onSelect("posgrados")}
-          className='w-full flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-2xl
-            hover:border-blue-400 hover:shadow-md hover:shadow-blue-50
+          className='w-full flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl
+            hover:border-[#4c6ef5]/50 hover:bg-[#4c6ef5]/10
             transition-all group text-left'
         >
-          <div className='w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shrink-0 shadow shadow-blue-200'>
+          <div className='w-10 h-10 rounded-xl bg-[#4c6ef5] flex items-center justify-center text-white shrink-0'>
             <GraduationCap size={20} />
           </div>
           <div className='flex-1 min-w-0'>
-            <p className='text-sm font-semibold text-slate-800'>
+            <p className='text-sm font-semibold text-white'>
               Información de Posgrados
             </p>
-            <p className='text-xs text-slate-400 mt-0.5'>
+            <p className='text-xs text-white/40 mt-0.5'>
               Programas, admisiones, costos
             </p>
           </div>
           <ArrowRight
             size={16}
-            className='text-slate-300 group-hover:text-blue-400 transition-colors shrink-0'
+            className='text-white/20 group-hover:text-[#7b9fff] transition-colors shrink-0'
           />
         </button>
 
         <button
           onClick={() => onSelect("mesa_ayuda")}
-          className='w-full flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-2xl
-            hover:border-violet-400 hover:shadow-md hover:shadow-violet-50
+          className='w-full flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl
+            hover:border-[#39d98a]/50 hover:bg-[#39d98a]/10
             transition-all group text-left'
         >
-          <div className='w-10 h-10 rounded-xl bg-violet-600 flex items-center justify-center text-white shrink-0 shadow shadow-violet-200'>
+          <div className='w-10 h-10 rounded-xl bg-[#39d98a]/20 flex items-center justify-center text-[#39d98a] shrink-0 border border-[#39d98a]/30'>
             <HeadphonesIcon size={20} />
           </div>
           <div className='flex-1 min-w-0'>
-            <p className='text-sm font-semibold text-slate-800'>
+            <p className='text-sm font-semibold text-white'>
               Mesa de Ayuda
             </p>
-            <p className='text-xs text-slate-400 mt-0.5'>
+            <p className='text-xs text-white/40 mt-0.5'>
               Trámites, carnet, soporte técnico
             </p>
           </div>
           <ArrowRight
             size={16}
-            className='text-slate-300 group-hover:text-violet-400 transition-colors shrink-0'
+            className='text-white/20 group-hover:text-[#39d98a] transition-colors shrink-0'
           />
         </button>
       </div>
-      <p className='text-center text-[10px] text-slate-400'>
+      <p className='text-center text-[10px] text-white/25'>
         Universidad Santo Tomás • Tunja
       </p>
     </div>
@@ -287,7 +287,6 @@ const Chat = () => {
     onShowEscalateButton: () => {
       setIsBotTyping(false);
       setShowEscalatePrompt(true);
-      // Insertar burbuja de opciones en el historial
       const optionsMsg: OptionsMessage = {
         type: "options",
         id: `escalate-${Date.now()}`,
@@ -339,24 +338,18 @@ const Chat = () => {
     });
   };
 
-  // El usuario toca una opción dentro de la burbuja
   const handleOptionClick = (
     msgId: string,
     optionId: string,
     confirmed: boolean,
   ) => {
     if (!connected || !context) return;
-
-    // Marcar la burbuja como respondida
     setMessages((prev) =>
       prev.map((m) =>
         m.type === "options" && m.id === msgId ? { ...m, answered: true } : m,
       ),
     );
-
     setShowEscalatePrompt(false);
-
-    // Enviar al gateway — el back reenvía el mensaje via on-message, no se agrega manualmente
     setIsBotTyping(true);
     emitSendMessage({
       message: confirmed ? "Sí, quiero los canales de contacto" : "No, gracias",
@@ -387,13 +380,10 @@ const Chat = () => {
     button: NonNullable<TextMessage["buttons"]>[number],
   ) => {
     if (!connected || !context) return;
-    // Botón URL: solo abrir enlace, sin marcar como respondido
-    // (el usuario puede querer tocar otros botones del mismo mensaje después)
     if (button.url) {
       window.open(button.url, "_blank");
       return;
     }
-    // Botón con mensaje: marcar como respondido y enviar
     if (button.message) {
       setMessages((prev) =>
         prev.map((m) =>
@@ -421,20 +411,20 @@ const Chat = () => {
   // ── Pantalla de bienvenida ─────────────────────────────────────────────────
   if (!context) {
     return (
-      <div className='flex flex-col h-screen w-full bg-slate-50 font-sans text-slate-900'>
-        <header className='p-4 bg-white border-b border-slate-200 shadow-sm flex justify-between items-center'>
+      <div className='flex flex-col h-screen w-full bg-[#0f0a1e] font-sans text-white'>
+        <header className='p-4 bg-[#1a0a2e] border-b border-white/10 flex justify-between items-center'>
           <div className='flex items-center gap-3'>
-            <div className='bg-slate-200 p-2 rounded-lg'>
-              <Bot size={22} className='text-slate-500' />
+            <div className='bg-white/5 border border-white/10 p-2 rounded-lg'>
+              <Bot size={22} className='text-[#39d98a]' />
             </div>
             <div>
-              <h2 className='text-sm font-bold text-slate-800'>
+              <h2 className='text-sm font-bold text-white'>
                 Asistente Virtual
               </h2>
-              <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-slate-500'>
+              <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-white/40'>
                 <Circle
                   size={8}
-                  className={`fill-current ${connected ? "text-emerald-500" : "text-red-500"}`}
+                  className={`fill-current ${connected ? "text-[#39d98a]" : "text-red-400"}`}
                 />
                 {connected ? "En línea" : "Desconectado"}
               </p>
@@ -442,7 +432,7 @@ const Chat = () => {
           </div>
           <button
             onClick={resetChat}
-            className='p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-red-500 transition-all'
+            className='p-2 hover:bg-white/5 rounded-full text-white/30 hover:text-red-400 transition-all'
           >
             <RefreshCw size={18} />
           </button>
@@ -454,25 +444,23 @@ const Chat = () => {
 
   // ── Chat activo ────────────────────────────────────────────────────────────
   return (
-    <div className='flex flex-col h-screen w-full bg-slate-50 font-sans text-slate-900'>
+    <div className='flex flex-col h-screen w-full bg-[#0f0a1e] font-sans text-white'>
       {/* Header */}
-      <header className='p-4 bg-white border-b border-slate-200 shadow-sm flex justify-between items-center z-10 sticky top-0'>
+      <header className='p-4 bg-[#1a0a2e] border-b border-white/10 flex justify-between items-center z-10 sticky top-0'>
         <div className='flex items-center gap-3'>
-          <div
-            className={`${cfg!.accentLight} p-2 rounded-lg text-white shadow-lg`}
-          >
+          <div className={`${cfg!.accentBg} p-2 rounded-lg text-white`}>
             {cfg!.icon}
           </div>
           <div>
-            <h2 className='text-sm font-bold text-slate-800'>{cfg!.label}</h2>
-            <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-slate-500'>
+            <h2 className='text-sm font-bold text-white'>{cfg!.label}</h2>
+            <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-white/40'>
               <Circle
                 size={8}
-                className={`fill-current ${connected ? "text-emerald-500" : "text-red-500"}`}
+                className={`fill-current ${connected ? "text-[#39d98a]" : "text-red-400"}`}
               />
               {connected ? "En línea" : "Desconectado"}
               {conversationId && (
-                <span className='text-slate-300'>
+                <span className='text-white/20'>
                   | ID: {conversationId.slice(0, 8)}
                 </span>
               )}
@@ -481,13 +469,13 @@ const Chat = () => {
         </div>
         <div className='flex items-center gap-2'>
           <span
-            className={`hidden sm:inline-block text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${cfg!.badge}`}
+            className={`hidden sm:inline-block text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${cfg!.accentBorder} ${cfg!.accentText} bg-white/5`}
           >
             {context === "posgrados" ? "Posgrados" : "Mesa de Ayuda"}
           </span>
           <button
             onClick={resetChat}
-            className='p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-red-500 transition-all'
+            className='p-2 hover:bg-white/5 rounded-full text-white/30 hover:text-red-400 transition-all'
             title='Reiniciar conversación'
           >
             <RefreshCw size={18} />
@@ -496,7 +484,7 @@ const Chat = () => {
       </header>
 
       {/* Mensajes */}
-      <div className='flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50'>
+      <div className='flex-1 overflow-y-auto p-4 md:p-6 bg-[#0f0a1e]'>
         <div className='w-full max-w-2xl mx-auto space-y-6 pb-4'>
           {messages.map((msg, index) => {
             // ── Burbuja de confirmación de datos ────────────────────────────
@@ -506,23 +494,23 @@ const Chat = () => {
               return (
                 <div key={msg.id} className='flex gap-4 flex-row'>
                   <div
-                    className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm ${cfg!.avatarBot}`}
+                    className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${cfg!.avatarBot}`}
                   >
                     <Bot size={16} />
                   </div>
-                  <div className='bg-white border border-slate-100 rounded-2xl rounded-tl-none shadow-sm px-5 py-4 max-w-[85%]'>
-                    <p className='text-[15px] text-slate-700 mb-3'>
+                  <div className='bg-[#1e1040] border border-white/10 rounded-2xl rounded-tl-none px-5 py-4 max-w-[85%]'>
+                    <p className='text-[15px] text-white/80 mb-3'>
                       Antes de continuar, confirma tus datos:
                     </p>
-                    <div className='text-sm text-slate-700 mb-4 space-y-1'>
+                    <div className='text-sm text-white/70 mb-4 space-y-1'>
                       <p>
-                        👤 <strong>Nombre:</strong> {msg.nombre}
+                        👤 <strong className='text-white'>Nombre:</strong> {msg.nombre}
                       </p>
                       <p>
-                        📧 <strong>Correo:</strong> {msg.correo}
+                        📧 <strong className='text-white'>Correo:</strong> {msg.correo}
                       </p>
                       <p>
-                        💬 <strong>Motivo:</strong> {msg.motivo}
+                        💬 <strong className='text-white'>Motivo:</strong> {msg.motivo}
                       </p>
                     </div>
                     <div className='flex flex-col gap-2'>
@@ -551,12 +539,12 @@ const Chat = () => {
               return (
                 <div key={msg.id} className='flex gap-4 flex-row'>
                   <div
-                    className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm ${cfg!.avatarBot}`}
+                    className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${cfg!.avatarBot}`}
                   >
                     <Bot size={16} />
                   </div>
-                  <div className='bg-white border border-slate-100 rounded-2xl rounded-tl-none shadow-sm px-5 py-4 max-w-[85%]'>
-                    <p className='text-[15px] text-slate-700 mb-3'>
+                  <div className='bg-[#1e1040] border border-white/10 rounded-2xl rounded-tl-none px-5 py-4 max-w-[85%]'>
+                    <p className='text-[15px] text-white/80 mb-3'>
                       {msg.question}
                     </p>
                     <div className='flex flex-col gap-2'>
@@ -570,10 +558,10 @@ const Chat = () => {
                           className={`text-left px-4 py-2.5 rounded-xl border text-sm font-medium transition-all
                             ${
                               msg.answered
-                                ? "opacity-40 cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
+                                ? "opacity-30 cursor-not-allowed border-white/10 bg-white/5 text-white/40"
                                 : opt.confirmed
-                                  ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                                  : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
+                                  ? "border-[#39d98a]/60 bg-[#39d98a]/10 text-[#39d98a] hover:bg-[#39d98a]/20"
+                                  : "border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:border-white/25"
                             }`}
                         >
                           {opt.label}
@@ -593,24 +581,24 @@ const Chat = () => {
                 className={`flex gap-4 ${isUser ? "flex-row-reverse" : "flex-row"}`}
               >
                 <div
-                  className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm ${isUser ? "bg-slate-200 text-slate-600" : cfg!.avatarBot}`}
+                  className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${isUser ? "bg-white/10 text-white/60" : cfg!.avatarBot}`}
                 >
                   {isUser ? <User size={16} /> : <Bot size={16} />}
                 </div>
                 <div className='flex flex-col gap-2 max-w-[85%]'>
                   <div
-                    className={`relative px-5 py-4 rounded-2xl shadow-sm text-[15px] leading-relaxed
+                    className={`relative px-5 py-4 rounded-2xl text-[15px] leading-relaxed
                     ${
                       isUser
-                        ? `${cfg!.sendBtn.replace("hover:bg-", "bg-").split(" ")[0]} text-white rounded-tr-none`
-                        : "bg-white text-slate-700 border border-slate-100 rounded-tl-none"
+                        ? `${cfg!.userBubble} rounded-tr-none`
+                        : "bg-[#1e1040] text-white/85 border border-white/10 rounded-tl-none"
                     }`}
                   >
                     <ReactMarkdown
                       components={{
                         h2: ({ node, ...props }) => (
                           <h3
-                            className={`text-sm font-bold uppercase tracking-wider mt-4 mb-2 border-b pb-1 ${cfg!.heading}`}
+                            className={`text-sm font-bold uppercase tracking-wider mt-4 mb-2 border-b pb-1 border-white/10 ${cfg!.heading}`}
                             {...props}
                           />
                         ),
@@ -628,18 +616,18 @@ const Chat = () => {
                             {...props}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className={`font-semibold underline underline-offset-2 transition-colors ${isUser ? "text-white hover:text-white/80" : cfg!.heading}`}
+                            className={`font-semibold underline underline-offset-2 transition-colors ${isUser ? "text-white/90 hover:text-white" : cfg!.heading}`}
                           />
                         ),
                         strong: ({ node, ...props }) => (
                           <span
-                            className={`font-bold ${isUser ? "text-white" : "text-slate-900"}`}
+                            className={`font-bold ${isUser ? "" : cfg!.accentText}`}
                             {...props}
                           />
                         ),
                         hr: ({ node, ...props }) => (
                           <hr
-                            className='my-4 border-slate-200 border-dashed'
+                            className='my-4 border-white/10 border-dashed'
                             {...props}
                           />
                         ),
@@ -668,14 +656,14 @@ const Chat = () => {
           {isBotTyping && (
             <div className='flex gap-4 flex-row'>
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm mt-1 ${cfg?.avatarBot ?? "bg-slate-100 text-slate-500"}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm mt-1 ${cfg?.avatarBot ?? "bg-white/10 text-white/50"}`}
               >
                 <Bot size={16} />
               </div>
-              <div className='flex items-center gap-1 px-4 py-3 bg-white border border-slate-100 rounded-2xl rounded-tl-none shadow-sm'>
-                <span className='w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.3s]' />
-                <span className='w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.15s]' />
-                <span className='w-2 h-2 rounded-full bg-slate-400 animate-bounce' />
+              <div className='flex items-center gap-1.5 px-4 py-3 bg-[#1e1040] border border-white/10 rounded-2xl rounded-tl-none'>
+                <span className='w-2 h-2 rounded-full bg-white/30 animate-bounce [animation-delay:-0.3s]' />
+                <span className='w-2 h-2 rounded-full bg-white/30 animate-bounce [animation-delay:-0.15s]' />
+                <span className='w-2 h-2 rounded-full bg-white/30 animate-bounce' />
               </div>
             </div>
           )}
@@ -686,7 +674,7 @@ const Chat = () => {
       {/* Chat expirado */}
       {chatExpired && (
         <div className='mx-auto max-w-3xl mt-3 px-4'>
-          <div className='bg-red-50 border border-red-200 text-red-900 rounded-xl p-3'>
+          <div className='bg-red-500/10 border border-red-500/30 text-red-300 rounded-xl p-3'>
             <div className='text-sm'>
               ⏱️ La conversación finalizó por inactividad. Puedes iniciar una
               nueva sesión.
@@ -696,7 +684,7 @@ const Chat = () => {
       )}
 
       {/* Input */}
-      <div className='p-4 bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]'>
+      <div className='p-4 bg-[#1a0a2e] border-t border-white/10'>
         <div className='max-w-2xl mx-auto space-y-2'>
           {!chatExpired && !escalated && !showEscalatePrompt && (
             <div className='flex flex-wrap gap-2'>
@@ -705,9 +693,9 @@ const Chat = () => {
                   key={action.id}
                   onClick={() => handleQuickAction(action)}
                   disabled={isInputDisabled}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200
-                    bg-white text-slate-600 text-xs font-medium ${cfg!.chipHover}
-                    disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm`}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10
+                    bg-white/5 text-white/60 text-xs font-medium ${cfg!.chipHover}
+                    disabled:opacity-30 disabled:cursor-not-allowed transition-all`}
                 >
                   {action.label}
                 </button>
@@ -726,27 +714,28 @@ const Chat = () => {
                     : "Escribe tu consulta aquí..."
               }
               disabled={isInputDisabled}
-              className={`w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-5 pr-14
-                text-sm focus:ring-2 outline-none disabled:opacity-50 transition-all
-                placeholder:text-slate-400 ${cfg!.ring}`}
+              className={`w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-5 pr-14
+                text-sm text-white focus:ring-2 focus:ring-white/10 focus:border-white/25 outline-none
+                disabled:opacity-40 transition-all placeholder:text-white/25`}
             />
             <button
               type='submit'
               disabled={isInputDisabled || !input.trim()}
-              className={`absolute right-2 top-2 bottom-2 aspect-square ${cfg!.sendBtn} text-white
-                rounded-lg disabled:bg-slate-200 disabled:text-slate-400
-                flex items-center justify-center transition-all shadow-sm`}
+              className={`absolute right-2 top-2 bottom-2 aspect-square ${cfg!.sendBtn}
+                rounded-lg disabled:bg-white/10 disabled:text-white/20
+                flex items-center justify-center transition-all
+                ${context === "mesa_ayuda" ? "text-[#0f0a1e]" : "text-white"}`}
             >
               <Send size={18} />
             </button>
           </form>
         </div>
         <div className='text-center mt-2 space-y-0.5'>
-          <p className='text-[10px] text-slate-400'>
+          <p className='text-[10px] text-white/25'>
             Universidad Santo Tomás • Tunja{" · "}
-            <span className={cfg!.heading}>{cfg!.sublabel}</span>
+            <span className={cfg!.accentText}>{cfg!.sublabel}</span>
           </p>
-          <p className='text-[10px] text-slate-400'>
+          <p className='text-[10px] text-white/20'>
             El asistente puede cometer errores. Verifica la información importante.
           </p>
         </div>
