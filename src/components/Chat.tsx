@@ -123,9 +123,11 @@ const WelcomeScreen = ({
   <div className='flex flex-col items-center justify-center h-full px-6 py-10 bg-usta-bg'>
     <div className='w-full max-w-sm space-y-6'>
       <div className='flex justify-center'>
-        <div className='w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center'>
-          <Bot size={32} className='text-usta-green' />
-        </div>
+        <img
+          src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
+          alt="Universidad Santo Tomás Tunja"
+          className='h-14 object-contain'
+        />
       </div>
       <div className='text-center space-y-2'>
         <h1 className='text-lg font-bold text-white'>
@@ -414,21 +416,18 @@ const Chat = () => {
       <div className='flex flex-col h-screen w-full bg-usta-bg font-sans text-white'>
         <header className='p-4 bg-usta-surface border-b border-white/10 flex justify-between items-center'>
           <div className='flex items-center gap-3'>
-            <div className='bg-white/5 border border-white/10 p-2 rounded-lg'>
-              <Bot size={22} className='text-usta-green' />
-            </div>
-            <div>
-              <h2 className='text-sm font-bold text-white'>
-                Asistente Virtual
-              </h2>
-              <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-white/40'>
-                <Circle
-                  size={8}
-                  className={`fill-current ${connected ? "text-usta-green" : "text-red-400"}`}
-                />
-                {connected ? "En línea" : "Desconectado"}
-              </p>
-            </div>
+            <img
+              src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
+              alt="Universidad Santo Tomás Tunja"
+              className='h-8 object-contain'
+            />
+            <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-white/40'>
+              <Circle
+                size={8}
+                className={`fill-current ${connected ? "text-usta-green" : "text-red-400"}`}
+              />
+              {connected ? "En línea" : "Desconectado"}
+            </p>
           </div>
           <button
             onClick={resetChat}

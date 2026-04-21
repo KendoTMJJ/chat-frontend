@@ -2,7 +2,6 @@
 import {
   MessageSquareText,
   Settings2,
-  GraduationCap,
   ArrowRight,
   ShieldCheck,
   Clock,
@@ -22,9 +21,11 @@ const HomePage = () => {
     <div className="min-h-screen w-full bg-usta-bg flex flex-col items-center justify-center p-6 font-sans">
       <div className="w-full max-w-xl flex flex-col items-center text-center">
         {/* Logo */}
-        <div className="bg-usta-blue/20 border border-usta-blue/30 p-5 rounded-3xl mb-8">
-          <GraduationCap size={48} className="text-usta-blue-lt" />
-        </div>
+        <img
+          src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
+          alt="Universidad Santo Tomás Tunja"
+          className="h-20 object-contain mb-8"
+        />
 
         <div className="space-y-2 mb-10">
           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/5 text-white/50 border border-white/10 uppercase tracking-wider">
@@ -33,9 +34,6 @@ const HomePage = () => {
           <h1 className="text-4xl font-bold text-white tracking-tight">
             Asistente <span className="text-usta-blue-lt">Posgrados</span>
           </h1>
-          <p className="text-white/40 font-medium">
-            Universidad Santo Tomás • Seccional Tunja
-          </p>
         </div>
 
         {/* Módulos */}

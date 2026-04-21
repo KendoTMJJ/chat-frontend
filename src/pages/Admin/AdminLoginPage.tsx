@@ -1,7 +1,6 @@
 ﻿import { useState } from "react";
 import { useNavigate } from "react-router";
 import {
-  GraduationCap,
   Lock,
   User,
   Eye,
@@ -45,12 +44,14 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         {/* Brand */}
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-usta-blue/20 border border-usta-blue/30 p-4 rounded-2xl mb-4">
-            <GraduationCap size={40} className="text-usta-blue-lt" />
-          </div>
+          <img
+            src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
+            alt="Universidad Santo Tomás Tunja"
+            className="h-16 object-contain mb-5"
+          />
           <h2 className="text-2xl font-bold text-white">Acceso Admin</h2>
           <p className="text-white/40 text-sm mt-1">
-            Gestiona la plataforma de posgrados
+            Panel de administración
           </p>
         </div>
 

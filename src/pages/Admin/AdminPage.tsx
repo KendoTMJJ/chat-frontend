@@ -1007,16 +1007,12 @@ const AdminPage = () => {
     <div className='flex h-screen w-full bg-usta-bg font-sans text-white overflow-hidden'>
       {/* Sidebar — solo desktop */}
       <aside className='hidden md:flex w-64 bg-usta-surface border-r border-white/10 flex-col shrink-0'>
-        <div className='p-6 border-b border-white/10'>
-          <div className='flex items-center gap-3'>
-            <div className='bg-usta-blue p-2 rounded-lg text-white'>
-              <GraduationCap size={18} />
-            </div>
-            <div>
-              <h1 className='font-bold text-sm text-white'>Panel Admin</h1>
-              <p className='text-[10px] text-white/30'>Santo Tomás Tunja</p>
-            </div>
-          </div>
+        <div className='p-5 border-b border-white/10 flex items-center justify-center'>
+          <img
+            src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
+            alt="Universidad Santo Tomás Tunja"
+            className='h-9 object-contain'
+          />
         </div>
         <nav className='flex-1 p-3 space-y-1'>
           {TABS.map((tab) => (
