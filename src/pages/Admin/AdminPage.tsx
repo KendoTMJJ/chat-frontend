@@ -24,6 +24,10 @@ import {
   AtSign,
   Plus,
   X,
+  Lock,
+  KeyRound,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useAdminConversations } from "../../hooks/useAdminConversations";
@@ -32,8 +36,9 @@ import type { SupportChannel } from "../../hooks/useSupportChannels";
 import type { ConversationSummary } from "../../hooks/useAdminConversations";
 import HelpdeskPanel from "./HelpdeskPage";
 import PosgradosPanel from "./PosgradosPage";
+import { useProfile } from "../../hooks/useProfile";
 
-type AdminTab = "conversations" | "channels" | "helpdesk" | "posgrados";
+type AdminTab = "conversations" | "channels" | "helpdesk" | "posgrados" | "profile";
 type StatusFilter = "all" | "active" | "escalated" | "closed" | "expired";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -804,17 +809,247 @@ const ChannelsPanel = () => {
   );
 };
 
+// ─── Profile Panel ───────────────────────────────────────────────────────────
+const ProfilePanel = () => {
+  const { profile, loading, saving, error, successMsg, updateProfile, changePassword, clearFeedback } = useProfile();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [profileDirty, setProfileDirty] = useState(false);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      setName(profile.name);
+      setEmail(profile.email);
+    }
+  }, [profile]);
+
+  const handleProfileChange = (field: "name" | "email", value: string) => {
+    if (field === "name") setName(value);
+    else setEmail(value);
+    setProfileDirty(true);
+    clearFeedback();
+  };
+
+  const handleSaveProfile = () => {
+    updateProfile(name, email);
+    setProfileDirty(false);
+  };
+
+  const handleChangePassword = async () => {
+    clearFeedback();
+    if (newPassword !== confirmPassword) return;
+    const ok = await changePassword(currentPassword, newPassword);
+    if (ok) {
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+  };
+
+  const passwordValid =
+    currentPassword.length > 0 &&
+    newPassword.length >= 8 &&
+    newPassword === confirmPassword;
+
+  if (loading) {
+    return (
+      <div className='flex-1 flex items-center justify-center'>
+        <RefreshCw size={20} className='text-slate-400 animate-spin' />
+      </div>
+    );
+  }
+
+  return (
+    <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50'>
+      <div className='max-w-lg mx-auto space-y-6'>
+
+        {error && (
+          <div className='p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 text-sm'>
+            <AlertCircle size={16} className='shrink-0' /> {error}
+          </div>
+        )}
+        {successMsg && (
+          <div className='p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-3 text-emerald-700 text-sm'>
+            <CheckCircle2 size={16} className='shrink-0' /> {successMsg}
+          </div>
+        )}
+
+        {/* Datos del perfil */}
+        <div className='bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden'>
+          <div className='px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3'>
+            <div className='p-2 rounded-xl bg-blue-600 text-white'>
+              <UserCircle size={18} />
+            </div>
+            <div>
+              <h3 className='font-bold text-slate-800 text-sm'>Datos del perfil</h3>
+              <p className='text-xs text-slate-500'>Nombre y correo de acceso al panel</p>
+            </div>
+          </div>
+          <div className='p-6 space-y-4'>
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                Nombre
+              </label>
+              <input
+                value={name}
+                onChange={(e) => handleProfileChange("name", e.target.value)}
+                className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all'
+                placeholder='Nombre del administrador'
+              />
+            </div>
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                Correo electrónico
+              </label>
+              <div className='relative'>
+                <AtSign size={14} className='absolute left-3 top-1/2 -translate-y-1/2 text-slate-400' />
+                <input
+                  type='email'
+                  value={email}
+                  onChange={(e) => handleProfileChange("email", e.target.value)}
+                  className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-9 pr-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all'
+                  placeholder='admin@santoto.edu.co'
+                />
+              </div>
+            </div>
+            <div className='flex justify-end pt-2'>
+              <button
+                onClick={handleSaveProfile}
+                disabled={!profileDirty || saving}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${profileDirty && !saving ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
+              >
+                <Save size={14} />
+                {saving ? "Guardando..." : "Guardar cambios"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Cambiar contraseña */}
+        <div className='bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden'>
+          <div className='px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3'>
+            <div className='p-2 rounded-xl bg-slate-700 text-white'>
+              <Lock size={18} />
+            </div>
+            <div>
+              <h3 className='font-bold text-slate-800 text-sm'>Cambiar contraseña</h3>
+              <p className='text-xs text-slate-500'>Mínimo 8 caracteres</p>
+            </div>
+          </div>
+          <div className='p-6 space-y-4'>
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                Contraseña actual
+              </label>
+              <div className='relative'>
+                <input
+                  type={showCurrent ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => { setCurrentPassword(e.target.value); clearFeedback(); }}
+                  className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 pr-10 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all'
+                  placeholder='Tu contraseña actual'
+                />
+                <button
+                  type='button'
+                  onClick={() => setShowCurrent((v) => !v)}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600'
+                >
+                  {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+            </div>
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                Nueva contraseña
+              </label>
+              <div className='relative'>
+                <input
+                  type={showNew ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => { setNewPassword(e.target.value); clearFeedback(); }}
+                  className='w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 pr-10 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all'
+                  placeholder='Mínimo 8 caracteres'
+                />
+                <button
+                  type='button'
+                  onClick={() => setShowNew((v) => !v)}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600'
+                >
+                  {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+            </div>
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2'>
+                Confirmar contraseña
+              </label>
+              <input
+                type='password'
+                value={confirmPassword}
+                onChange={(e) => { setConfirmPassword(e.target.value); clearFeedback(); }}
+                className={`w-full bg-slate-50 border rounded-xl py-2.5 px-4 text-sm outline-none transition-all ${
+                  confirmPassword && newPassword !== confirmPassword
+                    ? "border-red-300 focus:ring-2 focus:ring-red-100"
+                    : "border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                }`}
+                placeholder='Repite la nueva contraseña'
+              />
+              {confirmPassword && newPassword !== confirmPassword && (
+                <p className='text-xs text-red-500 mt-1'>Las contraseñas no coinciden</p>
+              )}
+            </div>
+            <div className='flex justify-end pt-2'>
+              <button
+                onClick={handleChangePassword}
+                disabled={!passwordValid || saving}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${passwordValid && !saving ? "bg-slate-800 hover:bg-slate-900 text-white shadow-sm" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
+              >
+                <Lock size={14} />
+                {saving ? "Guardando..." : "Cambiar contraseña"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Recuperación de emergencia */}
+        <div className='bg-amber-50 rounded-2xl border border-amber-200 p-5'>
+          <div className='flex items-start gap-3'>
+            <KeyRound size={18} className='text-amber-600 mt-0.5 shrink-0' />
+            <div>
+              <h4 className='font-bold text-amber-800 text-sm mb-1'>¿Olvidaste tu contraseña?</h4>
+              <p className='text-xs text-amber-700 leading-relaxed'>
+                Si no puedes iniciar sesión, usa el endpoint de recuperación con el token configurado en el servidor:
+              </p>
+              <code className='block mt-2 bg-amber-100 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-900 font-mono leading-relaxed'>
+                POST /admin-auth/reset-password<br />
+                {'{ "resetToken": "ADMIN_RESET_TOKEN", "newPassword": "..." }'}
+              </code>
+              <p className='text-xs text-amber-600 mt-2'>
+                El valor de <strong>ADMIN_RESET_TOKEN</strong> está definido en el archivo <code>.env</code> del servidor.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
 // ─── AdminPage ────────────────────────────────────────────────────────────────
 const TABS: { id: AdminTab; label: string; shortLabel?: string; icon: React.ReactNode }[] = [
-  {
-    id: "conversations",
-    label: "Conversaciones",
-    shortLabel: "Chats",
-    icon: <MessageSquare size={16} />,
-  },
+  { id: "conversations", label: "Conversaciones", shortLabel: "Chats", icon: <MessageSquare size={16} /> },
   { id: "channels", label: "Canales de Soporte", shortLabel: "Canales", icon: <Settings size={16} /> },
   { id: "helpdesk", label: "Mesa de Ayuda", shortLabel: "Ayuda", icon: <Headphones size={16} /> },
   { id: "posgrados", label: "Posgrados", icon: <GraduationCap size={16} /> },
+  { id: "profile", label: "Mi Perfil", shortLabel: "Perfil", icon: <UserCircle size={16} /> },
 ];
 
 const AdminPage = () => {
@@ -876,7 +1111,9 @@ const AdminPage = () => {
                   ? "Canales de contacto mostrados al escalar una consulta"
                   : activeTab === "helpdesk"
                     ? "Respuestas del bot para la Mesa de Ayuda"
-                    : "Ingesta de conocimientos para el asistente de posgrados"}
+                    : activeTab === "posgrados"
+                    ? "Ingesta de conocimientos para el asistente de posgrados"
+                    : "Nombre, correo y contraseña del administrador"}
             </p>
           </div>
           <div className='flex items-center gap-2'>
@@ -900,6 +1137,7 @@ const AdminPage = () => {
           {activeTab === "channels" && <ChannelsPanel />}
           {activeTab === "helpdesk" && <HelpdeskPanel />}
           {activeTab === "posgrados" && <PosgradosPanel />}
+          {activeTab === "profile" && <ProfilePanel />}
         </div>
       </main>
 
