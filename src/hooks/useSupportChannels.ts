@@ -5,6 +5,7 @@ import { useAuth } from "./useAuth";
 export interface SupportChannel {
   id: string;
   context: "posgrados" | "mesa_ayuda";
+  intent: string | null;
   whatsapp: string;
   email: string;
   updatedAt: string;
@@ -44,6 +45,7 @@ export const useSupportChannels = () => {
 
   const createChannel = async (channel: {
     context: "posgrados" | "mesa_ayuda";
+    intent?: string | null;
     whatsapp: string;
     email: string;
   }) => {
@@ -54,11 +56,14 @@ export const useSupportChannels = () => {
       const res = await fetch(`${SERVER_URL}/support-channels/create`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify(channel),
+        body: JSON.stringify({
+          ...channel,
+          intent: channel.intent?.trim() || null,
+        }),
       });
       if (res.status === 401) return logout();
       if (res.status === 400) {
-        setError("Ya existe un canal para ese contexto.");
+        setError("Ya existe un canal con ese contexto e intent.");
         await fetchChannels();
         return;
       }

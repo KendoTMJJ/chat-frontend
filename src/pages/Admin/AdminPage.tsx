@@ -112,12 +112,17 @@ const ConversationsPanel = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [contextFilter, setContextFilter] = useState<"all" | "posgrados" | "mesa_ayuda">("all");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const filtered = conversations
     .filter(
       (c: ConversationSummary) =>
         statusFilter === "all" || c.status === statusFilter,
+    )
+    .filter(
+      (c: ConversationSummary) =>
+        contextFilter === "all" || c.context === contextFilter,
     )
     .filter((c: ConversationSummary) => {
       if (!search.trim()) return true;
@@ -203,6 +208,25 @@ const ConversationsPanel = () => {
                 </button>
               ))}
             </div>
+            <div className='flex gap-1'>
+              {([
+                { value: "all", label: "Todos", icon: null },
+                { value: "posgrados", label: "Posgrados", icon: "🎓" },
+                { value: "mesa_ayuda", label: "Mesa de Ayuda", icon: "🎧" },
+              ] as const).map(({ value, label, icon }) => (
+                <button
+                  key={value}
+                  onClick={() => setContextFilter(value)}
+                  className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-all ${
+                    contextFilter === value
+                      ? "bg-white/15 text-white border-white/25"
+                      : "bg-white/5 text-white/40 border-white/10 hover:border-white/20"
+                  }`}
+                >
+                  {icon ? `${icon} ${label}` : label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className='flex-1 overflow-y-auto'>
@@ -230,6 +254,16 @@ const ConversationsPanel = () => {
                       #{conv.conversationId.slice(0, 8)}
                     </span>
                     <div className='flex items-center gap-1'>
+                      {conv.context === "posgrados" && (
+                        <span className='text-[9px] font-bold px-1.5 py-0.5 rounded border bg-emerald-500/15 text-emerald-300 border-emerald-500/30'>
+                          🎓 Posgrados
+                        </span>
+                      )}
+                      {conv.context === "mesa_ayuda" && (
+                        <span className='text-[9px] font-bold px-1.5 py-0.5 rounded border bg-sky-500/15 text-sky-300 border-sky-500/30'>
+                          🎧 Mesa Ayuda
+                        </span>
+                      )}
                       <span
                         className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${STATUS_LABELS[conv.status]?.color}`}
                       >
@@ -313,10 +347,20 @@ const ConversationsPanel = () => {
                   ← Volver
                 </button>
                 <div className='space-y-0.5'>
-                  <div className='flex items-center gap-2'>
+                  <div className='flex items-center gap-2 flex-wrap'>
                     <h3 className='font-bold text-white text-sm'>
                       Detalle de conversación
                     </h3>
+                    {selectedConv?.context === "posgrados" && (
+                      <span className='text-[9px] font-bold px-2 py-0.5 rounded-full border bg-emerald-500/15 text-emerald-300 border-emerald-500/30'>
+                        🎓 Posgrados
+                      </span>
+                    )}
+                    {selectedConv?.context === "mesa_ayuda" && (
+                      <span className='text-[9px] font-bold px-2 py-0.5 rounded-full border bg-sky-500/15 text-sky-300 border-sky-500/30'>
+                        🎧 Mesa de Ayuda
+                      </span>
+                    )}
                     {selectedConv?.status && (
                       <span
                         className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${STATUS_LABELS[selectedConv.status]?.color}`}
@@ -466,6 +510,7 @@ const CONTEXT_INFO: Record<
 
 const EMPTY_NEW_CHANNEL = {
   context: "posgrados" as "posgrados" | "mesa_ayuda",
+  intent: "",
   whatsapp: "",
   email: "",
 };
@@ -485,9 +530,6 @@ const ChannelsPanel = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newChannel, setNewChannel] = useState(EMPTY_NEW_CHANNEL);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-
-  const existingContexts = channels.map((ch) => ch.context);
-  const missingContexts = ALL_CONTEXTS.filter((ctx) => !existingContexts.includes(ctx));
 
   const getEdited = (ch: SupportChannel) => editing[ch.id] ?? ch;
 
@@ -525,17 +567,20 @@ const ChannelsPanel = () => {
     setNewChannel(EMPTY_NEW_CHANNEL);
   };
 
-  const handleOpenCreateForm = () => {
-    const defaultCtx = missingContexts[0];
-    setNewChannel({ ...EMPTY_NEW_CHANNEL, context: defaultCtx });
-    setShowCreateForm(true);
-  };
-
   const isNewChannelValid = newChannel.whatsapp.trim() && newChannel.email.trim();
 
   const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20";
   const focusBlue = "focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20";
   const focusGreen = "focus:border-usta-green/50 focus:ring-2 focus:ring-usta-green/20";
+
+  const groupedChannels = ALL_CONTEXTS.map((ctx) => ({
+    ctx,
+    items: channels.filter((ch) => ch.context === ctx).sort((a, b) => {
+      if (a.intent === null) return -1;
+      if (b.intent === null) return 1;
+      return a.intent.localeCompare(b.intent);
+    }),
+  })).filter((g) => g.items.length > 0);
 
   return (
     <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-usta-bg'>
@@ -550,12 +595,12 @@ const ChannelsPanel = () => {
           <div>
             <h2 className='text-xl font-bold text-white'>Canales de Contacto</h2>
             <p className='text-sm text-white/40 mt-1'>
-              Estos canales se muestran al usuario al finalizar un escalado.
+              Configura los canales por contexto e intent. El canal genérico (sin intent) se usa como fallback.
             </p>
           </div>
-          {!loading && missingContexts.length > 0 && !showCreateForm && (
+          {!loading && !showCreateForm && (
             <button
-              onClick={handleOpenCreateForm}
+              onClick={() => setShowCreateForm(true)}
               className='flex items-center gap-2 px-4 py-2 rounded-xl bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-bold shadow-sm transition-all'
             >
               <Plus size={15} /> Nuevo canal
@@ -589,11 +634,11 @@ const ChannelsPanel = () => {
                     </div>
                     <div>
                       <h3 className='font-bold text-white text-sm'>Nuevo canal de contacto</h3>
-                      <p className='text-xs text-white/40'>Solo se puede crear un canal por contexto.</p>
+                      <p className='text-xs text-white/40'>Puedes tener múltiples canales por contexto usando intents.</p>
                     </div>
                   </div>
                   <button
-                    onClick={() => setShowCreateForm(false)}
+                    onClick={() => { setShowCreateForm(false); setNewChannel(EMPTY_NEW_CHANNEL); }}
                     className='p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white/70 transition-colors'
                   >
                     <X size={16} />
@@ -605,7 +650,7 @@ const ChannelsPanel = () => {
                       Contexto
                     </label>
                     <div className='flex gap-2'>
-                      {missingContexts.map((ctx) => (
+                      {ALL_CONTEXTS.map((ctx) => (
                         <button
                           key={ctx}
                           onClick={() => setNewChannel((prev) => ({ ...prev, context: ctx }))}
@@ -620,6 +665,20 @@ const ChannelsPanel = () => {
                         </button>
                       ))}
                     </div>
+                  </div>
+                  <div>
+                    <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
+                      Intent <span className='normal-case font-normal'>(opcional)</span>
+                    </label>
+                    <input
+                      value={newChannel.intent}
+                      onChange={(e) => setNewChannel((prev) => ({ ...prev, intent: e.target.value }))}
+                      className={`${inputClass} ${focusBlue}`}
+                      placeholder='Ej: pagos, admisiones, plataforma — vacío para canal genérico'
+                    />
+                    <p className='text-[11px] text-white/30 mt-1.5'>
+                      Dejar vacío para que sea el canal de respaldo del contexto.
+                    </p>
                   </div>
                   <div>
                     <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
@@ -661,83 +720,107 @@ const ChannelsPanel = () => {
               </div>
             )}
 
-            {channels.map((ch: SupportChannel) => {
-              const info = CONTEXT_INFO[ch.context] ?? CONTEXT_INFO.posgrados;
-              const edited = getEdited(ch);
-              const dirty = isDirty(ch);
-              const { isBlue } = info;
-              const focusClass = isBlue ? focusBlue : focusGreen;
-              const dirtyBorder = isBlue
-                ? "border-usta-blue/50 ring-2 ring-usta-blue/20"
-                : "border-usta-green/50 ring-2 ring-usta-green/20";
+            {channels.length === 0 && !showCreateForm && (
+              <div className='flex flex-col items-center justify-center h-48 text-white/30 gap-3'>
+                <Phone size={32} className='opacity-30' />
+                <p className='text-sm'>No hay canales configurados aún.</p>
+              </div>
+            )}
 
+            {groupedChannels.map(({ ctx, items }) => {
+              const info = CONTEXT_INFO[ctx];
+              const { isBlue } = info;
               return (
-                <div key={ch.id} className='bg-usta-card rounded-2xl border border-white/10 overflow-hidden'>
-                  <div className={`px-6 py-4 border-b border-white/10 flex items-center gap-3 ${isBlue ? "bg-usta-blue/10" : "bg-usta-green/10"}`}>
-                    <div className={`p-2 rounded-xl text-white ${isBlue ? "bg-usta-blue" : "bg-usta-green/20 border border-usta-green/30 !text-usta-green"}`}>
+                <div key={ctx}>
+                  <div className={`flex items-center gap-2 mb-3 px-1`}>
+                    <div className={`p-1.5 rounded-lg text-white ${isBlue ? "bg-usta-blue" : "bg-usta-green/20 border border-usta-green/30 !text-usta-green"}`}>
                       {info.icon}
                     </div>
-                    <div>
-                      <h3 className='font-bold text-white text-sm'>{info.label}</h3>
-                      <p className='text-xs text-white/40'>{info.desc}</p>
-                    </div>
+                    <h3 className='font-bold text-white text-sm'>{info.label}</h3>
+                    <span className='text-xs text-white/30'>{items.length} canal{items.length !== 1 ? "es" : ""}</span>
                   </div>
-                  <div className='p-6 space-y-4'>
-                    <div>
-                      <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
-                        <Phone size={12} /> WhatsApp
-                      </label>
-                      <input
-                        value={edited.whatsapp}
-                        onChange={(e) => handleChange(ch, "whatsapp", e.target.value)}
-                        className={`${inputClass} ${dirty ? dirtyBorder : focusClass}`}
-                        placeholder='+57 300 000 0000'
-                      />
-                    </div>
-                    <div>
-                      <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
-                        <Mail size={12} /> Correo electrónico
-                      </label>
-                      <input
-                        value={edited.email}
-                        onChange={(e) => handleChange(ch, "email", e.target.value)}
-                        className={`${inputClass} ${dirty ? dirtyBorder : focusClass}`}
-                        placeholder='contacto@santoto.edu.co'
-                      />
-                    </div>
-                    <div className='flex items-center justify-between pt-2'>
-                      <p className='text-[10px] text-white/40'>
-                        Actualizado:{" "}
-                        {new Date(ch.updatedAt).toLocaleDateString("es-CO", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </p>
-                      <div className='flex items-center gap-2'>
-                        <button
-                          onClick={() => setConfirmDeleteId(ch.id)}
-                          disabled={saving}
-                          className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed'
-                        >
-                          <Trash2 size={14} /> Eliminar
-                        </button>
-                        <button
-                          onClick={() => handleSave(ch)}
-                          disabled={!dirty || saving}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                            dirty
-                              ? isBlue
-                                ? "bg-usta-blue hover:bg-usta-blue-dark text-white shadow-sm"
-                                : "bg-usta-green hover:bg-usta-green-dark text-usta-bg shadow-sm"
-                              : "bg-white/10 text-white/50 cursor-not-allowed"
-                          }`}
-                        >
-                          <Save size={14} />
-                          {saving ? "Guardando..." : "Guardar cambios"}
-                        </button>
-                      </div>
-                    </div>
+                  <div className='space-y-3'>
+                    {items.map((ch) => {
+                      const edited = getEdited(ch);
+                      const dirty = isDirty(ch);
+                      const focusClass = isBlue ? focusBlue : focusGreen;
+                      const dirtyBorder = isBlue
+                        ? "border-usta-blue/50 ring-2 ring-usta-blue/20"
+                        : "border-usta-green/50 ring-2 ring-usta-green/20";
+
+                      return (
+                        <div key={ch.id} className='bg-usta-card rounded-2xl border border-white/10 overflow-hidden'>
+                          <div className={`px-5 py-3 border-b border-white/10 flex items-center gap-2 ${isBlue ? "bg-usta-blue/5" : "bg-usta-green/5"}`}>
+                            {ch.intent ? (
+                              <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${isBlue ? "bg-usta-blue/15 text-usta-blue border-usta-blue/30" : "bg-usta-green/15 text-usta-green border-usta-green/30"}`}>
+                                {ch.intent}
+                              </span>
+                            ) : (
+                              <span className='px-2.5 py-0.5 rounded-full text-xs font-bold border bg-white/5 text-white/50 border-white/15'>
+                                General (fallback)
+                              </span>
+                            )}
+                          </div>
+                          <div className='p-5 space-y-3'>
+                            <div>
+                              <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
+                                <Phone size={12} /> WhatsApp
+                              </label>
+                              <input
+                                value={edited.whatsapp}
+                                onChange={(e) => handleChange(ch, "whatsapp", e.target.value)}
+                                className={`${inputClass} ${dirty ? dirtyBorder : focusClass}`}
+                                placeholder='+57 300 000 0000'
+                              />
+                            </div>
+                            <div>
+                              <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
+                                <Mail size={12} /> Correo electrónico
+                              </label>
+                              <input
+                                value={edited.email}
+                                onChange={(e) => handleChange(ch, "email", e.target.value)}
+                                className={`${inputClass} ${dirty ? dirtyBorder : focusClass}`}
+                                placeholder='contacto@santoto.edu.co'
+                              />
+                            </div>
+                            <div className='flex items-center justify-between pt-1'>
+                              <p className='text-[10px] text-white/30'>
+                                Actualizado:{" "}
+                                {new Date(ch.updatedAt).toLocaleDateString("es-CO", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </p>
+                              <div className='flex items-center gap-2'>
+                                <button
+                                  onClick={() => setConfirmDeleteId(ch.id)}
+                                  disabled={saving}
+                                  className='flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-bold border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed'
+                                >
+                                  <Trash2 size={13} /> Eliminar
+                                </button>
+                                <button
+                                  onClick={() => handleSave(ch)}
+                                  disabled={!dirty || saving}
+                                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-bold transition-all ${
+                                    dirty
+                                      ? isBlue
+                                        ? "bg-usta-blue hover:bg-usta-blue-dark text-white shadow-sm"
+                                        : "bg-usta-green hover:bg-usta-green-dark text-usta-bg shadow-sm"
+                                      : "bg-white/10 text-white/50 cursor-not-allowed"
+                                  }`}
+                                >
+                                  <Save size={13} />
+                                  {saving ? "Guardando..." : "Guardar"}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
