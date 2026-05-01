@@ -5,23 +5,20 @@ import { useAuth } from "./useAuth";
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export interface HelpdeskCategory {
-  id:          number;
-  intent:      string;
-  label:       string;
-  pdf_url:     string | null;
-  description: string | null;
-  updated_at:  string;
+  id:            number;
+  intent:        string;
+  display_label: string;
+  pdf_url:       string | null;
+  description:   string | null;
 }
 
 export interface CreateHelpdeskCategoryDto {
   intent:       string;
-  label:        string;
   pdf_url?:     string | null;
   description?: string | null;
 }
 
 export interface UpdateHelpdeskCategoryDto {
-  label?:       string;
   pdf_url?:     string | null;
   description?: string | null;
 }

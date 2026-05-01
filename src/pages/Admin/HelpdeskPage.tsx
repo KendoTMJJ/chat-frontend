@@ -65,11 +65,10 @@ const CreateModal = ({
   onCancel: () => void;
 }) => {
   const [intent, setIntent] = useState("");
-  const [label, setLabel] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [description, setDescription] = useState("");
 
-  const isValid = intent.trim().length > 0 && label.trim().length > 0;
+  const isValid = intent.trim().length > 0;
 
   return (
     <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
@@ -84,24 +83,28 @@ const CreateModal = ({
           </button>
         </div>
         <div className='p-6 space-y-4'>
-          {[
-            { label: "Intent", value: intent, setter: setIntent, placeholder: "ej: pagos", required: true },
-            { label: "Categoría", value: label, setter: setLabel, placeholder: "ej: 💳 Pagos", required: true },
-          ].map(({ label: lbl, value, setter, placeholder, required }) => (
-            <div key={lbl}>
-              <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-1.5'>
-                {lbl} {required && <span className='text-red-400'>*</span>}
-              </label>
-              <input
-                value={value}
-                onChange={(e) => setter(e.target.value)}
-                placeholder={placeholder}
-                className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                  outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
-                  placeholder:text-white/20'
-              />
-            </div>
-          ))}
+          <div>
+            <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-1.5'>
+              Identificador <span className='text-red-400'>*</span>
+              <span
+                title="Solo minúsculas y guión bajo, sin espacios ni tildes. Ej: paz_y_salvos. Este valor lo usa n8n para enrutar la consulta y se convierte automáticamente en el nombre visible del chip."
+                className='cursor-help text-white/30 normal-case font-normal'
+              >ⓘ</span>
+            </label>
+            <input
+              value={intent}
+              onChange={(e) => setIntent(e.target.value.toLowerCase().replace(/\s+/g, "_"))}
+              placeholder='ej: paz_y_salvos'
+              className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white font-mono
+                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
+                placeholder:text-white/20'
+            />
+            {intent && (
+              <p className='text-[11px] text-white/30 mt-1'>
+                Se mostrará como: <span className='text-white/50'>{intent.replace(/_/g, " ").replace(/^\w/, c => c.toUpperCase())}</span>
+              </p>
+            )}
+          </div>
           <div>
             <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-1.5'>
               Descripción
@@ -109,7 +112,7 @@ const CreateModal = ({
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder='Breve descripción de la categoría...'
+              placeholder='Describe qué tipo de consultas cubre esta categoría. El clasificador usa este texto para identificar la intención del usuario.'
               rows={3}
               className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
                 outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all resize-none
@@ -141,7 +144,6 @@ const CreateModal = ({
             onClick={() =>
               onSubmit({
                 intent: intent.trim(),
-                label: label.trim(),
                 description: description.trim() || null,
                 pdf_url: pdfUrl.trim() || null,
               })
@@ -170,11 +172,8 @@ const EditModal = ({
   onSubmit: (dto: UpdateHelpdeskCategoryDto) => Promise<void>;
   onCancel: () => void;
 }) => {
-  const [label, setLabel] = useState(category.label);
   const [pdfUrl, setPdfUrl] = useState(category.pdf_url ?? "");
   const [description, setDescription] = useState(category.description ?? "");
-
-  const isValid = label.trim().length > 0;
 
   return (
     <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
@@ -192,30 +191,13 @@ const EditModal = ({
         <div className='p-6 space-y-4'>
           <div>
             <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-1.5'>
-              Intent
+              Identificador
             </label>
-            <div className='bg-white/5 border border-white/10 rounded-xl py-2.5 px-3'>
-              <span className='font-mono text-sm text-white/50'>
-                {category.intent}
-              </span>
+            <div className='bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 flex items-center justify-between'>
+              <span className='font-mono text-sm text-white/50'>{category.intent}</span>
+              <span className='text-xs text-white/30'>→ {category.display_label}</span>
             </div>
-            <p className='text-[10px] text-white/40 mt-1'>
-              El intent no se puede modificar.
-            </p>
-          </div>
-
-          <div>
-            <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-1.5'>
-              Categoría <span className='text-red-400'>*</span>
-            </label>
-            <input
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              placeholder='ej: 💳 Pagos'
-              className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
-                placeholder:text-white/20'
-            />
+            <p className='text-[10px] text-white/40 mt-1'>El identificador no se puede modificar.</p>
           </div>
 
           <div>
@@ -225,7 +207,7 @@ const EditModal = ({
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder='Breve descripción de la categoría...'
+              placeholder='Describe qué tipo de consultas cubre esta categoría. El clasificador usa este texto para identificar la intención del usuario.'
               rows={3}
               className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
                 outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all resize-none
@@ -256,14 +238,8 @@ const EditModal = ({
             Cancelar
           </button>
           <button
-            onClick={() =>
-              onSubmit({
-                label: label.trim(),
-                description: description.trim() || null,
-                pdf_url: pdfUrl.trim() || null,
-              })
-            }
-            disabled={!isValid || saving}
+            onClick={() => onSubmit({ description: description.trim() || null, pdf_url: pdfUrl.trim() || null })}
+            disabled={saving}
             className='flex-1 py-2.5 rounded-xl bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-semibold
               transition-all disabled:opacity-40 disabled:cursor-not-allowed'
           >
@@ -380,7 +356,7 @@ const HelpdeskPanel = () => {
                 {categories.map((cat) => (
                   <div key={cat.id} className='bg-usta-card rounded-2xl border border-white/10 p-4 space-y-3'>
                     <div className='flex items-start justify-between gap-2'>
-                      <p className='font-semibold text-white text-sm leading-snug'>{cat.label}</p>
+                      <p className='font-semibold text-white text-sm leading-snug'>{cat.display_label}</p>
                       <div className='flex items-center gap-1 shrink-0'>
                         <button
                           onClick={() => setEditing(cat)}
@@ -438,7 +414,7 @@ const HelpdeskPanel = () => {
                   <tbody className='divide-y divide-white/5'>
                     {categories.map((cat) => (
                       <tr key={cat.id} className='hover:bg-white/5 transition-colors'>
-                        <td className='px-5 py-3.5 font-medium text-white'>{cat.label}</td>
+                        <td className='px-5 py-3.5 font-medium text-white'>{cat.display_label}</td>
                         <td className='px-5 py-3.5'>
                           <span className='font-mono text-xs bg-white/5 border border-white/10 text-white/60 px-2 py-1 rounded-lg'>
                             {cat.intent}
