@@ -9,6 +9,7 @@ export interface ConversationSummary {
   correo: string | null;
   status: "active" | "closed" | "expired" | "escalated";
   title: string | null;
+  context: string | null;
   lastMessage: string;
   updatedAt: string;
   startedAt: string;

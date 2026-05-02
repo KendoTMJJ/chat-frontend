@@ -13,7 +13,6 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
 
-      // 👇 SOLO para desarrolladores internos
       { path: "dev/chat", element: <ChatPage /> },
 
       {
@@ -29,7 +28,6 @@ export const router = createBrowserRouter([
     ],
   },
 
-  // 👇 RUTA PÚBLICA LIMPIA (NO usa layout)
   {
     path: "/widget/chat",
     element: <Chat />,

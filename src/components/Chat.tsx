@@ -408,6 +408,20 @@ const Chat = () => {
     window.location.reload();
   };
 
+  const switchContext = (newCtx: ChatContext) => {
+    setMessages([]);
+    setConversationId(null);
+    setEscalated(false);
+    setShowEscalatePrompt(false);
+    setChatExpired(false);
+    setIsBotTyping(false);
+    lastMsgSigRef.current = "";
+    socket.disconnect();
+    sessionStorage.removeItem("tab-id");
+    setContext(newCtx);
+    connectSocket(newCtx);
+  };
+
   const isInputDisabled = !connected || chatExpired || !context;
 
   // ── Pantalla de bienvenida ─────────────────────────────────────────────────
@@ -467,11 +481,21 @@ const Chat = () => {
           </div>
         </div>
         <div className='flex items-center gap-2'>
-          <span
-            className={`hidden sm:inline-block text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${cfg!.accentBorder} ${cfg!.accentText} bg-white/5`}
-          >
-            {context === "posgrados" ? "Posgrados" : "Mesa de Ayuda"}
-          </span>
+          {context === "posgrados" ? (
+            <button
+              onClick={() => switchContext("mesa_ayuda")}
+              className='hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full border border-usta-green/40 text-usta-green bg-usta-green/10 hover:bg-usta-green/20 transition-all'
+            >
+              <HeadphonesIcon size={12} /> Mesa de Ayuda
+            </button>
+          ) : (
+            <button
+              onClick={() => switchContext("posgrados")}
+              className='hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full border border-usta-blue/40 text-usta-blue-lt bg-usta-blue/10 hover:bg-usta-blue/20 transition-all'
+            >
+              <GraduationCap size={12} /> Posgrados
+            </button>
+          )}
           <button
             onClick={resetChat}
             className='p-2 hover:bg-white/5 rounded-full text-white/30 hover:text-red-400 transition-all'
