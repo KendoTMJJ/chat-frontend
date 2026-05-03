@@ -50,7 +50,7 @@ export const useProfile = () => {
     try {
       const res = await fetch(`${SERVER_URL}/admin/profile`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+        headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify({ name, email }),
       });
       if (res.status === 401) return logout();
@@ -74,7 +74,7 @@ export const useProfile = () => {
     try {
       const res = await fetch(`${SERVER_URL}/admin/change-password`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+        headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
       if (res.status === 401) {
