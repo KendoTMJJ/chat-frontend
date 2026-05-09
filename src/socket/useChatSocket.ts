@@ -14,9 +14,9 @@ interface SessionExpiredPayload {
 }
 
 export interface ConfirmationPayload {
-  nombre: string;
-  correo: string;
-  motivo: string;
+  name: string;
+  email: string;
+  reason: string;
 }
 
 interface UseChatSocketProps {

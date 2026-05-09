@@ -32,6 +32,7 @@ const CONTEXT_CONFIG: Record<
     avatarBot: string;
     heading: string;
     userBubble: string;
+    cursor: string;
   }
 > = {
   posgrados: {
@@ -42,10 +43,12 @@ const CONTEXT_CONFIG: Record<
     accentText: "text-usta-blue-lt",
     accentBorder: "border-usta-blue/50",
     sendBtn: "bg-usta-blue hover:bg-usta-blue-dark",
-    chipHover: "hover:border-usta-blue/50 hover:text-usta-blue-lt hover:bg-usta-blue/10",
+    chipHover:
+      "hover:border-usta-blue/50 hover:text-usta-blue-lt hover:bg-usta-blue/10",
     avatarBot: "bg-usta-blue/20 text-usta-blue-lt",
     heading: "text-usta-blue-lt",
     userBubble: "bg-usta-blue text-white",
+    cursor: "cursor-pointer",
   },
   mesa_ayuda: {
     label: "Mesa de Ayuda",
@@ -55,10 +58,12 @@ const CONTEXT_CONFIG: Record<
     accentText: "text-usta-green",
     accentBorder: "border-usta-green/50",
     sendBtn: "bg-usta-green hover:bg-usta-green-dark",
-    chipHover: "hover:border-usta-green/50 hover:text-usta-green hover:bg-usta-green/10",
+    chipHover:
+      "hover:border-usta-green/50 hover:text-usta-green hover:bg-usta-green/10",
     avatarBot: "bg-usta-green/20 text-usta-green",
     heading: "text-usta-green",
     userBubble: "bg-usta-green text-usta-bg",
+    cursor: "cursor-pointer",
   },
 };
 
@@ -90,9 +95,9 @@ type OptionsMessage = {
 type ConfirmationMessage = {
   type: "confirmation";
   id: string;
-  nombre: string;
-  correo: string;
-  motivo: string;
+  name: string;
+  email: string;
+  reason: string;
   answered: boolean;
 };
 
@@ -124,8 +129,8 @@ const WelcomeScreen = ({
     <div className='w-full max-w-sm space-y-6'>
       <div className='flex justify-center'>
         <img
-          src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
-          alt="Universidad Santo Tomás Tunja"
+          src='/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png'
+          alt='Universidad Santo Tomás Tunja'
           className='h-14 object-contain'
         />
       </div>
@@ -172,9 +177,7 @@ const WelcomeScreen = ({
             <HeadphonesIcon size={20} />
           </div>
           <div className='flex-1 min-w-0'>
-            <p className='text-sm font-semibold text-white'>
-              Mesa de Ayuda
-            </p>
+            <p className='text-sm font-semibold text-white'>Mesa de Ayuda</p>
             <p className='text-xs text-white/40 mt-0.5'>
               Trámites, carnet, soporte técnico
             </p>
@@ -279,9 +282,9 @@ const Chat = () => {
       const confirmMsg: ConfirmationMessage = {
         type: "confirmation",
         id: `confirmation-${Date.now()}`,
-        nombre: payload.nombre,
-        correo: payload.correo,
-        motivo: payload.motivo,
+        name: payload.name,
+        email: payload.email,
+        reason: payload.reason,
         answered: false,
       };
       setMessages((prev) => [...prev, confirmMsg]);
@@ -431,8 +434,8 @@ const Chat = () => {
         <header className='p-4 bg-usta-surface border-b border-white/10 flex justify-between items-center'>
           <div className='flex items-center gap-3'>
             <img
-              src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
-              alt="Universidad Santo Tomás Tunja"
+              src='/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png'
+              alt='Universidad Santo Tomás Tunja'
               className='h-8 object-contain'
             />
             <p className='text-[10px] flex items-center gap-1.5 font-medium uppercase tracking-wider text-white/40'>
@@ -484,21 +487,21 @@ const Chat = () => {
           {context === "posgrados" ? (
             <button
               onClick={() => switchContext("mesa_ayuda")}
-              className='hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full border border-usta-green/40 text-usta-green bg-usta-green/10 hover:bg-usta-green/20 transition-all'
+              className='hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full border border-usta-green/40 text-usta-green bg-usta-green/10 hover:bg-usta-green/20 transition-all cursor-pointer'
             >
               <HeadphonesIcon size={12} /> Mesa de Ayuda
             </button>
           ) : (
             <button
               onClick={() => switchContext("posgrados")}
-              className='hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full border border-usta-blue/40 text-usta-blue-lt bg-usta-blue/10 hover:bg-usta-blue/20 transition-all'
+              className='hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full border border-usta-blue/40 text-usta-blue-lt bg-usta-blue/10 hover:bg-usta-blue/20 transition-all cursor-pointer'
             >
               <GraduationCap size={12} /> Posgrados
             </button>
           )}
           <button
             onClick={resetChat}
-            className='p-2 hover:bg-white/5 rounded-full text-white/30 hover:text-red-400 transition-all'
+            className='p-2 hover:bg-white/5 rounded-full text-white/30 hover:text-red-400 transition-all cursor-pointer'
             title='Reiniciar conversación'
           >
             <RefreshCw size={18} />
@@ -527,28 +530,49 @@ const Chat = () => {
                     </p>
                     <div className='text-sm text-white/70 mb-4 space-y-1'>
                       <p>
-                        👤 <strong className='text-white'>Nombre:</strong> {msg.nombre}
+                        👤 <strong className='text-white'>Nombre:</strong>{" "}
+                        {msg.name}
                       </p>
                       <p>
-                        📧 <strong className='text-white'>Correo:</strong> {msg.correo}
+                        📧 <strong className='text-white'>Correo:</strong>{" "}
+                        {msg.email}
                       </p>
                       <p>
-                        💬 <strong className='text-white'>Motivo:</strong> {msg.motivo}
+                        💬 <strong className='text-white'>Motivo:</strong>{" "}
+                        {msg.reason}
                       </p>
                     </div>
                     <div className='flex flex-col gap-2'>
                       {[
-                        { id: "confirm",     label: "✅ Confirmar",       variant: "confirm"  as const },
-                        { id: "edit_nombre", label: "✏️ Corregir nombre", variant: "default" as const },
-                        { id: "edit_correo", label: "✏️ Corregir correo", variant: "default" as const },
-                        { id: "edit_motivo", label: "✏️ Corregir motivo", variant: "default" as const },
+                        {
+                          id: "confirm",
+                          label: "✅ Confirmar",
+                          variant: "confirm" as const,
+                        },
+                        {
+                          id: "edit_name",
+                          label: "✏️ Corregir nombre",
+                          variant: "default" as const,
+                        },
+                        {
+                          id: "edit_email",
+                          label: "✏️ Corregir correo",
+                          variant: "default" as const,
+                        },
+                        {
+                          id: "edit_reason",
+                          label: "✏️ Corregir motivo",
+                          variant: "default" as const,
+                        },
                       ].map((opt) => (
                         <ChatButton
                           key={opt.id}
                           label={opt.label}
                           variant={opt.variant}
                           disabled={isDisabled}
-                          onClick={() => handleConfirmationClick(msg.id, opt.id)}
+                          onClick={() =>
+                            handleConfirmationClick(msg.id, opt.id)
+                          }
                         />
                       ))}
                     </div>
@@ -578,7 +602,7 @@ const Chat = () => {
                           onClick={() =>
                             handleOptionClick(msg.id, opt.id, opt.confirmed)
                           }
-                          className={`text-left px-4 py-2.5 rounded-xl border text-sm font-medium transition-all
+                          className={`text-left cursor-pointer px-4 py-2.5 rounded-xl border text-sm font-medium transition-all
                             ${
                               msg.answered
                                 ? "opacity-30 cursor-not-allowed border-white/10 bg-white/5 text-white/40"
@@ -608,9 +632,9 @@ const Chat = () => {
                 >
                   {isUser ? <User size={16} /> : <Bot size={16} />}
                 </div>
-                <div className='flex flex-col gap-2 max-w-[85%]'>
+                <div className='flex flex-col gap-2 max-w-[85%] '>
                   <div
-                    className={`relative px-5 py-4 rounded-2xl text-[15px] leading-relaxed
+                    className={`relative px-5 py-4 rounded-2xl text-[15px] leading-relaxed wrap-break-word
                     ${
                       isUser
                         ? `${cfg!.userBubble} rounded-tr-none`
@@ -759,7 +783,8 @@ const Chat = () => {
             <span className={cfg!.accentText}>{cfg!.sublabel}</span>
           </p>
           <p className='text-[10px] text-white/20'>
-            El asistente puede cometer errores. Verifica la información importante.
+            El asistente puede cometer errores. Verifica la información
+            importante.
           </p>
         </div>
       </div>

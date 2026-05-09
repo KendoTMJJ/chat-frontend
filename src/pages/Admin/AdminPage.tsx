@@ -38,8 +38,14 @@ import HelpdeskPanel from "./HelpdeskPage";
 import PosgradosPanel from "./PosgradosPage";
 import { useProfile } from "../../hooks/useProfile";
 import { useAuth } from "../../hooks/useAuth";
+import { useHelpdeskCategories } from "../../hooks/useHelpdeskResponses";
 
-type AdminTab = "conversations" | "channels" | "helpdesk" | "posgrados" | "profile";
+type AdminTab =
+  | "conversations"
+  | "channels"
+  | "helpdesk"
+  | "posgrados"
+  | "profile";
 type StatusFilter = "all" | "active" | "escalated" | "closed" | "expired";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -112,7 +118,9 @@ const ConversationsPanel = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [contextFilter, setContextFilter] = useState<"all" | "posgrados" | "mesa_ayuda">("all");
+  const [contextFilter, setContextFilter] = useState<
+    "all" | "posgrados" | "mesa_ayuda"
+  >("all");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const filtered = conversations
@@ -132,8 +140,8 @@ const ConversationsPanel = () => {
         c.lastMessage?.toLowerCase().includes(q) ||
         c.title?.toLowerCase().includes(q) ||
         c.userId?.toLowerCase().includes(q) ||
-        c.nombre?.toLowerCase().includes(q) ||
-        c.correo?.toLowerCase().includes(q)
+        c.name?.toLowerCase().includes(q) ||
+        c.email?.toLowerCase().includes(q)
       );
     });
 
@@ -177,7 +185,9 @@ const ConversationsPanel = () => {
 
       <div className='flex flex-1 h-full overflow-hidden'>
         {/* Lista */}
-        <div className={`${showDetail ? 'hidden md:flex' : 'flex'} w-full md:w-80 border-r border-white/10 flex-col bg-usta-bg`}>
+        <div
+          className={`${showDetail ? "hidden md:flex" : "flex"} w-full md:w-80 border-r border-white/10 flex-col bg-usta-bg`}
+        >
           <div className='p-4 space-y-3 border-b border-white/10'>
             <div className='relative'>
               <Search
@@ -194,7 +204,15 @@ const ConversationsPanel = () => {
               />
             </div>
             <div className='flex gap-1 flex-wrap'>
-              {(["all", "active", "escalated", "closed", "expired"] as StatusFilter[]).map((s) => (
+              {(
+                [
+                  "all",
+                  "active",
+                  "escalated",
+                  "closed",
+                  "expired",
+                ] as StatusFilter[]
+              ).map((s) => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
@@ -209,11 +227,13 @@ const ConversationsPanel = () => {
               ))}
             </div>
             <div className='flex gap-1'>
-              {([
-                { value: "all", label: "Todos", icon: null },
-                { value: "posgrados", label: "Posgrados", icon: "🎓" },
-                { value: "mesa_ayuda", label: "Mesa de Ayuda", icon: "🎧" },
-              ] as const).map(({ value, label, icon }) => (
+              {(
+                [
+                  { value: "all", label: "Todos", icon: null },
+                  { value: "posgrados", label: "Posgrados", icon: "🎓" },
+                  { value: "mesa_ayuda", label: "Mesa de Ayuda", icon: "🎧" },
+                ] as const
+              ).map(({ value, label, icon }) => (
                 <button
                   key={value}
                   onClick={() => setContextFilter(value)}
@@ -293,19 +313,22 @@ const ConversationsPanel = () => {
                     </div>
                   </div>
 
-                  {conv.nombre && (
+                  {conv.name && (
                     <div className='flex items-center gap-1 mb-1'>
-                      <UserCircle size={11} className='text-amber-400 shrink-0' />
+                      <UserCircle
+                        size={11}
+                        className='text-amber-400 shrink-0'
+                      />
                       <span className='text-xs font-semibold text-white truncate'>
-                        {conv.nombre}
+                        {conv.name}
                       </span>
                     </div>
                   )}
-                  {conv.correo && (
+                  {conv.email && (
                     <div className='flex items-center gap-1 mb-1'>
                       <AtSign size={11} className='text-white/50 shrink-0' />
                       <span className='text-[11px] text-white/50 truncate'>
-                        {conv.correo}
+                        {conv.email}
                       </span>
                     </div>
                   )}
@@ -336,7 +359,9 @@ const ConversationsPanel = () => {
         </div>
 
         {/* Detalle */}
-        <div className={`${showDetail ? 'flex' : 'hidden md:flex'} flex-1 flex-col overflow-hidden bg-usta-bg`}>
+        <div
+          className={`${showDetail ? "flex" : "hidden md:flex"} flex-1 flex-col overflow-hidden bg-usta-bg`}
+        >
           {selectedId ? (
             <>
               <div className='bg-usta-surface border-b border-white/10 px-4 md:px-6 py-4 flex items-start justify-between shrink-0'>
@@ -369,16 +394,18 @@ const ConversationsPanel = () => {
                       </span>
                     )}
                   </div>
-                  {selectedConv?.nombre && (
+                  {selectedConv?.name && (
                     <p className='text-xs text-white/60 flex items-center gap-1'>
                       <UserCircle size={12} className='text-amber-400' />
-                      <span className='font-semibold'>{selectedConv.nombre}</span>
+                      <span className='font-semibold'>
+                        {selectedConv.name}
+                      </span>
                     </p>
                   )}
-                  {selectedConv?.correo && (
+                  {selectedConv?.email && (
                     <p className='text-xs text-white/40 flex items-center gap-1'>
                       <AtSign size={12} className='text-white/50' />
-                      {selectedConv.correo}
+                      {selectedConv.email}
                     </p>
                   )}
                   {selectedConv?.title && (
@@ -415,7 +442,10 @@ const ConversationsPanel = () => {
                 <div className='max-w-2xl mx-auto space-y-4'>
                   {chatHistory.length === 0 ? (
                     <div className='text-center py-16 text-white/50 text-sm'>
-                      <MessageSquare size={32} className='mx-auto mb-3 text-white/10' />
+                      <MessageSquare
+                        size={32}
+                        className='mx-auto mb-3 text-white/10'
+                      />
                       Cargando historial...
                     </div>
                   ) : (
@@ -437,7 +467,10 @@ const ConversationsPanel = () => {
                             <ReactMarkdown
                               components={{
                                 p: ({ ...props }) => (
-                                  <p className='mb-1 last:mb-0 leading-relaxed' {...props} />
+                                  <p
+                                    className='mb-1 last:mb-0 leading-relaxed'
+                                    {...props}
+                                  />
                                 ),
                                 strong: ({ ...props }) => (
                                   <span className='font-bold' {...props} />
@@ -454,11 +487,16 @@ const ConversationsPanel = () => {
                             >
                               {msg.message}
                             </ReactMarkdown>
-                            <p className={`text-[10px] mt-1.5 text-white/50 ${isUser ? "text-right" : ""}`}>
-                              {new Date(msg.createAt).toLocaleTimeString("es-CO", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
+                            <p
+                              className={`text-[10px] mt-1.5 text-white/50 ${isUser ? "text-right" : ""}`}
+                            >
+                              {new Date(msg.createdAt).toLocaleTimeString(
+                                "es-CO",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
                             </p>
                           </div>
                         </div>
@@ -488,7 +526,10 @@ const ConversationsPanel = () => {
 };
 
 // ─── Channels Panel ───────────────────────────────────────────────────────────
-const ALL_CONTEXTS: Array<"posgrados" | "mesa_ayuda"> = ["posgrados", "mesa_ayuda"];
+const ALL_CONTEXTS: Array<"posgrados" | "mesa_ayuda"> = [
+  "posgrados",
+  "mesa_ayuda",
+];
 
 const CONTEXT_INFO: Record<
   string,
@@ -516,6 +557,7 @@ const EMPTY_NEW_CHANNEL = {
 };
 
 const ChannelsPanel = () => {
+  const { categories } = useHelpdeskCategories();
   const {
     channels,
     loading,
@@ -533,7 +575,11 @@ const ChannelsPanel = () => {
 
   const getEdited = (ch: SupportChannel) => editing[ch.id] ?? ch;
 
-  const handleChange = (ch: SupportChannel, field: "whatsapp" | "email", value: string) => {
+  const handleChange = (
+    ch: SupportChannel,
+    field: "whatsapp" | "email",
+    value: string,
+  ) => {
     setEditing((prev) => ({
       ...prev,
       [ch.id]: { ...(prev[ch.id] ?? ch), [field]: value },
@@ -567,19 +613,25 @@ const ChannelsPanel = () => {
     setNewChannel(EMPTY_NEW_CHANNEL);
   };
 
-  const isNewChannelValid = newChannel.whatsapp.trim() && newChannel.email.trim();
+  const isNewChannelValid =
+    newChannel.whatsapp.trim() && newChannel.email.trim();
 
-  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20";
-  const focusBlue = "focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20";
-  const focusGreen = "focus:border-usta-green/50 focus:ring-2 focus:ring-usta-green/20";
+  const inputClass =
+    "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20";
+  const focusBlue =
+    "focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20";
+  const focusGreen =
+    "focus:border-usta-green/50 focus:ring-2 focus:ring-usta-green/20";
 
   const groupedChannels = ALL_CONTEXTS.map((ctx) => ({
     ctx,
-    items: channels.filter((ch) => ch.context === ctx).sort((a, b) => {
-      if (a.intent === null) return -1;
-      if (b.intent === null) return 1;
-      return a.intent.localeCompare(b.intent);
-    }),
+    items: channels
+      .filter((ch) => ch.context === ctx)
+      .sort((a, b) => {
+        if (a.intent === null) return -1;
+        if (b.intent === null) return 1;
+        return a.intent.localeCompare(b.intent);
+      }),
   })).filter((g) => g.items.length > 0);
 
   return (
@@ -593,9 +645,12 @@ const ChannelsPanel = () => {
       <div className='max-w-2xl mx-auto'>
         <div className='mb-8 flex items-start justify-between'>
           <div>
-            <h2 className='text-xl font-bold text-white'>Canales de Contacto</h2>
+            <h2 className='text-xl font-bold text-white'>
+              Canales de Contacto
+            </h2>
             <p className='text-sm text-white/40 mt-1'>
-              Configura los canales por contexto e intent. El canal genérico (sin intent) se usa como fallback.
+              Configura los canales por contexto e intent. El canal genérico
+              (sin intent) se usa como fallback.
             </p>
           </div>
           {!loading && !showCreateForm && (
@@ -633,12 +688,20 @@ const ChannelsPanel = () => {
                       <Plus size={18} />
                     </div>
                     <div>
-                      <h3 className='font-bold text-white text-sm'>Nuevo canal de contacto</h3>
-                      <p className='text-xs text-white/40'>Puedes tener múltiples canales por contexto usando intents.</p>
+                      <h3 className='font-bold text-white text-sm'>
+                        Nuevo canal de contacto
+                      </h3>
+                      <p className='text-xs text-white/40'>
+                        Puedes tener múltiples canales por contexto usando
+                        intents.
+                      </p>
                     </div>
                   </div>
                   <button
-                    onClick={() => { setShowCreateForm(false); setNewChannel(EMPTY_NEW_CHANNEL); }}
+                    onClick={() => {
+                      setShowCreateForm(false);
+                      setNewChannel(EMPTY_NEW_CHANNEL);
+                    }}
                     className='p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white/70 transition-colors'
                   >
                     <X size={16} />
@@ -653,14 +716,20 @@ const ChannelsPanel = () => {
                       {ALL_CONTEXTS.map((ctx) => (
                         <button
                           key={ctx}
-                          onClick={() => setNewChannel((prev) => ({ ...prev, context: ctx }))}
+                          onClick={() =>
+                            setNewChannel((prev) => ({ ...prev, context: ctx }))
+                          }
                           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${
                             newChannel.context === ctx
                               ? "bg-usta-blue text-white border-usta-blue"
                               : "bg-white/5 text-white/60 border-white/10 hover:border-white/25"
                           }`}
                         >
-                          {ctx === "posgrados" ? <GraduationCap size={14} /> : <Headphones size={14} />}
+                          {ctx === "posgrados" ? (
+                            <GraduationCap size={14} />
+                          ) : (
+                            <Headphones size={14} />
+                          )}
                           {CONTEXT_INFO[ctx].label}
                         </button>
                       ))}
@@ -668,16 +737,72 @@ const ChannelsPanel = () => {
                   </div>
                   <div>
                     <label className='flex items-center gap-1.5 text-xs font-bold text-white/40 uppercase tracking-wider mb-2'>
-                      Intent <span className='normal-case font-normal'>(opcional)</span>
+                      Intent{" "}
+                      <span className='normal-case font-normal'>
+                        (opcional)
+                      </span>
                     </label>
-                    <input
-                      value={newChannel.intent}
-                      onChange={(e) => setNewChannel((prev) => ({ ...prev, intent: e.target.value }))}
-                      className={`${inputClass} ${focusBlue}`}
-                      placeholder='Ej: pagos, admisiones, plataforma — vacío para canal genérico'
-                    />
+
+                    {newChannel.context === "mesa_ayuda" ? (
+                      <div className='relative'>
+                        <select
+                          value={newChannel.intent}
+                          onChange={(e) =>
+                            setNewChannel((prev) => ({
+                              ...prev,
+                              intent: e.target.value,
+                            }))
+                          }
+                          className={`${inputClass} ${focusBlue} cursor-pointer appearance-none bg-[#1e1040] text-white pr-10`}
+                          style={{ colorScheme: "dark" }}
+                        >
+                          <option
+                            value=''
+                            className='bg-[#1e1040] text-white/50'
+                          >
+                            — Canal genérico —
+                          </option>
+                          {categories.map((cat) => (
+                            <option
+                              key={cat.id}
+                              value={cat.intent}
+                              className='bg-[#1e1040] text-white'
+                            >
+                              {cat.display_label ?? cat.intent}
+                            </option>
+                          ))}
+                        </select>
+                        <div className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/40'>
+                          <svg
+                            width='14'
+                            height='14'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                          >
+                            <polyline points='6 9 12 15 18 9' />
+                          </svg>
+                        </div>
+                      </div>
+                    ) : (
+                      <input
+                        value={newChannel.intent}
+                        onChange={(e) =>
+                          setNewChannel((prev) => ({
+                            ...prev,
+                            intent: e.target.value,
+                          }))
+                        }
+                        className={`${inputClass} ${focusBlue}`}
+                        placeholder='Ej: admisiones, costos — vacío para canal genérico'
+                      />
+                    )}
+
                     <p className='text-[11px] text-white/30 mt-1.5'>
-                      Dejar vacío para que sea el canal de respaldo del contexto.
+                      {newChannel.context === "mesa_ayuda"
+                        ? "Selecciona el intent de la categoría correspondiente."
+                        : "Dejar vacío para canal genérico de posgrados."}
                     </p>
                   </div>
                   <div>
@@ -686,7 +811,12 @@ const ChannelsPanel = () => {
                     </label>
                     <input
                       value={newChannel.whatsapp}
-                      onChange={(e) => setNewChannel((prev) => ({ ...prev, whatsapp: e.target.value }))}
+                      onChange={(e) =>
+                        setNewChannel((prev) => ({
+                          ...prev,
+                          whatsapp: e.target.value,
+                        }))
+                      }
                       className={`${inputClass} ${focusBlue}`}
                       placeholder='+57 300 000 0000'
                     />
@@ -697,7 +827,12 @@ const ChannelsPanel = () => {
                     </label>
                     <input
                       value={newChannel.email}
-                      onChange={(e) => setNewChannel((prev) => ({ ...prev, email: e.target.value }))}
+                      onChange={(e) =>
+                        setNewChannel((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
                       className={`${inputClass} ${focusBlue}`}
                       placeholder='contacto@santoto.edu.co'
                     />
@@ -733,11 +868,17 @@ const ChannelsPanel = () => {
               return (
                 <div key={ctx}>
                   <div className={`flex items-center gap-2 mb-3 px-1`}>
-                    <div className={`p-1.5 rounded-lg text-white ${isBlue ? "bg-usta-blue" : "bg-usta-green/20 border border-usta-green/30 !text-usta-green"}`}>
+                    <div
+                      className={`p-1.5 rounded-lg text-white ${isBlue ? "bg-usta-blue" : "bg-usta-green/20 border border-usta-green/30 !text-usta-green"}`}
+                    >
                       {info.icon}
                     </div>
-                    <h3 className='font-bold text-white text-sm'>{info.label}</h3>
-                    <span className='text-xs text-white/30'>{items.length} canal{items.length !== 1 ? "es" : ""}</span>
+                    <h3 className='font-bold text-white text-sm'>
+                      {info.label}
+                    </h3>
+                    <span className='text-xs text-white/30'>
+                      {items.length} canal{items.length !== 1 ? "es" : ""}
+                    </span>
                   </div>
                   <div className='space-y-3'>
                     {items.map((ch) => {
@@ -749,10 +890,17 @@ const ChannelsPanel = () => {
                         : "border-usta-green/50 ring-2 ring-usta-green/20";
 
                       return (
-                        <div key={ch.id} className='bg-usta-card rounded-2xl border border-white/10 overflow-hidden'>
-                          <div className={`px-5 py-3 border-b border-white/10 flex items-center gap-2 ${isBlue ? "bg-usta-blue/5" : "bg-usta-green/5"}`}>
+                        <div
+                          key={ch.id}
+                          className='bg-usta-card rounded-2xl border border-white/10 overflow-hidden'
+                        >
+                          <div
+                            className={`px-5 py-3 border-b border-white/10 flex items-center gap-2 ${isBlue ? "bg-usta-blue/5" : "bg-usta-green/5"}`}
+                          >
                             {ch.intent ? (
-                              <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${isBlue ? "bg-usta-blue/15 text-usta-blue border-usta-blue/30" : "bg-usta-green/15 text-usta-green border-usta-green/30"}`}>
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${isBlue ? "bg-usta-blue/15 text-usta-blue border-usta-blue/30" : "bg-usta-green/15 text-usta-green border-usta-green/30"}`}
+                              >
                                 {ch.intent}
                               </span>
                             ) : (
@@ -768,7 +916,9 @@ const ChannelsPanel = () => {
                               </label>
                               <input
                                 value={edited.whatsapp}
-                                onChange={(e) => handleChange(ch, "whatsapp", e.target.value)}
+                                onChange={(e) =>
+                                  handleChange(ch, "whatsapp", e.target.value)
+                                }
                                 className={`${inputClass} ${dirty ? dirtyBorder : focusClass}`}
                                 placeholder='+57 300 000 0000'
                               />
@@ -779,7 +929,9 @@ const ChannelsPanel = () => {
                               </label>
                               <input
                                 value={edited.email}
-                                onChange={(e) => handleChange(ch, "email", e.target.value)}
+                                onChange={(e) =>
+                                  handleChange(ch, "email", e.target.value)
+                                }
                                 className={`${inputClass} ${dirty ? dirtyBorder : focusClass}`}
                                 placeholder='contacto@santoto.edu.co'
                               />
@@ -787,11 +939,14 @@ const ChannelsPanel = () => {
                             <div className='flex items-center justify-between pt-1'>
                               <p className='text-[10px] text-white/30'>
                                 Actualizado:{" "}
-                                {new Date(ch.updatedAt).toLocaleDateString("es-CO", {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                })}
+                                {new Date(ch.updatedAt).toLocaleDateString(
+                                  "es-CO",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  },
+                                )}
                               </p>
                               <div className='flex items-center gap-2'>
                                 <button
@@ -834,7 +989,16 @@ const ChannelsPanel = () => {
 
 // ─── Profile Panel ───────────────────────────────────────────────────────────
 const ProfilePanel = () => {
-  const { profile, loading, saving, error, successMsg, updateProfile, changePassword, clearFeedback } = useProfile();
+  const {
+    profile,
+    loading,
+    saving,
+    error,
+    successMsg,
+    updateProfile,
+    changePassword,
+    clearFeedback,
+  } = useProfile();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -888,12 +1052,12 @@ const ProfilePanel = () => {
     );
   }
 
-  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20 focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20";
+  const inputClass =
+    "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20 focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20";
 
   return (
     <div className='flex-1 overflow-y-auto p-4 md:p-8 bg-usta-bg'>
       <div className='max-w-lg mx-auto space-y-6'>
-
         {error && (
           <div className='p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3 text-red-300 text-sm'>
             <AlertCircle size={16} className='shrink-0' /> {error}
@@ -913,7 +1077,9 @@ const ProfilePanel = () => {
             </div>
             <div>
               <h3 className='font-bold text-white text-sm'>Datos del perfil</h3>
-              <p className='text-xs text-white/40'>Nombre y correo de acceso al panel</p>
+              <p className='text-xs text-white/40'>
+                Nombre y correo de acceso al panel
+              </p>
             </div>
           </div>
           <div className='p-6 space-y-4'>
@@ -933,7 +1099,10 @@ const ProfilePanel = () => {
                 Correo electrónico
               </label>
               <div className='relative'>
-                <AtSign size={14} className='absolute left-3 top-1/2 -translate-y-1/2 text-white/50' />
+                <AtSign
+                  size={14}
+                  className='absolute left-3 top-1/2 -translate-y-1/2 text-white/50'
+                />
                 <input
                   type='email'
                   value={email}
@@ -967,7 +1136,9 @@ const ProfilePanel = () => {
               <Lock size={18} />
             </div>
             <div>
-              <h3 className='font-bold text-white text-sm'>Cambiar contraseña</h3>
+              <h3 className='font-bold text-white text-sm'>
+                Cambiar contraseña
+              </h3>
               <p className='text-xs text-white/40'>Mínimo 8 caracteres</p>
             </div>
           </div>
@@ -980,7 +1151,10 @@ const ProfilePanel = () => {
                 <input
                   type={showCurrent ? "text" : "password"}
                   value={currentPassword}
-                  onChange={(e) => { setCurrentPassword(e.target.value); clearFeedback(); }}
+                  onChange={(e) => {
+                    setCurrentPassword(e.target.value);
+                    clearFeedback();
+                  }}
                   className={`${inputClass} pr-10`}
                   placeholder='Tu contraseña actual'
                 />
@@ -1001,7 +1175,10 @@ const ProfilePanel = () => {
                 <input
                   type={showNew ? "text" : "password"}
                   value={newPassword}
-                  onChange={(e) => { setNewPassword(e.target.value); clearFeedback(); }}
+                  onChange={(e) => {
+                    setNewPassword(e.target.value);
+                    clearFeedback();
+                  }}
                   className={`${inputClass} pr-10`}
                   placeholder='Mínimo 8 caracteres'
                 />
@@ -1021,7 +1198,10 @@ const ProfilePanel = () => {
               <input
                 type='password'
                 value={confirmPassword}
-                onChange={(e) => { setConfirmPassword(e.target.value); clearFeedback(); }}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  clearFeedback();
+                }}
                 className={`${inputClass} ${
                   confirmPassword && newPassword !== confirmPassword
                     ? "border-red-500/50 focus:ring-red-500/20"
@@ -1030,7 +1210,9 @@ const ProfilePanel = () => {
                 placeholder='Repite la nueva contraseña'
               />
               {confirmPassword && newPassword !== confirmPassword && (
-                <p className='text-xs text-red-400 mt-1'>Las contraseñas no coinciden</p>
+                <p className='text-xs text-red-400 mt-1'>
+                  Las contraseñas no coinciden
+                </p>
               )}
             </div>
             <div className='flex justify-end pt-2'>
@@ -1055,16 +1237,21 @@ const ProfilePanel = () => {
           <div className='flex items-start gap-3'>
             <KeyRound size={18} className='text-white/40 mt-0.5 shrink-0' />
             <div>
-              <h4 className='font-bold text-white/70 text-sm mb-1'>¿Olvidaste tu contraseña?</h4>
+              <h4 className='font-bold text-white/70 text-sm mb-1'>
+                ¿Olvidaste tu contraseña?
+              </h4>
               <p className='text-xs text-white/40 leading-relaxed'>
-                Si no recuerdas tu contraseña actual, cierra sesión y usa el enlace{" "}
-                <strong className='text-white/60'>"¿Olvidaste tu contraseña?"</strong>{" "}
-                en la pantalla de inicio de sesión. Recibirás un correo con instrucciones.
+                Si no recuerdas tu contraseña actual, cierra sesión y usa el
+                enlace{" "}
+                <strong className='text-white/60'>
+                  "¿Olvidaste tu contraseña?"
+                </strong>{" "}
+                en la pantalla de inicio de sesión. Recibirás un correo con
+                instrucciones.
               </p>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
@@ -1075,21 +1262,46 @@ const NAV_SECTIONS = [
   {
     label: "Monitoreo",
     tabs: [
-      { id: "conversations" as AdminTab, label: "Conversaciones", shortLabel: "Chats", icon: <MessageSquare size={16} /> },
+      {
+        id: "conversations" as AdminTab,
+        label: "Conversaciones",
+        shortLabel: "Chats",
+        icon: <MessageSquare size={16} />,
+      },
     ],
   },
   {
     label: "Asistente",
     tabs: [
-      { id: "helpdesk"       as AdminTab, label: "Mesa de Ayuda",    shortLabel: "Ayuda",    icon: <Headphones size={16} /> },
-      { id: "posgrados"      as AdminTab, label: "Posgrados",        shortLabel: "Posgrados", icon: <GraduationCap size={16} /> },
+      {
+        id: "helpdesk" as AdminTab,
+        label: "Mesa de Ayuda",
+        shortLabel: "Ayuda",
+        icon: <Headphones size={16} />,
+      },
+      {
+        id: "posgrados" as AdminTab,
+        label: "Posgrados",
+        shortLabel: "Posgrados",
+        icon: <GraduationCap size={16} />,
+      },
     ],
   },
   {
     label: "Configuración",
     tabs: [
-      { id: "channels" as AdminTab, label: "Canales de Soporte", shortLabel: "Canales", icon: <Settings size={16} /> },
-      { id: "profile"  as AdminTab, label: "Mi Perfil",          shortLabel: "Perfil",  icon: <UserCircle size={16} /> },
+      {
+        id: "channels" as AdminTab,
+        label: "Canales de Soporte",
+        shortLabel: "Canales",
+        icon: <Settings size={16} />,
+      },
+      {
+        id: "profile" as AdminTab,
+        label: "Mi Perfil",
+        shortLabel: "Perfil",
+        icon: <UserCircle size={16} />,
+      },
     ],
   },
 ];
@@ -1098,16 +1310,16 @@ const ALL_TABS = NAV_SECTIONS.flatMap((s) => s.tabs);
 
 const TAB_DESCRIPTIONS: Record<AdminTab, string> = {
   conversations: "Historial completo de interacciones del chat",
-  channels:      "Canales de contacto mostrados al escalar una consulta",
-  helpdesk:      "Categorías y manuales de la Mesa de Ayuda",
-  posgrados:     "Ingesta de conocimientos del asistente de posgrados",
-  profile:       "Nombre, correo y contraseña del administrador",
+  channels: "Canales de contacto mostrados al escalar una consulta",
+  helpdesk: "Categorías y manuales de la Mesa de Ayuda",
+  posgrados: "Ingesta de conocimientos del asistente de posgrados",
+  profile: "Nombre, correo y contraseña del administrador",
 };
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>("conversations");
   const activeTabDef = ALL_TABS.find((t) => t.id === activeTab)!;
-  const { logout } = useAuth();;
+  const { logout } = useAuth();
 
   return (
     <div className='flex h-screen w-full bg-usta-bg font-sans text-white overflow-hidden'>
@@ -1116,8 +1328,8 @@ const AdminPage = () => {
         {/* Logo */}
         <div className='px-5 py-4 border-b border-white/10 flex items-center justify-center'>
           <img
-            src="/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png"
-            alt="Universidad Santo Tomás Tunja"
+            src='/logos/SNIES_USantoTomas_Horizontal%20color%20blanco.png'
+            alt='Universidad Santo Tomás Tunja'
             className='h-9 object-contain'
           />
         </div>
@@ -1135,12 +1347,18 @@ const AdminPage = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 mx-0 text-sm font-medium transition-all rounded-none
                     border-l-2 ${
-                    activeTab === tab.id
-                      ? "border-l-usta-blue-lt bg-usta-blue/15 text-white"
-                      : "border-l-transparent text-white/50 hover:bg-white/5 hover:text-white/80 hover:border-l-white/20"
-                  }`}
+                      activeTab === tab.id
+                        ? "border-l-usta-blue-lt bg-usta-blue/15 text-white"
+                        : "border-l-transparent text-white/50 hover:bg-white/5 hover:text-white/80 hover:border-l-white/20"
+                    }`}
                 >
-                  <span className={activeTab === tab.id ? "text-usta-blue-lt" : "text-white/40"}>
+                  <span
+                    className={
+                      activeTab === tab.id
+                        ? "text-usta-blue-lt"
+                        : "text-white/40"
+                    }
+                  >
                     {tab.icon}
                   </span>
                   {tab.label}
@@ -1174,7 +1392,9 @@ const AdminPage = () => {
         {/* Header */}
         <header className='bg-usta-surface border-b border-white/10 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0'>
           <div className='flex items-center gap-3'>
-            <div className={`p-1.5 rounded-lg bg-usta-blue/20 text-usta-blue-lt`}>
+            <div
+              className={`p-1.5 rounded-lg bg-usta-blue/20 text-usta-blue-lt`}
+            >
               {activeTabDef.icon}
             </div>
             <div>
@@ -1188,7 +1408,11 @@ const AdminPage = () => {
           </div>
           <div className='flex items-center gap-2'>
             <span className='hidden sm:block text-[10px] text-white/40 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full font-medium tabular-nums'>
-              {new Date().toLocaleDateString("es-CO", { day: "numeric", month: "short", year: "numeric" })}
+              {new Date().toLocaleDateString("es-CO", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
             </span>
             <div className='md:hidden flex items-center gap-1.5'>
               <Link
@@ -1230,7 +1454,11 @@ const AdminPage = () => {
                 : "text-white/50"
             }`}
           >
-            <span className={activeTab === tab.id ? "text-usta-blue-lt" : "text-white/40"}>
+            <span
+              className={
+                activeTab === tab.id ? "text-usta-blue-lt" : "text-white/40"
+              }
+            >
               {tab.icon}
             </span>
             <span className='leading-none'>{tab.shortLabel ?? tab.label}</span>

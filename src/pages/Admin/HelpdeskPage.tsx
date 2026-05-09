@@ -1,5 +1,5 @@
-﻿// src/pages/Admin/HelpdeskPage.tsx
-import { useState } from "react";
+// src/pages/Admin/HelpdeskPage.tsx
+import { useRef, useState } from "react";
 import {
   Pencil,
   Trash2,
@@ -8,7 +8,9 @@ import {
   AlertCircle,
   CheckCircle2,
   X,
-  ExternalLink,
+  FileText,
+  Upload,
+  Download,
 } from "lucide-react";
 import {
   useHelpdeskCategories,
@@ -16,6 +18,10 @@ import {
   type CreateHelpdeskCategoryDto,
   type UpdateHelpdeskCategoryDto,
 } from "../../hooks/useHelpdeskResponses";
+
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
+const ACCEPTED_TYPES = ".pdf,.ppt,.pptx,.doc,.docx";
 
 // ─── Confirm Delete Modal ─────────────────────────────────────────────────────
 const ConfirmModal = ({
@@ -54,6 +60,44 @@ const ConfirmModal = ({
   </div>
 );
 
+// ─── File Picker ──────────────────────────────────────────────────────────────
+const FilePicker = ({
+  value,
+  onChange,
+}: {
+  value: File | null;
+  onChange: (f: File | null) => void;
+}) => {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <div
+      onClick={() => ref.current?.click()}
+      className='w-full flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 cursor-pointer
+        hover:border-usta-blue/40 hover:bg-white/8 transition-all group'
+    >
+      <Upload size={15} className='text-white/30 group-hover:text-usta-blue-lt shrink-0' />
+      <span className={`text-sm flex-1 truncate ${value ? "text-white" : "text-white/20"}`}>
+        {value ? value.name : "Seleccionar archivo (PDF, PPT, PPTX, DOC, DOCX)"}
+      </span>
+      {value && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onChange(null); ref.current && (ref.current.value = ""); }}
+          className='text-white/30 hover:text-white/70 shrink-0'
+        >
+          <X size={14} />
+        </button>
+      )}
+      <input
+        ref={ref}
+        type='file'
+        accept={ACCEPTED_TYPES}
+        className='hidden'
+        onChange={(e) => onChange(e.target.files?.[0] ?? null)}
+      />
+    </div>
+  );
+};
+
 // ─── Create Modal ─────────────────────────────────────────────────────────────
 const CreateModal = ({
   saving,
@@ -61,12 +105,12 @@ const CreateModal = ({
   onCancel,
 }: {
   saving: boolean;
-  onSubmit: (dto: CreateHelpdeskCategoryDto) => Promise<void>;
+  onSubmit: (dto: CreateHelpdeskCategoryDto, file: File | null) => Promise<void>;
   onCancel: () => void;
 }) => {
   const [intent, setIntent] = useState("");
-  const [pdfUrl, setPdfUrl] = useState("");
   const [description, setDescription] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
   const isValid = intent.trim().length > 0;
 
@@ -121,16 +165,9 @@ const CreateModal = ({
           </div>
           <div>
             <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-1.5'>
-              Enlace PDF
+              Documento (opcional)
             </label>
-            <input
-              value={pdfUrl}
-              onChange={(e) => setPdfUrl(e.target.value)}
-              placeholder='https://...'
-              className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
-                placeholder:text-white/20'
-            />
+            <FilePicker value={file} onChange={setFile} />
           </div>
         </div>
         <div className='flex gap-3 px-6 py-4 border-t border-white/10'>
@@ -141,13 +178,7 @@ const CreateModal = ({
             Cancelar
           </button>
           <button
-            onClick={() =>
-              onSubmit({
-                intent: intent.trim(),
-                description: description.trim() || null,
-                pdf_url: pdfUrl.trim() || null,
-              })
-            }
+            onClick={() => onSubmit({ intent: intent.trim(), description: description.trim() || null }, file)}
             disabled={!isValid || saving}
             className='flex-1 py-2.5 rounded-xl bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-semibold
               transition-all disabled:opacity-40 disabled:cursor-not-allowed'
@@ -166,14 +197,18 @@ const EditModal = ({
   saving,
   onSubmit,
   onCancel,
+  onUpload,
+  onDeleteDocument,
 }: {
   category: HelpdeskCategory;
   saving: boolean;
   onSubmit: (dto: UpdateHelpdeskCategoryDto) => Promise<void>;
   onCancel: () => void;
+  onUpload: (file: File) => Promise<void>;
+  onDeleteDocument: () => Promise<void>;
 }) => {
-  const [pdfUrl, setPdfUrl] = useState(category.pdf_url ?? "");
   const [description, setDescription] = useState(category.description ?? "");
+  const [newFile, setNewFile] = useState<File | null>(null);
 
   return (
     <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
@@ -217,16 +252,36 @@ const EditModal = ({
 
           <div>
             <label className='block text-xs font-bold text-white/40 uppercase tracking-wider mb-1.5'>
-              Enlace PDF
+              Documento
             </label>
-            <input
-              value={pdfUrl}
-              onChange={(e) => setPdfUrl(e.target.value)}
-              placeholder='https://...'
-              className='w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-white
-                outline-none focus:border-usta-blue/50 focus:ring-2 focus:ring-usta-blue/20 transition-all
-                placeholder:text-white/20'
-            />
+            {category.has_document ? (
+              <div className='flex items-center gap-2'>
+                <a
+                  href={`${SERVER_URL}${category.document_url}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='flex-1 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-usta-blue/20 text-usta-blue-lt text-xs font-semibold hover:bg-usta-blue/30 transition-colors'
+                >
+                  <Download size={13} /> Ver documento actual
+                </a>
+                <button
+                  onClick={onDeleteDocument}
+                  disabled={saving}
+                  className='p-2.5 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors disabled:opacity-40'
+                  title='Eliminar documento'
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ) : (
+              <p className='text-xs text-white/30 mb-2'>Sin documento adjunto.</p>
+            )}
+            <div className='mt-2'>
+              <FilePicker value={newFile} onChange={setNewFile} />
+              {newFile && (
+                <p className='text-[11px] text-white/30 mt-1'>El documento se subirá al guardar.</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -238,7 +293,10 @@ const EditModal = ({
             Cancelar
           </button>
           <button
-            onClick={() => onSubmit({ description: description.trim() || null, pdf_url: pdfUrl.trim() || null })}
+            onClick={async () => {
+              await onSubmit({ description: description.trim() || null });
+              if (newFile) { await onUpload(newFile); setNewFile(null); }
+            }}
             disabled={saving}
             className='flex-1 py-2.5 rounded-xl bg-usta-blue hover:bg-usta-blue-dark text-white text-sm font-semibold
               transition-all disabled:opacity-40 disabled:cursor-not-allowed'
@@ -253,15 +311,18 @@ const EditModal = ({
 
 // ─── Helpdesk Panel ───────────────────────────────────────────────────────────
 const HelpdeskPanel = () => {
-  const { categories, loading, saving, error, successMsg, create, update, remove, refresh } =
-    useHelpdeskCategories();
+  const {
+    categories, loading, saving, error, successMsg,
+    create, update, remove, uploadDocument, deleteDocument, refresh,
+  } = useHelpdeskCategories();
 
   const [editing, setEditing] = useState<HelpdeskCategory | null>(null);
   const [creating, setCreating] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
-  const handleCreate = async (dto: CreateHelpdeskCategoryDto) => {
-    await create(dto);
+  const handleCreate = async (dto: CreateHelpdeskCategoryDto, file: File | null) => {
+    const newId = await create(dto);
+    if (file && newId) await uploadDocument(newId, file);
     setCreating(false);
   };
 
@@ -294,6 +355,8 @@ const HelpdeskPanel = () => {
           saving={saving}
           onSubmit={handleUpdate}
           onCancel={() => setEditing(null)}
+          onUpload={async (file) => { await uploadDocument(editing.id, file); await refresh(); }}
+          onDeleteDocument={async () => { await deleteDocument(editing.id); setEditing(null); }}
         />
       )}
 
@@ -305,7 +368,7 @@ const HelpdeskPanel = () => {
                 Categorías Mesa de Ayuda
               </h2>
               <p className='text-sm text-white/40 mt-1'>
-                Gestiona las categorías y sus enlaces a manuales PDF.
+                Gestiona las categorías y sus documentos adjuntos.
               </p>
             </div>
             <div className='flex items-center gap-2'>
@@ -378,18 +441,18 @@ const HelpdeskPanel = () => {
                     {cat.description && (
                       <p className='text-xs text-white/50 line-clamp-2'>{cat.description}</p>
                     )}
-                    {cat.pdf_url ? (
+                    {cat.has_document ? (
                       <a
-                        href={cat.pdf_url}
+                        href={`${SERVER_URL}${cat.document_url}`}
                         target='_blank'
                         rel='noopener noreferrer'
                         className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-usta-blue/20 text-usta-blue-lt text-xs font-semibold'
                       >
-                        <ExternalLink size={12} /> Ver PDF
+                        <FileText size={12} /> Ver documento
                       </a>
                     ) : (
                       <span className='inline-flex items-center px-2.5 py-1 rounded-lg bg-white/5 text-white/50 text-xs'>
-                        Sin enlace
+                        Sin documento
                       </span>
                     )}
                   </div>
@@ -407,7 +470,7 @@ const HelpdeskPanel = () => {
                       <th className='text-left px-5 py-3 text-xs font-bold text-white/40 uppercase tracking-wider'>Categoría</th>
                       <th className='text-left px-5 py-3 text-xs font-bold text-white/40 uppercase tracking-wider'>Intent</th>
                       <th className='text-left px-5 py-3 text-xs font-bold text-white/40 uppercase tracking-wider'>Descripción</th>
-                      <th className='text-left px-5 py-3 text-xs font-bold text-white/40 uppercase tracking-wider'>Enlace PDF</th>
+                      <th className='text-left px-5 py-3 text-xs font-bold text-white/40 uppercase tracking-wider'>Documento</th>
                       <th className='px-5 py-3' />
                     </tr>
                   </thead>
@@ -426,13 +489,19 @@ const HelpdeskPanel = () => {
                             : <span className='text-white/20'>—</span>}
                         </td>
                         <td className='px-5 py-3.5'>
-                          {cat.pdf_url ? (
-                            <a href={cat.pdf_url} target='_blank' rel='noopener noreferrer'
-                              className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-usta-blue/20 text-usta-blue-lt text-xs font-semibold hover:bg-usta-blue/30 transition-colors'>
-                              <ExternalLink size={12} /> Ver PDF
+                          {cat.has_document ? (
+                            <a
+                              href={`${SERVER_URL}${cat.document_url}`}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-usta-blue/20 text-usta-blue-lt text-xs font-semibold hover:bg-usta-blue/30 transition-colors'
+                            >
+                              <FileText size={12} /> Ver documento
                             </a>
                           ) : (
-                            <span className='inline-flex items-center px-2.5 py-1 rounded-lg bg-white/5 text-white/50 text-xs font-medium'>Sin enlace</span>
+                            <span className='inline-flex items-center px-2.5 py-1 rounded-lg bg-white/5 text-white/50 text-xs font-medium'>
+                              Sin documento
+                            </span>
                           )}
                         </td>
                         <td className='px-5 py-3.5'>

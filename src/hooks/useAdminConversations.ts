@@ -5,8 +5,8 @@ import { useAuth } from "./useAuth";
 export interface ConversationSummary {
   conversationId: string;
   userId: string;
-  nombre: string | null;
-  correo: string | null;
+  name: string | null;
+  email: string | null;
   status: "active" | "closed" | "expired" | "escalated";
   title: string | null;
   context: string | null;
@@ -16,10 +16,10 @@ export interface ConversationSummary {
 }
 
 export interface ChatMessage {
-  codMessage: string;
+  id: string;
   sender: "user" | "bot";
   message: string;
-  createAt: string;
+  createdAt: string;
 }
 
 export const useAdminConversations = () => {
