@@ -63,7 +63,14 @@ export const useSupportChannels = () => {
       });
       if (res.status === 401) return logout();
       if (res.status === 400) {
-        setError("Ya existe un canal con ese contexto e intent.");
+        const body = await res.json().catch(() => null);
+        const msg: string =
+          body?.message && typeof body.message === "string"
+            ? body.message
+            : Array.isArray(body?.message)
+            ? body.message.join(", ")
+            : "Ya existe un canal con ese contexto e intent.";
+        setError(msg);
         await fetchChannels();
         return;
       }
@@ -108,6 +115,18 @@ export const useSupportChannels = () => {
         body: JSON.stringify(channel),
       });
       if (res.status === 401) return logout();
+      if (res.status === 400) {
+        const body = await res.json().catch(() => null);
+        const msg: string =
+          body?.message && typeof body.message === "string"
+            ? body.message
+            : Array.isArray(body?.message)
+            ? body.message.join(", ")
+            : "Error al actualizar el canal.";
+        setError(msg);
+        await fetchChannels();
+        return;
+      }
       if (!res.ok) throw new Error();
       setSuccessMsg("Canal actualizado correctamente.");
       await fetchChannels();

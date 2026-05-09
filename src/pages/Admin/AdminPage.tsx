@@ -613,8 +613,9 @@ const ChannelsPanel = () => {
     setNewChannel(EMPTY_NEW_CHANNEL);
   };
 
+  const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
   const isNewChannelValid =
-    newChannel.whatsapp.trim() && newChannel.email.trim();
+    newChannel.whatsapp.trim() && isValidEmail(newChannel.email);
 
   const inputClass =
     "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white outline-none transition-all placeholder:text-white/20";
@@ -826,6 +827,7 @@ const ChannelsPanel = () => {
                       <Mail size={12} /> Correo electrónico
                     </label>
                     <input
+                      type="email"
                       value={newChannel.email}
                       onChange={(e) =>
                         setNewChannel((prev) => ({
@@ -928,6 +930,7 @@ const ChannelsPanel = () => {
                                 <Mail size={12} /> Correo electrónico
                               </label>
                               <input
+                                type="email"
                                 value={edited.email}
                                 onChange={(e) =>
                                   handleChange(ch, "email", e.target.value)
